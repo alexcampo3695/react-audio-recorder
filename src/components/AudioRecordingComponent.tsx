@@ -2,6 +2,7 @@ import React, { useState, useEffect, ReactElement, Suspense } from "react";
 import { Props } from "./interfaces";
 import useAudioRecorder from "../hooks/useAudioRecorder";
 
+
 import micSVG from "../icons/mic.svg";
 import pauseSVG from "../icons/pause.svg";
 import resumeSVG from "../icons/play.svg";

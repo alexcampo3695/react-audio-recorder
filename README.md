@@ -22,6 +22,11 @@ npm install react-audio-voice-recorder
 yarn add react-audio-voice-recorder
 ```
 
+## Run/Start
+```
+npm run dev
+```
+
 ## Migrating from v1 → v2
 ### Breaking changes
 - In v2 the `AudioRecorder` prop `downloadFileExtension` no longer supports `mp3` and `wav` without the website using this package being [cross-origin isolated](https://web.dev/cross-origin-isolation-guide/). This change was made in order to fix [issue #54](https://github.com/samhirtarif/react-audio-recorder/issues/54) in v1.2.1
