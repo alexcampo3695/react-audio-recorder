@@ -1,10 +1,11 @@
 import OpenAI from "openai";
 
+
 const apiKey = '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'; // Replace with your actual API key
 
 const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
 
-export async function categorizeTranscription(transcription: string) {
+export async function summarizeTranscription(transcription: string) {
   try {
     const chatCompletion = await openai.chat.completions.create({
       messages: [
@@ -20,9 +21,9 @@ export async function categorizeTranscription(transcription: string) {
       model: 'gpt-3.5-turbo',
     });
     const summary = chatCompletion.choices[0].message.content;
-    return summary;
+    return summary || '';
   } catch (error) {
     console.error('Error calling ChatGPT:', error);
-    throw error;
+    throw 'Error generating summary';
   }
 };

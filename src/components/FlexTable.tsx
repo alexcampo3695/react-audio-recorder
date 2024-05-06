@@ -11,13 +11,15 @@ interface TableRowData {
   eventDate: Date;
   recordingBlob: Blob | undefined;
   transcription: string;
+  source: "recording" | "upload";
 }
 
 interface FlexTableProps {
   data: TableRowData[];
+  onTranscriptionClick: (transcription: string) => void;
 }
 
-const FlexTable: React.FC<FlexTableProps> = ({ data }) => {
+const FlexTable: React.FC<FlexTableProps> = ({ data, onTranscriptionClick }) => {
   const [transcriptions, setTranscriptions] = useState<string[]>([]);
 
   useEffect(() => {
@@ -46,6 +48,7 @@ const FlexTable: React.FC<FlexTableProps> = ({ data }) => {
           <th>Date</th>
           <th>Recording</th>
           <th>Transcription</th>
+          <th>Type</th>
         </tr>
       </thead>
       <tbody>
@@ -59,7 +62,10 @@ const FlexTable: React.FC<FlexTableProps> = ({ data }) => {
                 <audio src={URL.createObjectURL(row.recordingBlob)} controls />
               )}
             </td>
-            <td>{transcriptions[index]}</td>
+            <td onClick={() => onTranscriptionClick(transcriptions[index])}>
+              {transcriptions[index]}
+            </td>
+            <td>{row.source}</td>
           </tr>
         ))}
       </tbody>
