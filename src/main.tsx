@@ -1,18 +1,16 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
-import AudioRecorder from "./components/AudioRecordingComponent";
-import FlexTable from "./components/FlexTable";
-import SummaryComponent from "./components/Summary";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 import { transcribeAudio } from "./helpers/transcribe";
-import AudioUploader from "./components/AudioUploader";
+import RecordingPage from './pages/Recorder';
+import RecordingsTable from './pages/RecordingsTable';
+import SummaryPage from './pages/PatientSummary';
+
 
 
 const audioTable = document.createElement("table");
 document.body.appendChild(audioTable);
-
-let audioCount = 0;
-
-
 
 interface AudioData {
   source: 'recording' | 'upload';
@@ -21,7 +19,7 @@ interface AudioData {
   summary: string;
 }
 
-const App = () => {
+const App: React.FC = () => {
   const [audioDataList, setAudioDataList] = useState<AudioData[]>([]);
   const [selectedTranscription, setSelectedTranscription] = useState("");
 
@@ -57,33 +55,28 @@ const App = () => {
   }
 
   return (
-    <React.StrictMode>
-      <AudioUploader onFileUpload={(file) => addAudioElement('upload', file)} />
-      <AudioRecorder
-        onRecordingComplete={(blob) => addAudioElement('recording', blob)}
-        onNotAllowedOrFound={(err) => console.table(err)}
-        showVisualizer={true}
-        downloadOnSavePress
-        downloadFileExtension="mp3"
-      />
-      <FlexTable
-        data={audioDataList.map((audioData, index) => ({
-          number: index + 1,
-          patientName: `Alex Campo`,
-          eventDate: new Date(),
-          recordingBlob: audioData.blob,
-          transcription: "",
-          source: audioData.source,
-        }))}
-        onTranscriptionClick={handleTranscriptionClick}
-      />
-      {selectedTranscription && (
-        <SummaryComponent 
-          transcription={selectedTranscription} 
-          onSummarySubmit={handleSummarySubmit}
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <RecordingPage
+              onRecordingComplete={(blob) => addAudioElement('recording', blob)}
+              onFileUpload={(file) => addAudioElement('upload', file)}
+            />
+          }
         />
-      )}
-    </React.StrictMode>
+        <Route
+          path="/table"
+          element={<RecordingsTable audioDataList={audioDataList} onTranscriptionClick={handleTranscriptionClick} />}
+        />
+        <Route
+          path="/summary"
+          element={<SummaryPage selectedTranscription={selectedTranscription} onSummarySubmit={handleSummarySubmit} />}
+        />
+      </Routes>
+    </Router>
+
   );
 };
 
