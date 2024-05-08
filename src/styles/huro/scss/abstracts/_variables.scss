@@ -1,0 +1,78 @@
+/*! _variables.scss | Huro | Css ninja 2020-2021 */
+
+/*
+    1. Main Colors
+    2. Global colors
+*/
+
+$fullhd-enabled: false;
+$body-size: 14px;
+
+/* ==========================================================================
+1. Main Colors
+========================================================================== */
+
+//Huro's Original
+//$primary: #671cc9;
+$primary: #26619B;
+$secondary: #F191AB;
+
+//Huro's Original
+//$accent: #797bf2;
+$accent: #6F9EDD;
+$primary-light: #d3dfeb;
+$primary-lighter: #e9eff5;
+/* ==========================================================================
+2. Global colors
+========================================================================== */
+
+$body-color: #f9f9f9;
+
+$white: #fff;
+$smoke-white: #fcfcfc;
+$light-white: #f9f9f9;
+
+$placeholder: #cecece;
+$muted-grey: #999;
+$fade-grey: #ededed;
+$accent-grey: #ccc;
+$background-grey: #f0f0f0;
+$section-grey: #fcfcfc;
+$medium-grey: #ddd;
+$light-grey: #eee;
+$lighter-grey: #e5e5e5;
+$widget-grey: #f5f6fa;
+
+$dark-text: #283252;
+$light-text: #a2a5b9;
+$title-grey: #a9abac;
+
+$danger: #e62965;
+$info: #039be5;
+$success: #06d6a0;
+$warning: #faae42;
+
+$h-purple: #8269b2;
+$h-blue: #37c3ff;
+$h-red: #f92b60;
+$h-orange: #ffa981;
+$h-yellow: #ffd66e;
+$h-green: #93e088;
+$h-pink: #ff9eb8;
+$h-light-blue: #77d2f3;
+
+$orange:       hsl(14,  100%, 53%) !default; //shims
+$yellow:       hsl(44,  100%, 77%) !default; //shims
+$green:        hsl(153, 53%,  53%) !default; //shims 
+$turquoise:    hsl(171, 100%, 41%) !default; //shims 
+$cyan:         hsl(207, 61%,  53%) !default; //shims 
+$blue:         hsl(229, 53%,  53%) !default; //shims 
+$purple:       hsl(271, 100%, 71%) !default; //shims 
+$red:          hsl(348, 86%, 61%) !default; //shims 
+
+$active: #6dcff6;
+
+$sidebar: #344258;
+
+$dark-sidebar: #232326;
+$dark-dark-text: #aaaab3;

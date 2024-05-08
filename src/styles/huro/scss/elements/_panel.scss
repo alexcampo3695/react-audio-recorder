@@ -1,0 +1,25 @@
+
+// body {
+//     &.is-dark {
+//         .panel {
+//           .panel-heading {
+//             background-color: $dark-sidebar;
+//             border-color: $dark-sidebar;
+//             color: $dark-text;
+//           }
+//           .panel-block {
+//               &:not(.is-primary):not(.is-success):not(.is-info):not(.is-warning):not(
+//                   .is-danger
+//                 ):not(.is-light):not(.is-white) {
+//                 background: lighten($dark-sidebar, 10%);
+//                 border-color: lighten($dark-sidebar, 12%);
+//                 color: $dark-dark-text;
+
+//                 &:hover {
+//                   border-color: lighten($dark-sidebar, 18%);
+//                 }
+//               }
+//           }
+//         }
+//     }
+// }

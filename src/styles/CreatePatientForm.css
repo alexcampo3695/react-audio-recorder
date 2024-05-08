@@ -1,0 +1,11 @@
+.custom-form-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: -30px;
+}
+
+.switch {
+  display: flex;
+  justify-content: center;
+}

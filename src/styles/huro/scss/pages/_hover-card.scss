@@ -1,0 +1,379 @@
+
+
+@function lighter($selectColor, $percentage) {
+  @return lighten($selectColor, $percentage);
+}
+
+
+
+.light-blue {
+  --bg-color: #77d2f3;
+  --bg-color-light: #c9ecf8;
+  --text-color-hover: #4C5656;
+  --box-shadow-color: rgba(193, 245, 251, 0.48);
+}
+
+.orange {
+  --bg-color: #ffa981;
+  --bg-color-light: #fdddce;
+  --text-color-hover: #4C5656;
+  --box-shadow-color: rgba(254, 178, 170, 0.48);
+}
+
+.danger {
+  --bg-color: #e62965;
+  --bg-color-light: hsl(346, 85%, 92%);
+  --text-color-hover: #4C5656;
+  --box-shadow-color: rgba(254, 161, 151, 0.48);
+}
+
+.yellow {
+  --bg-color: #ffd66e;
+  --bg-color-light: #ffeeba;
+  --text-color-hover: #4C5656;
+  --box-shadow-color: rgba(255, 215, 97, 0.48);
+}
+
+.green {
+  --bg-color: #06d6a0;
+  --bg-color-light: #e2fced;
+  --text-color-hover: #4C5656;
+  --box-shadow-color: rgba(184, 249, 211, 0.48);
+}
+
+.purple {
+  --bg-color: #8269b2;
+  --bg-color-light: #F0E7FF;
+  --text-color-hover: #fff;
+  --box-shadow-color: rgba(206, 178, 252, 0.48);
+}
+
+.blue {
+  --bg-color: #26619B;
+  --bg-color-light: #f1f7ff;
+  --text-color-hover: #4C5656;
+  --box-shadow-color: rgba(220, 233, 255, 0.48);
+}
+
+.pink {
+  --bg-color: #ff9eb8;
+  --bg-color-light: #fbd9e1;
+  --text-color-hover: #4C5656;
+  --box-shadow-color: rgba(59, 10, 64, 0.48);
+}
+
+.card:hover .circle .icon,
+.card:hover .circle .icon i {
+  color: black;
+}
+
+.card .circle .icon,
+.card .circle .icon i {
+  color: white;
+  position: relative;
+  z-index: 100;
+  height: 1.5rem;
+  width: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem; /* Set the font size for icon fonts */
+}
+
+.card .circle .icon svg {
+  height: 100%;
+  width: 100%;
+}
+
+
+.card {
+  width: 220px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Aligns items to the start */
+  align-items: center;
+  position: relative;
+  box-shadow: 0 14px 26px rgba(0,0,0,0.04);
+  transition: all 0.3s ease-out;
+  text-decoration: none;
+  padding: 1rem;
+  padding-top: 2rem; /* Adjust this value as needed */
+  background: $white;
+  margin-right: 1rem;
+  margin-top: 1rem;
+}
+
+
+
+.card:hover {
+  transform: translateY(-5px) scale(1.005) translateZ(0);
+  box-shadow: 0 24px 36px rgba(0,0,0,0.11),
+    0 24px 46px var(--box-shadow-color);
+}
+
+.card:hover .overlay {
+  transform: scale(4) translateZ(0);
+}
+
+.card:hover .circle {
+  border-color: var(--bg-color-light);
+  background: var(--bg-color);
+}
+
+.card:hover .circle:after {
+  background: var(--bg-color-light);
+}
+
+.card:hover p {
+  color: white;
+}
+
+.card:active {
+  transform: scale(1) translateZ(0);
+  box-shadow: 0 15px 24px rgba(0,0,0,0.11),
+    0 15px 24px var(--box-shadow-color);
+}
+
+.card:hover h3 {
+  color: white;
+}
+
+
+
+.card h3 {
+  font-family: montserrat,sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $dark-sidebar;
+  margin-bottom: 12px;
+  //margin-top: 1rem; /* Adjust this value as needed */
+  z-index: 1000;
+  transition: color 0.3s ease-out;
+}
+
+.card p {
+  color: $light-text;
+  z-index: 1000;
+  transition: color 0.3s ease-out;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.circle {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem; /* Adjust space between circle and text */
+  transition: all 0.3s ease-out;
+}
+
+.circle:after {
+  content: "";
+  width: 5.076rem;  /* Adjusted size to fit inside the new border */
+  height: 5.076rem;
+  display: block;
+  position: absolute;
+  background: var(--bg-color);
+  border-radius: 50%;
+  top: 50%;  /* Centering the pseudo-element */
+  left: 50%;
+  transform: translate(-50%, -50%); /* Adjust for exact centering */
+  transition: opacity 0.3s ease-out;
+}
+
+.circle svg {
+  z-index: 10000;
+  transform: translateZ(0);
+}
+
+.overlay {
+  width: 131px; /* Match the size of the circle */
+  height: 131px;
+  border-radius: 50%;
+  background: var(--bg-color);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0); /* Start scaled down */
+  z-index: 0;
+  transition: transform 0.3s ease-out;
+}
+
+.card:hover .overlay {
+  transform: translate(-50%, -50%) scale(4); /* Scale up on hover */
+}
+
+
+body {
+  &.is-dark {
+    .yellow {
+      --bg-color: #ffd66e;
+      --bg-color-light: #ffeeba;
+      --text-color-hover: #4C5656;
+      --box-shadow-color: rgba(255, 215, 97, 0.48);
+    }
+
+    .green {
+      --bg-color: #06d6a0;
+      --bg-color-light: #e2fced;
+      --text-color-hover: #4C5656;
+      --box-shadow-color: rgba(184, 249, 211, 0.48);
+    }
+
+    .purple {
+      --bg-color: #8269b2;
+      --bg-color-light: #F0E7FF;
+      --text-color-hover: #fff;
+      --box-shadow-color: rgba(206, 178, 252, 0.48);
+    }
+
+    .blue {
+      --bg-color: #6F9EDD;
+      --bg-color-light: #f1f7ff;
+      --text-color-hover: #4C5656;
+      --box-shadow-color: rgba(220, 233, 255, 0.48);
+    }
+
+    .pink {
+      --bg-color: #ff9eb8;
+      --bg-color-light: #f1f7ff;
+      --text-color-hover: #4C5656;
+      --box-shadow-color: rgba(245, 184, 252, 0.48);
+    }
+
+    .card {
+      width: 220px;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Aligns items to the start */
+      align-items: center;
+      position: relative;
+      box-shadow: 0 14px 26px rgba(0,0,0,0.04);
+      transition: all 0.3s ease-out;
+      text-decoration: none;
+      padding: 1rem;
+      padding-top: 2rem; /* Adjust this value as needed */
+      background: $dark-sidebar;
+      margin-right: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card:hover {
+      transform: translateY(-5px) scale(1.005) translateZ(0);
+      box-shadow: 0 24px 36px rgba(0,0,0,0.11),
+        0 24px 46px var(--box-shadow-color);
+    }
+
+    .card:hover .overlay {
+      transform: scale(4) translateZ(0);
+    }
+
+    .card:hover .circle {
+      border-color: var(--bg-color-light);
+      background: var(--bg-color);
+    }
+
+    .card:hover .circle:after {
+      background: var(--bg-color-light);
+    }
+
+    .card:hover p {
+      color: white;
+    }
+
+    .card:active {
+      transform: scale(1) translateZ(0);
+      box-shadow: 0 15px 24px rgba(0,0,0,0.11),
+        0 15px 24px var(--box-shadow-color);
+    }
+
+    .card:hover h3 {
+      color: white;
+    }
+
+    .card h3 {
+      font-family: montserrat,sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: $dark-dark-text; /* This is your default color */
+      //color: red;
+      margin-bottom: 12px;
+      z-index: 1000;
+      transition: color 0.3s ease-out;
+    }
+
+
+
+    .card p {
+      color: $light-text;
+      z-index: 1000;
+      transition: color 0.3s ease-out;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .circle {
+      width: 6rem;
+      height: 6rem;
+      border-radius: 50%;
+      background: $dark-sidebar;
+      border: 2px solid var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 1rem; /* Adjust space between circle and text */
+      transition: all 0.3s ease-out;
+    }
+
+    .circle:after {
+      content: "";
+      width: 5.076rem;  /* Adjusted size to fit inside the new border */
+      height: 5.076rem;
+      display: block;
+      position: absolute;
+      background: var(--bg-color);
+      border-radius: 50%;
+      top: 50%;  /* Centering the pseudo-element */
+      left: 50%;
+      transform: translate(-50%, -50%); /* Adjust for exact centering */
+      transition: opacity 0.3s ease-out;
+    }
+
+    .circle svg {
+      z-index: 10000;
+      transform: translateZ(0);
+    }
+
+    .overlay {
+      width: 131px; /* Match the size of the circle */
+      height: 131px;
+      border-radius: 50%;
+      background: var(--bg-color);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0); /* Start scaled down */
+      z-index: 0;
+      transition: transform 0.3s ease-out;
+    }
+
+    .card:hover .overlay {
+      transform: translate(-50%, -50%) scale(4); /* Scale up on hover */
+    }
+  }
+}

@@ -1,4 +1,4 @@
-// import './styles/global.scss';
+import './styles/huro/scss/main.scss';
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -7,8 +7,8 @@ import { transcribeAudio } from "./helpers/transcribe";
 import RecordingPage from './pages/Recorder';
 import RecordingsTable from './pages/RecordingsTable';
 import SummaryPage from './pages/PatientSummary';
-
-
+import CreatePatientForm from './components/CreatePatientForm';
+import Home from './pages/Home';
 
 const audioTable = document.createElement("table");
 document.body.appendChild(audioTable);
@@ -61,19 +61,8 @@ const App: React.FC = () => {
         <Route
           path="/"
           element={
-            <RecordingPage
-              onRecordingComplete={(blob) => addAudioElement('recording', blob)}
-              onFileUpload={(file) => addAudioElement('upload', file)}
-            />
+            <Home/>
           }
-        />
-        <Route
-          path="/table"
-          element={<RecordingsTable audioDataList={audioDataList} onTranscriptionClick={handleTranscriptionClick} />}
-        />
-        <Route
-          path="/summary"
-          element={<SummaryPage selectedTranscription={selectedTranscription} onSummarySubmit={handleSummarySubmit} />}
         />
       </Routes>
     </Router>

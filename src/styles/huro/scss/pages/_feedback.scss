@@ -1,0 +1,57 @@
+.emoji-container {
+  display: inline-block;
+  position: relative;
+  height: 40px; /* Maximum height the emoji will have */
+  width: 40px;  /* Maximum width the emoji will have */
+}
+
+.emoji-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* Center the emoji inside the container */
+  font-size: 32px; /* Initial font size */
+  transition: all 0.3s ease;
+}
+
+.emoji-icon:hover {
+  font-size: 45px; /* Increased font size on hover */
+  text-shadow: 0 0 0.2em rgba(43, 43, 43, 0.172), 0 0 0.2em rgba(43, 43, 43, 0.172),
+  0 0 0.2em rgba(43, 43, 43, 0.172);
+  transform: translate(-50%, -50%) translateY(-5px); /* Adjust for centering and lifting */
+}
+
+
+
+/* No filter for the selected emoji */
+.emoji-icon-selected {
+  filter: none;
+  font-size: 45px;
+  text-shadow: 0 0 0.2em rgba(43, 43, 43, 0.172), 0 0 0.2em rgba(43, 43, 43, 0.172),
+  0 0 0.2em rgba(43, 43, 43, 0.172);
+}
+
+.emoji-icon:not(.selected) {
+  filter: grayscale(100%); /* Gray out the emoji */
+}
+
+@keyframes slideDown {
+  from {
+      opacity: 0;
+      transform: translateY(-100%);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+.feedback-form {
+  opacity: 0; /* Start with the form hidden */
+  transform: translateY(-100%);
+  transition: all 0.5s ease-in-out;
+}
+
+.feedback-form.visible {
+  animation: slideDown 0.5s ease forwards;
+}
