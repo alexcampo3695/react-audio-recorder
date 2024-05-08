@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SummaryComponent from '../components/Summary';
 import CreatePatientForm from '../components/CreatePatientForm';
 import "../styles/CreatePatientForm.css";
+import FlexTable from '../components/FlexTableNew';
 
 
 const Home = ({}) => {
     const [activeTab, setActiveTab] = useState('create')
-
+    const [patients, setPatients] = useState([]);
+    
     const handleTabClick = (tab:string) => {
         setActiveTab(tab);
     }
+
+    useEffect(() => {
+        async function fetchPatients() {
+            const patients = await fetch('http://localhost:8000/get_patients');
+            setPatients(await patients.json());
+        }
+        fetchPatients();
+    }, [])
 
     return (
         <div>
@@ -38,9 +48,7 @@ const Home = ({}) => {
             {activeTab === 'create' ? (
                 <CreatePatientForm />
             ) : (
-                <div>
-                <h1>Hello, World!</h1>
-                </div>
+                <FlexTable />
             )}
         </div>
     );
