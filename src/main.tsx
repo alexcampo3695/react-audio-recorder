@@ -8,7 +8,8 @@ import RecordingPage from './pages/Recorder';
 import RecordingsTable from './pages/RecordingsTable';
 import SummaryPage from './pages/PatientSummary';
 import CreatePatientForm from './components/CreatePatientForm';
-import Home from './pages/Home';
+import Home from './pages/AppWrapper';
+import AppWrapper from './pages/AppWrapper';
 
 const audioTable = document.createElement("table");
 document.body.appendChild(audioTable);
@@ -61,7 +62,7 @@ const App: React.FC = () => {
         <Route
           path="/"
           element={
-            <Home/>
+            <AppWrapper/>
           }
         />
       </Routes>

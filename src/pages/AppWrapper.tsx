@@ -6,72 +6,46 @@ import "../styles/CreatePatientForm.css";
 import FlexTable from '../components/FlexTableNew';
 import NavBar from '../components/NavBar';
 import MobileNav from '../components/MobileNav';
+import HomeComponent from '../components/HomeComponent';
 
-const HomeComponent = ({}) => {
-    const [activeTab, setActiveTab] = useState('create')
-    const [patients, setPatients] = useState([]);
-    
-    const handleTabClick = (tab:string) => {
-        setActiveTab(tab);
-    }
+
+const AppWrapper = ({}) => {
+    const [darkMode, setDarkMode] = useState(false);
+
+    const toggleBodyClass = () => {
+        const body = document.querySelector('body');
+        if (darkMode) {
+            body?.classList.add('is-dark');
+        } else {
+            body?.classList.remove('is-dark');
+        }
+    };
 
     useEffect(() => {
-        async function fetchPatients() {
-            const patients = await fetch('http://localhost:8000/get_patients');
-            setPatients(await patients.json());
-        }
-        fetchPatients();
-    }, []);
+        toggleBodyClass();
+      }, [darkMode, toggleBodyClass]);
+
+    const handleDarkModeToggle = () => {
+        const newDarkMode = !darkMode;
+        setDarkMode(newDarkMode);
+        console.log(`Dark mode toggled: ${newDarkMode}`);
+    };
 
     return (
-        <div>
-            <MobileNav />
-            <NavBar />
-            <div className="tabs-inner switch">
-                <div className="tabs">
-                    <ul>
-                        <li 
-                            data-tab="active-items-tab" 
-                            className={activeTab === 'create' ? "is-active" : ''}
-                            onClick={() => handleTabClick('create')}
-                        >
-                            <a><span>Create Patient</span></a>
-                        </li>
-                        <li 
-                            data-tab="inactive-items-tab"
-                            className = {activeTab === 'existing' ? "is-active" : ''}
-                            onClick={() => handleTabClick('existing')}
-                        >
-                            <a><span>Existing Patients</span></a>
-                        </li>
-                        <li className="tab-naver"></li>
-                    </ul>
-                </div>
-            </div>
-            {activeTab === 'create' ? (
-                <CreatePatientForm />
-            ) : (
-                <FlexTable />
-            )}
-        </div>
-    )
-}
-
-const Home = ({}) => {
-    return (
+        
         <div className="view-wrapper" data-naver-offset="150" data-menu-item="#home-sidebar-menu" data-mobile-item="#home-sidebar-menu-mobile">
             <div className="page-content-wrapper">
                 <div className="page-content is-relative">
                     <div className="page-title has-text-centered">
                         <div className="huro-hamburger nav-trigger push-resize" data-sidebar="home-sidebar">
                             <span className="menu-toggle has-chevron">
-                  <span className="icon-box-toggle">
-                    <span className="rotate">
-                      <i className="icon-line-top"></i>
-                      <i className="icon-line-center"></i>
-                      <i className="icon-line-bottom"></i>
-                    </span>
-                            </span>
+                                <span className="icon-box-toggle">
+                                    <span className="rotate">
+                                    <i className="icon-line-top"></i>
+                                    <i className="icon-line-center"></i>
+                                    <i className="icon-line-bottom"></i>
+                                    </span>
+                                </span>
                             </span>
                         </div>
 
@@ -81,7 +55,12 @@ const Home = ({}) => {
                         <div className="toolbar ml-auto">
                             <div className="toolbar-link">
                                 <label className="dark-mode ml-auto">
-                                    {/* <input type="checkbox" checked=""></input> */}
+                                    <input 
+                                        type="checkbox" 
+                                        checked={darkMode}
+                                        onChange={handleDarkModeToggle}
+                                    >
+                                    </input>
                                     <span></span>
                                 </label>
                             </div>
@@ -124,8 +103,7 @@ const Home = ({}) => {
                 </div>
             </div>
         </div>
-        
     );
 }
 
-export default Home;
+export default AppWrapper;
