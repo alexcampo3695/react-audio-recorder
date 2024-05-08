@@ -14,8 +14,20 @@ const PORT = 8000;
 app.use(cors());
 app.use(express.json());
 
-app.get('/get_patients', async (req : Request, res: Response) => {
-    const patients = await Patients.find();
+app.get('/get_patients', async (req: Request, res: Response) => {
+    const { search } = req.query;
+    const query = search
+      ? {
+          $or: [
+            { FirstName: { $regex: RegExp(search as string, 'i') } },
+            { LastName: { $regex: RegExp(search as string, 'i') } },
+            // { DateOfBirth: { $regex: RegExp(search as string, 'i') } },
+          ],
+        }
+      : {};
+    
+    console.log('Query object:', query);
+    const patients = await Patients.find(query);
     res.json(patients);
 });
 
