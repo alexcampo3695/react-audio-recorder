@@ -3,7 +3,7 @@ config();
 
 import express, {Request, Response} from 'express';
 import mongoose from 'mongoose';
-import Deck from "./models/Deck";
+import Patients from "./models/Patient";
 import cors from 'cors';
 
 
@@ -15,13 +15,15 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/get_patients', async (req : Request, res: Response) => {
-    const patients = await Deck.find();
+    const patients = await Patients.find();
     res.json(patients);
 });
 
 app.post('/create_patient', async (req : Request, res: Response) => {
-    const newPatient = new Deck({
-        title: req.body.title
+    const newPatient = new Patients({
+        FirstName: req.body.FirstName,
+        LastName: req.body.LastName,
+        DateOfBirth: req.body.DateOfBirth
     });
     const createdPatient = await newPatient.save();
     res.json(createdPatient);

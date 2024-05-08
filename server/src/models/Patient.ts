@@ -10,10 +10,12 @@ const ObjectId = Schema.ObjectId;
 //   date: Date
 // });
 
-const DeckSchema = new Schema({
-    title: String
+const PatientSchema = new Schema({
+    FirstName: String,
+    LastName: String,
+    DateOfBirth: Date
 });
 
-const DeckModel = mongoose.model('Deck', DeckSchema);
+const Patient = mongoose.model('Patient', PatientSchema);
 
-export default DeckModel;
+export default Patient;
