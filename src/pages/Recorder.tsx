@@ -2,6 +2,7 @@ import React from "react";
 import AudioRecorder from "../components/AudioRecordingComponent";
 import AudioUploader from "../components/AudioUploader";
 import { Link } from "react-router-dom";
+import PatientDetails from "./PatientDetails";
 
 interface RecorderPageProps {
   onRecordingComplete: (blob: Blob) => void;
@@ -18,6 +19,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({ onRecordingComplete, onFile
         <Link to="/table">Go to Table Page</Link>
         <Link to="/summary">Go to Summary Page</Link>
       </nav>
+      <PatientDetails />
     </div>
   );
 }

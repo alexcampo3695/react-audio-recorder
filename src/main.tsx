@@ -1,3 +1,4 @@
+// import './styles/global.scss';
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -81,5 +82,7 @@ const App: React.FC = () => {
 };
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <App />
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );
