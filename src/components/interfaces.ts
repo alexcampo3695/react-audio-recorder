@@ -36,6 +36,7 @@ export interface Props {
    * In case the recording is cancelled, the blob is discarded.
    **/
   onRecordingComplete?: (blob: Blob) => void;
+  isRecording: boolean;
   /**
    * This gets called when the getUserMedia Promise is rejected.
    * It takes the resultant DOMException as its parameter.
@@ -81,4 +82,5 @@ export interface Props {
    * Custom classes to changes styles.
    **/
   classes?: StyleProps;
+  onRecordingStateChange?: (isRecording: boolean) => void;
 }

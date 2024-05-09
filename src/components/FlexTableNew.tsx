@@ -2,7 +2,7 @@ import React, { useState, useEffect, ReactElement, Suspense } from "react";
 import { Props } from "./interfaces";
 import { format } from "path";
 import { useNavigate } from "react-router-dom";
-
+import FakeAvatar from "../elements/FakeAvatar";
 interface FlexItemProps {
     FirstName: string
     LastName: string
@@ -31,10 +31,7 @@ const FlexTableItem: React.FC<FlexItemProps> = ({ FirstName, LastName, DateOfBir
     return (
         <div className="flex-table-item" onClick={handleItemClick}>
             <div className="flex-table-cell is-media is-grow">
-                <div className="h-avatar is-medium">
-                    <img className="avatar" src="assets/img/avatars/photos/26.jpg" data-demo-src="assets/img/avatars/photos/26.jpg" alt="" data-user-popover="23"></img>
-                    <img className="badge" src="assets/img/icons/flags/australia.svg" data-demo-src="assets/img/icons/flags/australia.svg" alt=""></img>
-                </div>
+                <FakeAvatar FirstName={FirstName} LastName={LastName} Size="is-small" />
                 <div>
                     <span className="item-name strokeWidth-inverted" data-filter-match="">{FirstName} {LastName}</span>
                     <span className="item-meta">
@@ -101,14 +98,14 @@ const FlexTable = ({ }) => {
                     </div>
                 </div>
 
-                <div className="buttons">
+                {/* <div className="buttons">
                     <button className="button h-button is-primary is-elevated">
                         <span className="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-user-plus"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
                         </span>
                         <span>Add User</span>
                     </button>
-                </div>
+                </div> */}
             </div>
             <div className="page-content-inner">
                 <div className="flex-list-wrapper flex-list-v1">

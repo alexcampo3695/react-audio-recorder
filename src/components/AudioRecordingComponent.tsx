@@ -39,6 +39,7 @@ const AudioRecorder: (props: Props) => ReactElement = ({
   showVisualizer = false,
   mediaRecorderOptions,
   classes,
+  onRecordingStateChange,
 }: Props) => {
   const {
     startRecording,
@@ -56,7 +57,16 @@ const AudioRecorder: (props: Props) => ReactElement = ({
       audioTrackConstraints,
       onNotAllowedOrFound,
       mediaRecorderOptions
+
+      
     );
+  // console.log("isRecording prop:", isRecording);
+
+  useEffect(() => {
+    if (onRecordingStateChange) {
+      onRecordingStateChange(isRecording);
+    }
+  }, [isRecording, onRecordingStateChange]);
 
   const [shouldSave, setShouldSave] = useState(false);
 
