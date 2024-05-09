@@ -25,8 +25,6 @@ const HomeComponent = ({}) => {
 
     return (
         <div>
-            <MobileNav />
-            <NavBar />
             <div className="tabs-inner switch">
                 <div className="tabs">
                     <ul>

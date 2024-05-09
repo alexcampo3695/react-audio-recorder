@@ -1,46 +1,35 @@
 import React, { useState, useEffect, ReactElement, Suspense } from "react";
+import { useNavigate } from "react-router-dom";
 import { Props } from "./interfaces";
 import "../styles/CreatePatientForm.css";
 import { last } from "lodash";
 
-// interface TableRowData {
-//   number: number;
-//   patientName: string;
-//   eventDate: Date;
-//   recordingBlob: Blob | undefined;
-//   transcription: string;
-//   source: "recording" | "upload";
-// }
-
-// interface FlexTableProps {
-//   data: TableRowData[];
-//   onTranscriptionClick: (transcription: string) => void;
-// }
 
 const CreatePatientForm = ({}) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
+    const navigate = useNavigate();
 
     async function handleCreatePatient(e: React.FormEvent) {
         e.preventDefault();
+        const patientData = {
+          FirstName: firstName,
+          LastName: lastName,
+          DateOfBirth: dateOfBirth,
+        };
         await fetch('http://localhost:8000/create_patient', {
-            method: 'POST',
-            body: JSON.stringify(
-                { 
-                    FirstName: firstName,
-                    LastName: lastName,
-                    DateOfBirth: dateOfBirth
-                }
-            ),
-            headers: {
-                'Content-Type': 'application/json'
-            }
+          method: 'POST',
+          body: JSON.stringify(patientData),
+          headers: {
+            'Content-Type': 'application/json'
+          }
         });
-        setFirstName('')
-        setLastName('')
-        setDateOfBirth('')
-    }
+        navigate('/recorder', { state: { patientData } });
+        setFirstName('');
+        setLastName('');
+        setDateOfBirth('');
+      }
     
     return (
         <div className="form-layout is-separate">
@@ -48,7 +37,7 @@ const CreatePatientForm = ({}) => {
                 <div className="form-body">
                     <div className="form-section">
                         <div className="form-section-inner has-padding-bottom">
-                            <h3 className="has-text-centered">Patient Information</h3>
+                            <h3 className="has-text-centered">Create a New Patient</h3>
                             <form onSubmit={handleCreatePatient}>
                                 <div className="columns is-multiline">
                                     <div className="column is-6">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 import SummaryComponent from '../components/Summary';
 import CreatePatientForm from '../components/CreatePatientForm';
@@ -7,9 +7,14 @@ import FlexTable from '../components/FlexTableNew';
 import NavBar from '../components/NavBar';
 import MobileNav from '../components/MobileNav';
 import HomeComponent from '../components/HomeComponent';
+import { PROPERTY_TYPES } from '@babel/types';
 
+interface AppWrapperProps {
+    children: ReactElement;
+    title: string;
+}
 
-const AppWrapper = ({}) => {
+const AppWrapper = ({ children, title}: AppWrapperProps) => {
     const [darkMode, setDarkMode] = useState(false);
 
     const toggleBodyClass = () => {
@@ -28,12 +33,13 @@ const AppWrapper = ({}) => {
     const handleDarkModeToggle = () => {
         const newDarkMode = !darkMode;
         setDarkMode(newDarkMode);
-        console.log(`Dark mode toggled: ${newDarkMode}`);
     };
 
     return (
         
         <div className="view-wrapper" data-naver-offset="150" data-menu-item="#home-sidebar-menu" data-mobile-item="#home-sidebar-menu-mobile">
+            <MobileNav />
+            <NavBar />
             <div className="page-content-wrapper">
                 <div className="page-content is-relative">
                     <div className="page-title has-text-centered">
@@ -50,7 +56,7 @@ const AppWrapper = ({}) => {
                         </div>
 
                         <div className="title-wrap">
-                            <h1 className="title is-4">Dashboard</h1>
+                            <h1 className="title is-4">{title}</h1>
                         </div>
                         <div className="toolbar ml-auto">
                             <div className="toolbar-link">
@@ -72,7 +78,7 @@ const AppWrapper = ({}) => {
                             <div className="toolbar-notifications is-hidden-mobile">
                                 <div className="dropdown is-spaced is-dots is-right dropdown-trigger">
                                     <div className="is-trigger" aria-haspopup="true">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                                         <span className="new-indicator pulsate"></span>
                                     </div>
                                     <div className="dropdown-menu" role="menu">
@@ -85,20 +91,19 @@ const AppWrapper = ({}) => {
                                                     <a className="notification-link" href="/admin-profile-notifications.html">See all</a>
                                                 </div>
                                             </div>
-                                            
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <a className="toolbar-link right-panel-trigger" data-panel="activity-panel">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-grid"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-grid"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                             </a>
                         </div>
                     </div>
 
                     <div className="page-content-inner">
-                        <HomeComponent />
+                        { children }
                     </div>
                 </div>
             </div>

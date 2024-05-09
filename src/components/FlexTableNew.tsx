@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ReactElement, Suspense } from "react";
 import { Props } from "./interfaces";
 import { format } from "path";
+import { useNavigate } from "react-router-dom";
 
 interface FlexItemProps {
     FirstName: string
@@ -9,7 +10,7 @@ interface FlexItemProps {
 }
 
 const FlexTableItem: React.FC<FlexItemProps> = ({ FirstName, LastName, DateOfBirth }) => {
-
+    const navigate = useNavigate();
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -18,15 +19,24 @@ const FlexTableItem: React.FC<FlexItemProps> = ({ FirstName, LastName, DateOfBir
         return `${month}/${day}/${year}`;
     };
 
+    const handleItemClick = () => {
+        const patientData = {
+            FirstName,
+            LastName,
+            DateOfBirth
+        };
+        navigate("/recorder", { state: { patientData } });
+    }
+
     return (
-        <div className="flex-table-item">
+        <div className="flex-table-item" onClick={handleItemClick}>
             <div className="flex-table-cell is-media is-grow">
                 <div className="h-avatar is-medium">
                     <img className="avatar" src="assets/img/avatars/photos/26.jpg" data-demo-src="assets/img/avatars/photos/26.jpg" alt="" data-user-popover="23"></img>
                     <img className="badge" src="assets/img/icons/flags/australia.svg" data-demo-src="assets/img/icons/flags/australia.svg" alt=""></img>
                 </div>
                 <div>
-                    <span className="item-name dark-inverted" data-filter-match="">{FirstName} {LastName}</span>
+                    <span className="item-name strokeWidth-inverted" data-filter-match="">{FirstName} {LastName}</span>
                     <span className="item-meta">
                         <span data-filter-match="">Patient</span>
                     </span>
@@ -94,7 +104,7 @@ const FlexTable = ({ }) => {
                 <div className="buttons">
                     <button className="button h-button is-primary is-elevated">
                         <span className="icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-user-plus"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-user-plus"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
                         </span>
                         <span>Add User</span>
                     </button>
@@ -105,7 +115,7 @@ const FlexTable = ({ }) => {
                     <div className="page-placeholder custom-text-filter-placeholder is-hidden">
                         <div className="placeholder-content">
                             <img className="light-image" src="assets/img/illustrations/placeholders/search-4.svg" alt=""></img>
-                            <img className="dark-image" src="assets/img/illustrations/placeholders/search-4-dark.svg" alt=""></img>
+                            <img className="strokeWidth-image" src="assets/img/illustrations/placeholders/search-4-strokeWidth.svg" alt=""></img>
                             <h3>We couldn't find any matching results.</h3>
                             <p className="is-larger">
                                 Too bad. Looks like we couldn't find any matching results for

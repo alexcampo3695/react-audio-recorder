@@ -8,8 +8,10 @@ import RecordingPage from './pages/Recorder';
 import RecordingsTable from './pages/RecordingsTable';
 import SummaryPage from './pages/PatientSummary';
 import CreatePatientForm from './components/CreatePatientForm';
-import Home from './pages/AppWrapper';
+import Home from './pages/Home';
 import AppWrapper from './pages/AppWrapper';
+import RecorderPage from './pages/Recorder';
+import HomeComponent from './components/HomeComponent';
 
 const audioTable = document.createElement("table");
 document.body.appendChild(audioTable);
@@ -62,7 +64,16 @@ const App: React.FC = () => {
         <Route
           path="/"
           element={
-            <AppWrapper/>
+            <Home/>
+          }
+        />
+        <Route
+          path="/recorder"
+          element={
+            <RecorderPage
+              onRecordingComplete={(blob) => addAudioElement('recording', blob)}
+              onFileUpload={(file) => addAudioElement('upload', file)}
+            />
           }
         />
       </Routes>
