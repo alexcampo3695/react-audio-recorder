@@ -2,7 +2,7 @@ import React, { useState, useEffect, ReactElement, Suspense } from "react";
 import { Props } from "./interfaces";
 import { format } from "path";
 import { useNavigate } from "react-router-dom";
-import FakeAvatar from "../elements/FakeAvatar";
+import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 interface FlexItemProps {
     FirstName: string
     LastName: string
@@ -31,7 +31,11 @@ const FlexTableItem: React.FC<FlexItemProps> = ({ FirstName, LastName, DateOfBir
     return (
         <div className="flex-table-item" onClick={handleItemClick}>
             <div className="flex-table-cell is-media is-grow">
-                <FakeAvatar FirstName={FirstName} LastName={LastName} Size="is-small" />
+                <FakeAvatar
+                    FirstName={FirstName}
+                    LastName={LastName}
+                    Size={AvatarSize.Small}
+                />
                 <div>
                     <span className="item-name strokeWidth-inverted" data-filter-match="">{FirstName} {LastName}</span>
                     <span className="item-meta">

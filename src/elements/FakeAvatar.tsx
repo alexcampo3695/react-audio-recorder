@@ -29,4 +29,5 @@ const FakeAvatar: React.FC<AvatarProps> = ({ FirstName, LastName, Size }) => {
     )
 };
 
+export { AvatarSize };
 export default FakeAvatar;
