@@ -4,6 +4,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   height: 100vh; /* Adjust the height as needed */
 }
 
@@ -20,27 +21,63 @@
   z-index: 1; /* Add this line */
 
   &.is-recording {
-    &:after,
-    &:before {
-      content: '';
-      display: block;
-      position: absolute;
-      z-index: -1; /* Adjust the z-index to a negative value */
-      background-color: rgba($secondary, 0.2);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      width: 100%;
-      height: 100%;
-    }
+    &:not(.is-paused) {
+      &:after,
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        z-index: -1; /* Adjust the z-index to a negative value */
+        background-color: rgba($secondary, 0.2);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+      }
 
-    &:after {
-      animation: smoothPadAfter 0.7s ease-in alternate-reverse infinite;
-    }
+      &:after {
+        animation: smoothPadAfter 0.7s ease-in alternate-reverse infinite;
+      }
 
-    &:before {
-      animation: smoothPadBefore 0.7s ease-in alternate-reverse infinite;
+      &:before {
+        animation: smoothPadBefore 0.7s ease-in alternate-reverse infinite;
+      }
+    }
+  }
+  &:hover {
+    &:not(.is-recording) {
+      &:after,
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        z-index: -1;
+        background-color: rgba($secondary, 0.2);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+        animation: smoothPadHover 0.5s ease-out forwards;
+      }
+      &:after {
+        animation: smoothPadHoverAfter 0.7s ease-out forwards;
+      }
+
+      &:before {
+        animation: smoothPadHoverBefore 0.7s ease-out forwards;
+      }
+    }
+  }
+  &:not(:hover) {
+    &:not(.is-recording) {
+      &:after,
+      &:before {
+        animation: none;
+      }
     }
   }
 }
@@ -70,9 +107,28 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
+@keyframes smoothPadHoverAfter {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+@keyframes smoothPadHoverBefore {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+
 
 .antidote-controls-container {
-  margin-top: -9rem;
+  margin-top: -12rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -116,3 +172,18 @@
   background-color: $primary;
   color: $white;
 }
+
+
+.timer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2.5rem;
+}
+
+.audio-recorder-timer {
+  font-size: 2rem;
+  font-weight: bold;
+  color: $primary;
+}
+

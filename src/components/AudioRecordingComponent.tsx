@@ -77,6 +77,7 @@ const AudioRecorder: (props: Props) => ReactElement = ({
   ) => {
     setShouldSave(save);
     stopRecording();
+    setRecordingState("idle");
   };
 
   const convertToDownloadFileExtension = async (
@@ -127,6 +128,34 @@ const AudioRecorder: (props: Props) => ReactElement = ({
     a.remove();
   };
 
+  const [recordingState, setRecordingState] = useState<"idle" | "recording" | "paused">("idle");
+
+  const toggleRecording = () => {
+    if (recordingState === "idle") {
+      startRecording();
+      setRecordingState("recording");
+    } else if (recordingState === "recording") {
+      togglePauseResume();
+      setRecordingState("paused");
+    } else if (recordingState === "paused") {
+      togglePauseResume();
+      setRecordingState("recording");
+    }
+  };
+
+  const formatTime = (time: number) => {
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = time % 60;
+
+    const formattedHours = String(hours).padStart(2, "0");
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedSeconds = String(seconds).padStart(2, "0");
+
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+
+  }
+
   useEffect(() => {
     if (
       (shouldSave || recorderControls) &&
@@ -145,107 +174,83 @@ const AudioRecorder: (props: Props) => ReactElement = ({
       className="antidote-recorder-container"
       data-testid="audio_recorder"
     >
-      {/* recordingtimer */}
-      <span
-        className={`audio-recorder-timer ${
-          !isRecording ? "display-none" : ""
-        } ${classes?.AudioRecorderTimerClass ?? ""}`}
-        data-testid="ar_timer"
-      >
-        {Math.floor(recordingTime / 60)}:
-        {String(recordingTime % 60).padStart(2, "0")}
-      </span>
-      {showVisualizer ? (
-        <span
-          className={`audio-recorder-visualizer ${
-            !isRecording ? "display-none" : ""
-          }`}
-        >
-          {mediaRecorder && (
-            <Suspense fallback={<></>}>
-              <LiveAudioVisualizer
-                mediaRecorder={mediaRecorder}
-                barWidth={2}
-                gap={2}
-                width={140}
-                height={30}
-                fftSize={512}
-                maxDecibels={-10}
-                minDecibels={-80}
-                smoothingTimeConstant={0.4}
-              />
-            </Suspense>
-          )}
-        </span>
-      ) : (
-        <span
-          className={`audio-recorder-status ${
-            !isRecording ? "display-none" : ""
-          } ${classes?.AudioRecorderStatusClass ?? ""}`}
-        >
-          <span className="audio-recorder-status-dot"></span>
-          Recording
-        </span>
-      )}
+      
 
       {/* recorder button */}
       <div>
         <div className="antidote-recorder-container">
           <div
-            className={`antidote-recorder-button ${isRecording ? 'is-recording' : ''}`}
-            onClick={startRecording}
+            className={`antidote-recorder-button ${recordingState !== "idle" ? "is-recording" : ""} ${recordingState === "paused" ? "is-paused" : ""}`}
+            onClick={toggleRecording}
           >
             <img className="light-image recorder-emblem" src={antidoteEmblem} alt="" />
             <img className="dark-image recorder-emblem" src={antidoteEmblem} alt="" />
+          </div>
+
+          {/* recordingtimer */}
+          
+          <div className="timer-container">
+            <div className="title-wrap">
+              <h1 className="title is-4">
+                {formatTime(recordingTime)}
+              </h1>
+            </div>
+          </div>
         </div>
-        </div>
+
+        
 
         <div className="antidote-controls-container">
-          {/* SAVE SVG */}
-          {/* <img
-            src={isRecording ? saveSVG : micSVG}
-            className={`audio-recorder-mic ${
-              classes?.AudioRecorderStartSaveClass ?? ""
-            }`}
-            onClick={isRecording ? () => stopAudioRecorder() : startRecording}
-            data-testid="ar_mic"
-            title={isRecording ? "Save recording" : "Start recording"}
-          /> */}
 
+          
+          
+
+          {/* recording visualizer */}
+          {/* {showVisualizer ? (
+            <span
+              className={`audio-recorder-visualizer ${
+                !isRecording ? "display-none" : ""
+              }`}
+            >
+              {mediaRecorder && (
+                <Suspense fallback={<></>}>
+                  <LiveAudioVisualizer
+                    mediaRecorder={mediaRecorder}
+                    barWidth={2}
+                    gap={2}
+                    width={140}
+                    height={30}
+                    fftSize={512}
+                    maxDecibels={-10}
+                    minDecibels={-80}
+                    smoothingTimeConstant={0.4}
+                  />
+                </Suspense>
+              )}
+            </span>
+          ) : (
+            <span
+              className={`audio-recorder-status ${
+                !isRecording ? "display-none" : ""
+              } ${classes?.AudioRecorderStatusClass ?? ""}`}
+            >
+              <span className="audio-recorder-status-dot"></span>
+              Recording
+            </span>
+          )} */}
+          
+          {/* SAVE SVG */}
           <div
             // src={isRecording ? saveSVG : micSVG}
-            className={"completed"}
+            className={"complete"}
             onClick={isRecording ? () => stopAudioRecorder() : startRecording}
             data-testid="ar_mic"
             title={isRecording ? "Save recording" : "Start recording"}
           >
             <i><svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></i>
           </div>
-
-          {/* PAUSE */}
-          <img
-            src={isPaused ? resumeSVG : pauseSVG}
-            className="pause"
-            onClick={togglePauseResume}
-            title={isPaused ? "Resume recording" : "Pause recording"}
-            data-testid="ar_pause"
-          />
-          
-          {/* <img
-            src={discardSVG}
-            className={`audio-recorder-options ${
-              !isRecording ? "display-none" : ""
-            } ${classes?.AudioRecorderDiscardClass ?? ""}`}
-            onClick={() => stopAudioRecorder(false)}
-            title="Discard Recording"
-            data-testid="ar_cancel"
-          /> */}
-
-          {/* DELETE */}
           <div 
-            className={`audio-recorder-options ${
-              !isRecording ? "display-none" : "deleted"
-            } ${classes?.AudioRecorderDiscardClass ?? ""}`}
+            className={"deleted"}
             onClick={() => stopAudioRecorder(false)}
             title="Discard Recording"
             data-testid="ar_cancel"

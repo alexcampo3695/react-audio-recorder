@@ -56,23 +56,6 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
               <img className="light-image recorder-emblem" src={antidoteEmblem} alt="" />
             </div>
           )} */}
-          <div className="antidote-recorder-container">
-            <div className="antidote-recorder-button">
-              <img className="light-image recorder-emblem" src={antidoteEmblem} alt="" />
-              <img className="dark-image recorder-emblem" src={antidoteEmblem} alt="" />
-            </div>
-          </div>
-          <div className="antidote-controls-container">
-            <div className="deleted">
-              <i><svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></i>
-            </div>
-            <div className="pause">
-              <span>Resume</span>
-            </div>
-            <div className="complete">
-              <i><svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></i>
-            </div>
-          </div>
         </div>
       }
       title="Recorder"
