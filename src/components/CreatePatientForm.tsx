@@ -76,7 +76,7 @@ const CreatePatientForm = ({}) => {
                                     </div>
                                     <div className="column is-12">
                                         <div className="field">
-                                            <label>Meeting date</label>
+                                            <label>Date of Birth</label>
                                             <div className="control has-icon">
                                             <input
                                                 id="start-date"

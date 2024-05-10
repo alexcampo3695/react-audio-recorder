@@ -3,6 +3,7 @@ import { Props } from "./interfaces";
 import { format } from "path";
 import { useNavigate } from "react-router-dom";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
+import formatDate from "../helpers/DataManipulation";
 
 
 interface FlexItemProps {
@@ -12,15 +13,6 @@ interface FlexItemProps {
 }
 
 const UserProfile: React.FC<FlexItemProps> = ({ FirstName, LastName, DateOfBirth }) => {
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${month}/${day}/${year}`;
-    };
-
-
     return (
         <div className="profile-wrapper">
             <div className="profile-header has-text-centered">

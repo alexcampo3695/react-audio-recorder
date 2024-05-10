@@ -3,6 +3,7 @@ import { Props } from "./interfaces";
 import { format } from "path";
 import { useNavigate } from "react-router-dom";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
+import formatDate from "../helpers/DataManipulation";
 interface FlexItemProps {
     FirstName: string
     LastName: string
@@ -11,13 +12,7 @@ interface FlexItemProps {
 
 const FlexTableItem: React.FC<FlexItemProps> = ({ FirstName, LastName, DateOfBirth }) => {
     const navigate = useNavigate();
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${month}/${day}/${year}`;
-    };
+    
 
     const handleItemClick = () => {
         const patientData = {

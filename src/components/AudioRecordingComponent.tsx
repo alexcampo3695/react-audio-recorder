@@ -9,6 +9,8 @@ import resumeSVG from "../icons/play.svg";
 import saveSVG from "../icons/save.svg";
 import discardSVG from "../icons/stop.svg";
 import "../styles/audio-recorder.css";
+import "../styles/recorder-button.scss";
+import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 
 const LiveAudioVisualizer = React.lazy(async () => {
   const { LiveAudioVisualizer } = await import("react-audio-visualize");
@@ -140,20 +142,10 @@ const AudioRecorder: (props: Props) => ReactElement = ({
 
   return (
     <div
-      className={`audio-recorder ${isRecording ? "recording" : ""} ${
-        classes?.AudioRecorderClass ?? ""
-      }`}
+      className="antidote-recorder-container"
       data-testid="audio_recorder"
     >
-      <img
-        src={isRecording ? saveSVG : micSVG}
-        className={`audio-recorder-mic ${
-          classes?.AudioRecorderStartSaveClass ?? ""
-        }`}
-        onClick={isRecording ? () => stopAudioRecorder() : startRecording}
-        data-testid="ar_mic"
-        title={isRecording ? "Save recording" : "Start recording"}
-      />
+      {/* recordingtimer */}
       <span
         className={`audio-recorder-timer ${
           !isRecording ? "display-none" : ""
@@ -195,24 +187,73 @@ const AudioRecorder: (props: Props) => ReactElement = ({
           Recording
         </span>
       )}
-      <img
-        src={isPaused ? resumeSVG : pauseSVG}
-        className={`audio-recorder-options ${
-          !isRecording ? "display-none" : ""
-        } ${classes?.AudioRecorderPauseResumeClass ?? ""}`}
-        onClick={togglePauseResume}
-        title={isPaused ? "Resume recording" : "Pause recording"}
-        data-testid="ar_pause"
-      />
-      <img
-        src={discardSVG}
-        className={`audio-recorder-options ${
-          !isRecording ? "display-none" : ""
-        } ${classes?.AudioRecorderDiscardClass ?? ""}`}
-        onClick={() => stopAudioRecorder(false)}
-        title="Discard Recording"
-        data-testid="ar_cancel"
-      />
+
+      {/* recorder button */}
+      <div>
+        <div className="antidote-recorder-container">
+          <div
+            className={`antidote-recorder-button ${isRecording ? 'is-recording' : ''}`}
+            onClick={startRecording}
+          >
+            <img className="light-image recorder-emblem" src={antidoteEmblem} alt="" />
+            <img className="dark-image recorder-emblem" src={antidoteEmblem} alt="" />
+        </div>
+        </div>
+
+        <div className="antidote-controls-container">
+          {/* SAVE SVG */}
+          {/* <img
+            src={isRecording ? saveSVG : micSVG}
+            className={`audio-recorder-mic ${
+              classes?.AudioRecorderStartSaveClass ?? ""
+            }`}
+            onClick={isRecording ? () => stopAudioRecorder() : startRecording}
+            data-testid="ar_mic"
+            title={isRecording ? "Save recording" : "Start recording"}
+          /> */}
+
+          <div
+            // src={isRecording ? saveSVG : micSVG}
+            className={"completed"}
+            onClick={isRecording ? () => stopAudioRecorder() : startRecording}
+            data-testid="ar_mic"
+            title={isRecording ? "Save recording" : "Start recording"}
+          >
+            <i><svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></i>
+          </div>
+
+          {/* PAUSE */}
+          <img
+            src={isPaused ? resumeSVG : pauseSVG}
+            className="pause"
+            onClick={togglePauseResume}
+            title={isPaused ? "Resume recording" : "Pause recording"}
+            data-testid="ar_pause"
+          />
+          
+          {/* <img
+            src={discardSVG}
+            className={`audio-recorder-options ${
+              !isRecording ? "display-none" : ""
+            } ${classes?.AudioRecorderDiscardClass ?? ""}`}
+            onClick={() => stopAudioRecorder(false)}
+            title="Discard Recording"
+            data-testid="ar_cancel"
+          /> */}
+
+          {/* DELETE */}
+          <div 
+            className={`audio-recorder-options ${
+              !isRecording ? "display-none" : "deleted"
+            } ${classes?.AudioRecorderDiscardClass ?? ""}`}
+            onClick={() => stopAudioRecorder(false)}
+            title="Discard Recording"
+            data-testid="ar_cancel"
+          >
+            <i><svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></i>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

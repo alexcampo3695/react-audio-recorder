@@ -12,6 +12,7 @@ import Home from './pages/Home';
 import AppWrapper from './pages/AppWrapper';
 import RecorderPage from './pages/Recorder';
 import HomeComponent from './components/HomeComponent';
+import FlexTable from './components/FlexTable';
 
 const audioTable = document.createElement("table");
 document.body.appendChild(audioTable);
@@ -76,11 +77,17 @@ const App: React.FC = () => {
             />
           }
         />
+        <Route
+          path="/table"
+          element={<RecordingsTable audioDataList={audioDataList} onTranscriptionClick={handleTranscriptionClick} />}
+        />
       </Routes>
     </Router>
 
   );
 };
+
+
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
