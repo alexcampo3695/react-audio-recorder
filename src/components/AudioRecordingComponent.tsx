@@ -197,14 +197,8 @@ const AudioRecorder: (props: Props) => ReactElement = ({
             </div>
           </div>
         </div>
-
         
-
         <div className="antidote-controls-container">
-
-          
-          
-
           {/* recording visualizer */}
           {/* {showVisualizer ? (
             <span

@@ -6,6 +6,8 @@
   align-items: center;
   flex-direction: column;
   height: 100vh; /* Adjust the height as needed */
+  margin-top: -7rem;
+  
 }
 
 .antidote-recorder-button {
@@ -19,6 +21,10 @@
   background-color: $primary;
   margin-bottom: 1rem;
   z-index: 1; /* Add this line */
+  // box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 22px 70px 4px;
+  
+  
 
   &.is-recording {
     &:not(.is-paused) {
