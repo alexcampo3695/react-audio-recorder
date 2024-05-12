@@ -27,15 +27,25 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
 
   async function handleRecordingComplete(blob: Blob) {
     const formData = new FormData();
-    formData.append("recording", blob);
+    formData.append("recording", blob, "recording.webm");
     formData.append("patientData", JSON.stringify(patientData));
-    console.log("PatientData:", patientData);
-    await fetch("http://localhost:8000/upload_recording", {
-      method: "POST",
-      body: formData,
-    });
-    onRecordingComplete(blob);
-    setIsRecording(false);
+
+    try {
+      const response = await fetch("http://localhost:8000/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Recording uploaded successfully", data);
+        onRecordingComplete(blob);
+        setIsRecording(false);
+      } else {
+        console.error("Error uploading recording: Server responded with status", response.status);
+      }
+    } catch (error) {
+      console.error("Error uploading recording:", error);
+    }
   }
 
   const [activeTab, setActiveTab] = useState('create');
