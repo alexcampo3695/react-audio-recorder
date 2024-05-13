@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import FlexTable from '../components/FlexTable';
+// import FlexTable from '../components/FlexTable';
+import FlexTable from '../components/FlexTableNew';
 
 interface AudioData {
     source: 'recording' | 'upload';
@@ -19,15 +20,15 @@ const RecordingsTable: React.FC<TablePageProps> = ({ audioDataList, onTranscript
         <div>
             <h1>Table Page</h1>
             <FlexTable
-                data={audioDataList.map((audioData, index) => ({
-                number: index + 1,
-                patientName: `Alex Campo`,
-                eventDate: new Date(),
-                recordingBlob: audioData.blob,
-                transcription: '',
-                source: audioData.source,
-                }))}
-                onTranscriptionClick={onTranscriptionClick}
+                // data={audioDataList.map((audioData, index) => ({
+                // number: index + 1,
+                // patientName: `Alex Campo`,
+                // eventDate: new Date(),
+                // recordingBlob: audioData.blob,
+                // transcription: '',
+                // source: audioData.source,
+                // }))}
+                // onTranscriptionClick={onTranscriptionClick}
             />
             <nav>
                 <Link to="/">Go to Recording Page</Link>

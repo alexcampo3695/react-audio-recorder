@@ -34,17 +34,14 @@ const storage = new GridFsStorage({
     file: (req: Request, file: Express.Multer.File) => {
         return new Promise((resolve, reject) => {
             process.nextTick(() => {
-                const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
-                if (!patientData) {
-                    reject(new Error("No patient data provided"));
-                    return;
-                }
+
                 crypto.randomBytes(16, (err:Error, buf:Buffer) => {
                     if (err) {
                         reject(err);
                         return;
                     }
                     const filename = buf.toString('hex') + path.extname(file.originalname);
+                    const patientData = req.body.patientData;
                     resolve({
                         filename: filename,
                         bucketName: 'uploads',
@@ -81,6 +78,8 @@ app.post('/upload', upload, (req: Request, res: Response) => {
         patientData
     });
 });
+
+
 
 app.get('/get_patients', async (req: Request, res: Response) => {
     const { search } = req.query;

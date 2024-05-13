@@ -98,12 +98,12 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
               </div>
           </div>
           {activeTab === 'create' ? (
-              <span>Hi</span>
-              // <AudioRecorder
-              //   onRecordingComplete={handleRecordingComplete}
-              //   onRecordingStateChange={handleRecordingStateChange}
-              //   isRecording={isRecording}
-              // />
+              // <span>Hi</span>
+              <AudioRecorder
+                onRecordingComplete={handleRecordingComplete}
+                onRecordingStateChange={handleRecordingStateChange}
+                isRecording={isRecording}
+              />
           ) : (
               <AudioUploader onFileUpload={onFileUpload} />
           )}
