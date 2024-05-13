@@ -28,8 +28,19 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
   async function handleRecordingComplete(blob: Blob) {
     const formData = new FormData();
     formData.append("recording", blob, "recording.webm");
-    formData.append("patientData", JSON.stringify(patientData));
-
+    console.log("Patient Data to be sent:", JSON.stringify(patientData));
+    
+    if (patientData) {
+      formData.append("patientData", JSON.stringify(patientData));  // Correct the key here
+    } else {
+      console.error("No patient data found");
+    }
+  
+    console.log("Form Data entries:");
+    for (const entry of formData.entries()) {
+      console.log(entry);
+    }
+  
     try {
       const response = await fetch("http://localhost:8000/upload", {
         method: "POST",
@@ -47,6 +58,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
       console.error("Error uploading recording:", error);
     }
   }
+  
 
   const [activeTab, setActiveTab] = useState('create');
     
@@ -86,12 +98,12 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
               </div>
           </div>
           {activeTab === 'create' ? (
-              // <span>Hi</span>
-              <AudioRecorder
-                onRecordingComplete={handleRecordingComplete}
-                onRecordingStateChange={handleRecordingStateChange}
-                isRecording={isRecording}
-              />
+              <span>Hi</span>
+              // <AudioRecorder
+              //   onRecordingComplete={handleRecordingComplete}
+              //   onRecordingStateChange={handleRecordingStateChange}
+              //   isRecording={isRecording}
+              // />
           ) : (
               <AudioUploader onFileUpload={onFileUpload} />
           )}
