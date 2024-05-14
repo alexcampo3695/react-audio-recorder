@@ -1,34 +1,53 @@
-import React, { useState } from "react";
-import { summarizeTranscription } from "../helpers/openAI";
+import React, { useEffect, useState } from 'react';
 
-interface SummaryComponentProps {
-  transcription: string;
-  onSummarySubmit: (transcription: string, summary: string) => void;
+
+interface AudioPlayerProps {
+  fileID: string;
 }
 
-const SummaryComponent: React.FC<SummaryComponentProps> = ({ transcription, onSummarySubmit }) => {
-  const [summary, setSummary] = useState("");
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ fileID }) => {
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
 
-  const handleSummarize = async () => {
-    try {
-      const generatedSummary = await summarizeTranscription(transcription);
-      setSummary(generatedSummary);
-      onSummarySubmit(transcription, generatedSummary)
-    } catch (error) {
-      console.error("Error generating summary:", error);
-    }
-  };
+  useEffect(() => {
+    const fetchAudio = async () => {
+      try {
+        const respone = await fetch(`http://localhost:8000/upload/${fileID}`);
+        if (!respone.ok) {
+          throw new Error(`Failed to fetch audio: ${respone.status}`);
+        }
+        const blob = await respone.blob();
+
+        const url = window.URL.createObjectURL(blob);
+        setAudioSrc(url);
+
+      } catch (error) {
+        console.error('Failed to fetch audio:', error);
+      }
+    };
+
+    fetchAudio();
+
+    // Clean up the object URL when the component unmounts
+    return () => {
+      if (audioSrc) {
+        window.URL.revokeObjectURL(audioSrc);
+      }
+    };
+  }, [fileID]);
 
   return (
     <div>
-      <h3>Summary</h3>
-      {summary ? (
-        <p>{summary}</p>
+      <h1>Audio Player</h1>
+      {audioSrc ? (
+        <audio controls>
+          <source src={audioSrc} type="audio/webm" />
+          Your browser does not support the audio element.
+        </audio>
       ) : (
-        <button onClick={handleSummarize}>Generate Summary</button>
+        <p>Loading...</p>
       )}
     </div>
   );
 };
 
-export default SummaryComponent;
+export default AudioPlayer;

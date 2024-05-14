@@ -12,6 +12,7 @@ import Home from './pages/Home';
 import AppWrapper from './pages/AppWrapper';
 import RecorderPage from './pages/Recorder';
 import HomeComponent from './components/HomeComponent';
+import AudioPlayer from './components/Summary';
 
 
 const audioTable = document.createElement("table");
@@ -80,6 +81,12 @@ const App: React.FC = () => {
         <Route
           path="/table"
           element={<RecordingsTable audioDataList={audioDataList} onTranscriptionClick={handleTranscriptionClick} />}
+        />
+        <Route
+          path="/summary"
+          element={<AudioPlayer 
+            fileID={'6643aca0676ae55032da7ee9'}  
+          />}
         />
       </Routes>
     </Router>
