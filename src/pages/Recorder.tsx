@@ -7,6 +7,7 @@ import AppWrapper from "./AppWrapper";
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import "../styles/recorder-button.scss";
 import UserProfile from "../components/UserProfile";
+import { useNavigate } from "react-router-dom";
 
 interface RecorderPageProps {
   onRecordingComplete: (blob: Blob) => void;
@@ -17,6 +18,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
   onRecordingComplete,
   onFileUpload,
 }) => {
+  const navigate = useNavigate();
   const location = useLocation();
   const patientData = location.state?.patientData;
   const [isRecording, setIsRecording] = useState(false);
@@ -51,6 +53,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
         console.log("Recording uploaded successfully", data);
         onRecordingComplete(blob);
         setIsRecording(false);
+        navigate('/table');
       } else {
         console.error("Error uploading recording: Server responded with status", response.status);
       }

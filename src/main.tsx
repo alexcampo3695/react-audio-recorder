@@ -12,7 +12,7 @@ import Home from './pages/Home';
 import AppWrapper from './pages/AppWrapper';
 import RecorderPage from './pages/Recorder';
 import HomeComponent from './components/HomeComponent';
-import FlexTable from './components/FlexTable';
+
 
 const audioTable = document.createElement("table");
 document.body.appendChild(audioTable);

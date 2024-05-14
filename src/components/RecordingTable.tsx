@@ -7,6 +7,12 @@ import "../styles/flex-list.css";
 import FakeAvatar, {AvatarSize} from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 
+interface MetaData {
+    FirstName: string;
+    LastName: string;
+    DateOfBirth: string
+}
+
 interface UploadedFile {
     _id: string;
     gridFsId: string;
@@ -15,11 +21,7 @@ interface UploadedFile {
     chunkSize: number;
     uploadDate: string;
     contentType: string;
-    metadata: {
-      FirstName: string;
-      LastName: string;
-      DateOfBirth: string;
-    };
+    metadata: string;
   }
 
   
@@ -27,7 +29,7 @@ interface TableRowData {
   number: number;
   firstName: string
   lastName: string
-  eventDate: Date;
+  eventDate: string;
   gridId: string;
 //   recordingBlob: Blob | undefined;
 //   transcription: string;
@@ -47,11 +49,11 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
   return (
     <div className="flex-table-item">
         <div className="flex-table-cell is-media is-grow">
-            {/* <FakeAvatar
+            <FakeAvatar
                 FirstName={firstName}
                 LastName={lastName}
                 Size={AvatarSize.Small}
-            /> */}
+            />
             <div>
                 <span className="item-name strokeWidth-inverted" data-filter-match="">{firstName} {lastName}</span>
                 <span className="item-meta">
@@ -60,9 +62,9 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
             </div>
         </div>
         <div className="flex-table-cell" data-th="Date of Birth">
-            <span className="light-text" data-filter-match="">{formatDate(eventDate.toLocaleDateString())}</span>
+            <span className="light-text" data-filter-match="">{eventDate}</span>
         </div>
-        <div className="flex-table-cell" data-th="Date of Birth">
+        <div className="flex-table-cell" data-th="ID">
             <span className="light-text" data-filter-match="">{(gridId)}</span>
         </div>
         {/* <div className="flex-table-cell" data-th="Industry">
@@ -101,15 +103,26 @@ interface FlexTableProps {
 }
 
 const FlexTable = ({}) => {
-  const [data, setData] = useState<UploadedFile[]>([]);
+  const [data, setData] = useState<TableRowData[]>([]);
 
   useEffect(() => {
     const fetchRecordings = async () => {
       try {
         const response = await fetch('http://localhost:8000/uploads');
         const data = await response.json();
-        setData(data);
-        console.log("Data:", data);
+        const parsedData = data.map((recording: UploadedFile, index: number) => {
+            const metadata = JSON.parse(recording.metadata) as MetaData;
+            return {
+                number: index + 1,
+                firstName: metadata.FirstName,
+                lastName: metadata.LastName,
+                birthDate: metadata.DateOfBirth,
+                gridID: recording._id,
+                eventDate: recording.uploadDate,
+            };
+        });
+        setData(parsedData);
+        console.log("Data:", parsedData);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
@@ -163,22 +176,23 @@ const FlexTable = ({}) => {
                         <span className="is-grow">Patient</span>
                         {/* <span>First Name</span>
                         <span>Last Name</span> */}
-                        <span>Date of Birth</span>
+                        <span>Upload Date</span>
+                        <span>ID</span>
                         {/* <span>Relations</span> */}
                         <span className="cell-end">Actions</span>
                     </div>
 
                     <div className="flex-list-inner">
-                        {data.map((recording, index) => (
-                            <RecordingFlexItem
-                            key={recording._id}
-                            number={index + 1}
-                            firstName={recording.metadata.FirstName}
-                            lastName={recording.metadata.LastName}
-                            eventDate={new Date(recording.metadata.DateOfBirth)}
-                            gridId={recording._id}
-                            />
-                        ))}
+                    {data.map((item) => (
+                        <RecordingFlexItem
+                            key={item.gridId}
+                            number={item.number}
+                            firstName={item.firstName}
+                            lastName={item.lastName}
+                            eventDate={formatDate(item.eventDate)}
+                            gridId={item.gridId}
+                        />
+                    ))}
                     </div>
                 </div>
                 {/* <nav className="flex-pagination pagination is-rounded" aria-label="pagination" data-filter-hide="">
