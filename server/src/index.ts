@@ -14,6 +14,7 @@ const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 import fs from 'fs';
 import Uploads from './models/Recordings';
+const ObjectID = require('mongodb').ObjectID;
 const mongodb = require('mongodb');
 
 const app = express();
@@ -87,21 +88,66 @@ app.get("/uploads", async function (req: Request, res: Response) {
   }
 });
 
+app.get('/upload/:fileID', async (req: Request, res: Response) => {
+    try {
+        const fileID = new mongoose.Types.ObjectId(req.params.fileID);
+        
+        const bucket = new mongodb.GridFSBucket(conn.db, {
+            bucketName: 'uploads'
+        });
 
-// app.get('/files', async (req, res) => {
-//   let gfs = Grid(conn.db, mongoose.mongo);
-//   try {
-//     gfs.Uploads.find().toArray((err:Error, files:UploadedFile[]) => {
-//       if (!files || files.length === 0) {
-//         return res.status(404).json({
-//           err: 'No files exist'
-//         });
-//       }
-//       return res.json(files);
+        const downloadStream = bucket.openDownloadStream(fileID);
+
+        res.set('content-type', 'audio/webm'); // Set the appropriate content-type
+        res.set('accept-ranges', 'bytes');
+
+        downloadStream.on('data', (chunk: Buffer) => {
+            res.write(chunk);
+        });
+
+        downloadStream.on('error', () => {
+            res.status(404).send('File not found');
+        });
+
+        downloadStream.on('end', () => {
+            res.end();
+        });
+    } catch (err) {
+        console.error('Error converting file ID:', err);
+        res.status(400).send('Invalid file ID');
+    }
+});
+
+
+
+
+
+// app.get('/upload/:fileID', async (req: Request, res: Response) => {
+//     try {
+//         var fileID = new ObjectID(req.params.file_id);
+//     } catch(err) {
+//         return res.status(400).send('Invalid file ID');
+//     }
+//     res.set('content-type', 'audio/webm');
+//     res.set('accept-ranges', 'bytes');
+
+//     let bucket = new mongodb.GridFSBucket(conn.db, {
+//         bucketName: 'uploads'
 //     });
-//   } catch (err) {
-//       res.json({err})
-//   }
+
+//     let downloadStream = bucket.openDownloadStream(fileID);
+
+//     downloadStream.on('data', (chunk:Buffer) => {
+//         res.write(chunk);
+//     })
+
+//     downloadStream.on('error', () => {
+//         res.sendStatus(404);
+//     })
+
+//     downloadStream.on('end', () => {
+//         res.end();
+//     })
 // });
 
 app.post('/upload', upload, (req: Request, res: Response) => {
@@ -121,11 +167,7 @@ app.post('/upload', upload, (req: Request, res: Response) => {
     });
 });
 
-app.get('/files_Test', async (req: Request, res: Response) => {
-  
-  const uploads = await Uploads.find();
-  res.json(uploads);
-});
+
 
 app.get('/get_patients', async (req: Request, res: Response) => {
     const { search } = req.query;
