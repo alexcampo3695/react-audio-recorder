@@ -10,20 +10,20 @@ const ObjectId = Schema.ObjectId;
 //   date: Date
 // });
 
-const UploadSchema = new Schema({
-    _id: String,
+const recordingSchema = new mongoose.Schema({
+  gridFsId: mongoose.Schema.Types.ObjectId,
+  filename: String,
   length: Number,
   chunkSize: Number,
-  uploadDate: String,
-  filename: String,
+  uploadDate: Date,
   contentType: String,
   metadata: {
     FirstName: String,
     LastName: String,
-    DateOfBirth: String,
+    DateOfBirth: Date
   }
 });
 
-const Uploads = mongoose.model('uploads.files', UploadSchema);
+const Recording = mongoose.model('uploads.files', recordingSchema);
 
-export default Uploads;
+export default Recording;

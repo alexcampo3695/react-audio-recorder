@@ -7,14 +7,31 @@ import "../styles/flex-list.css";
 import FakeAvatar, {AvatarSize} from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 
+interface UploadedFile {
+    _id: string;
+    gridFsId: string;
+    filename: string;
+    length: number;
+    chunkSize: number;
+    uploadDate: string;
+    contentType: string;
+    metadata: {
+      FirstName: string;
+      LastName: string;
+      DateOfBirth: string;
+    };
+  }
+
+  
 interface TableRowData {
   number: number;
   firstName: string
   lastName: string
   eventDate: Date;
-  recordingBlob: Blob | undefined;
-  transcription: string;
-  source: "recording" | "upload";
+  gridId: string;
+//   recordingBlob: Blob | undefined;
+//   transcription: string;
+//   source: "recording" | "upload";
 }
 
 const RecordingFlexItem: React.FC<TableRowData> = ({
@@ -22,18 +39,19 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
   firstName,
   lastName,
   eventDate,
-  recordingBlob,
-  transcription,
-  source
+  gridId,
+//   recordingBlob,
+//   transcription,
+//   source
 }) => {
   return (
     <div className="flex-table-item">
         <div className="flex-table-cell is-media is-grow">
-            <FakeAvatar
+            {/* <FakeAvatar
                 FirstName={firstName}
                 LastName={lastName}
                 Size={AvatarSize.Small}
-            />
+            /> */}
             <div>
                 <span className="item-name strokeWidth-inverted" data-filter-match="">{firstName} {lastName}</span>
                 <span className="item-meta">
@@ -44,12 +62,15 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
         <div className="flex-table-cell" data-th="Date of Birth">
             <span className="light-text" data-filter-match="">{formatDate(eventDate.toLocaleDateString())}</span>
         </div>
-        <div className="flex-table-cell" data-th="Industry">
+        <div className="flex-table-cell" data-th="Date of Birth">
+            <span className="light-text" data-filter-match="">{(gridId)}</span>
+        </div>
+        {/* <div className="flex-table-cell" data-th="Industry">
             <span className="light-text" data-filter-match="">{transcription}</span>
-        </div>
-        <div className="flex-table-cell" data-th="Industry">
+        </div> */}
+        {/* <div className="flex-table-cell" data-th="Industry">
             <span className="light-text" data-filter-match="">{source}</span>
-        </div>
+        </div> */}
         <div className="flex-table-cell cell-end" data-th="Actions">
             <div className="dropdown is-spaced is-dots is-right dropdown-trigger is-pushed-mobile is-up">
                 <div className="is-trigger" aria-haspopup="true">
@@ -79,26 +100,23 @@ interface FlexTableProps {
   onTranscriptionClick: (transcription: string) => void;
 }
 
-const FlexTable: React.FC<FlexTableProps> = ({ data, onTranscriptionClick }) => {
-  const [transcriptions, setTranscriptions] = useState<string[]>([]);
+const FlexTable = ({}) => {
+  const [data, setData] = useState<UploadedFile[]>([]);
 
   useEffect(() => {
-    const fetchTranscriptions = async () => {
-      const promises = data.map(async (row, index) => {
-        if (row.recordingBlob) {
-          const response = await transcribeAudio(row.recordingBlob);
-          return response.text;
-        } else {
-          return '';
-        }
-      });
-      const results = await Promise.all(promises);
-      setTranscriptions(results);
+    const fetchRecordings = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/uploads');
+        const data = await response.json();
+        setData(data);
+        console.log("Data:", data);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
     };
-
-    fetchTranscriptions();
-  }, [data]);
   
+    fetchRecordings(); // Call the function
+  }, []);
 
   return (
     // Make this a ReactFragment??
@@ -151,17 +169,16 @@ const FlexTable: React.FC<FlexTableProps> = ({ data, onTranscriptionClick }) => 
                     </div>
 
                     <div className="flex-list-inner">
-                    {/* {transcriptions.map((transcriptions:any) => (
-                        <RecordingFlexItem
-                            number={row.number}
-                            firstName={row.firstName}
-                            lastName={row.lastName}
-                            eventDate={row.eventDate}
-                            recordingBlob = {row.recordingBlob}
-                            transcription = {row.transcription}
-                            source = "recording"
-                        />
-                    ))} */}
+                        {data.map((recording, index) => (
+                            <RecordingFlexItem
+                            key={recording._id}
+                            number={index + 1}
+                            firstName={recording.metadata.FirstName}
+                            lastName={recording.metadata.LastName}
+                            eventDate={new Date(recording.metadata.DateOfBirth)}
+                            gridId={recording._id}
+                            />
+                        ))}
                     </div>
                 </div>
                 {/* <nav className="flex-pagination pagination is-rounded" aria-label="pagination" data-filter-hide="">

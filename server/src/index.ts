@@ -13,7 +13,7 @@ const {GridFsStorage} = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 import fs from 'fs';
-import Uploads from './models/Uploads';
+import Uploads from './models/Recordings';
 const mongodb = require('mongodb');
 
 const app = express();
