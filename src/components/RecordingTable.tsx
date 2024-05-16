@@ -15,7 +15,7 @@ interface UploadedFile {
   chunkSize: number;
   uploadDate: string;
   contentType: string;
-  metadata: string;
+  metadata: MetaData;
 }
 
 interface TableRowData {
@@ -74,7 +74,7 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
   );
 }
 
-const FlexTable: React.FC = () => {
+const RecordingsFlexTable: React.FC = () => {
   const [data, setData] = useState<TableRowData[]>([]);
 
   useEffect(() => {
@@ -83,7 +83,7 @@ const FlexTable: React.FC = () => {
         const response = await fetch('http://localhost:8000/uploads');
         const data = await response.json();
         const parsedData = data.map((recording: UploadedFile, index: number) => {
-          const metadata = recording.metadata ? JSON.parse(recording.metadata) as MetaData : { FirstName: "Unknown", LastName: "Unknown", DateOfBirth: "" };
+          const metadata = recording.metadata;
           return {
             number: index + 1,
             firstName: metadata.FirstName,
@@ -145,4 +145,4 @@ const FlexTable: React.FC = () => {
   );
 };
 
-export default FlexTable;
+export default RecordingsFlexTable;

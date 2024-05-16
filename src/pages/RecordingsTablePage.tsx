@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 // import FlexTable from '../components/FlexTable';
-import FlexTable from '../components/RecordingTable';
+import RecordingsFlexTable from '../components/RecordingTable';
 import AppWrapper from './AppWrapper';
 
 interface AudioData {
@@ -19,7 +19,7 @@ interface TablePageProps {
 const RecordingsTable: React.FC<TablePageProps> = ({ audioDataList, onTranscriptionClick }) => {
     return (
         <AppWrapper
-            children={<FlexTable />}
+            children={<RecordingsFlexTable />}
             title='Recordings Table'
         />
             

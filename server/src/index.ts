@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 config();
 
-import express, {NextFunction, Request, Response} from 'express';
+import express, { Request, Response } from 'express';
 const bodyParser = require('body-parser');
 import mongoose from 'mongoose';
 import Patients from "./models/Patient";
@@ -9,7 +9,7 @@ import cors from 'cors';
 import path from 'path';
 const crypto = require('crypto');
 const multer = require('multer');
-const {GridFsStorage} = require('multer-gridfs-storage');
+const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const methodOverride = require('method-override');
 import fs from 'fs';
@@ -32,68 +32,69 @@ conn.once('open', () => {
     gfs.collection('uploads');
 });
 
+// Configure the storage for GridFS
 const storage = new GridFsStorage({
-    // options: { useNewUrlParser: true, useUnifiedTopology: true },
+    options: { useNewUrlParser: true, useUnifiedTopology: true },
     url: process.env.MONGO_URL!,
     file: (req: Request, file: Express.Multer.File) => {
         return new Promise((resolve, reject) => {
             process.nextTick(() => {
-                crypto.randomBytes(16, (err:Error, buf:Buffer) => {
+                crypto.randomBytes(16, (err: Error, buf: Buffer) => {
                     if (err) {
                         reject(err);
                         return;
                     }
                     const filename = buf.toString('hex') + path.extname(file.originalname);
                     const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
-                    console.log("Parsed patientData:", patientData);
-                    resolve({
+                    console.log("Request body:", req.body);
+                    console.log("Parsed patientData in storage config:", patientData); // Log for debugging
+
+                    const fileInfo = {
                         filename: filename,
                         bucketName: 'uploads',
                         metadata: patientData
-                    });
+                    }
+                    resolve(fileInfo);
                 });
             });
         });
     }
 });
 
-const upload = multer({ storage }).fields([
-    { name: 'recording', maxCount: 1 },
-    { name: 'patientData', maxCount: 1 }
-]);
+// Set up the multer upload middleware
+const upload = multer({ storage }).single('recording');
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World');
 });
 
 interface UploadedFile {
-  _id: string;
-  filename: string;
-  contentType: string;
-  length: number;
-  chunkSize: number;
-  uploadDate: Date;
-  metadata: any;
+    _id: string;
+    filename: string;
+    contentType: string;
+    length: number;
+    chunkSize: number;
+    uploadDate: Date;
+    metadata: any;
 }
 
 app.get("/uploads", async function (req: Request, res: Response) {
-  try {
-    const bucket = new mongodb.GridFSBucket(conn.db, {bucketName: 'uploads'});
-    // i have no idea why i have to put a limit but its the only way it works?
-    const file = await bucket.find().limit(100).toArray();
-    if (!file || file.length === 0) {
-      return res.status(404).send('No files found');
+    try {
+        const bucket = new mongodb.GridFSBucket(conn.db, { bucketName: 'uploads' });
+        const file = await bucket.find().limit(100).toArray();
+        if (!file || file.length === 0) {
+            return res.status(404).send('No files found');
+        }
+        res.json(file); // Send the found file back as JSON
+    } catch (error) {
+        res.status(500).json({ message: "Failed to retrieve files", error });
     }
-    res.json(file); // Send the found file back as JSON
-  } catch (error) {
-    res.status(500).json({ message: "Failed to retrieve files", error });
-  }
 });
 
 app.get('/upload/:fileID', async (req: Request, res: Response) => {
     try {
         const fileID = new mongoose.Types.ObjectId(req.params.fileID);
-        
+
         const bucket = new mongodb.GridFSBucket(conn.db, {
             bucketName: 'uploads'
         });
@@ -120,54 +121,43 @@ app.get('/upload/:fileID', async (req: Request, res: Response) => {
     }
 });
 
-
-
-
-
-// app.get('/upload/:fileID', async (req: Request, res: Response) => {
-//     try {
-//         var fileID = new ObjectID(req.params.file_id);
-//     } catch(err) {
-//         return res.status(400).send('Invalid file ID');
-//     }
-//     res.set('content-type', 'audio/webm');
-//     res.set('accept-ranges', 'bytes');
-
-//     let bucket = new mongodb.GridFSBucket(conn.db, {
-//         bucketName: 'uploads'
-//     });
-
-//     let downloadStream = bucket.openDownloadStream(fileID);
-
-//     downloadStream.on('data', (chunk:Buffer) => {
-//         res.write(chunk);
-//     })
-
-//     downloadStream.on('error', () => {
-//         res.sendStatus(404);
-//     })
-
-//     downloadStream.on('end', () => {
-//         res.end();
-//     })
-// });
-
 app.post('/upload', upload, (req: Request, res: Response) => {
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    if (!files || !files.recording || files.recording.length === 0) {
+    console.log("Request body:", req.body);
+    const recording = req.file;
+    if (!recording) {
         return res.status(400).send('No recording file uploaded');
     }
-    
+
     if (!req.body.patientData) {
         return res.status(400).send('No patient data provided');
     }
-    const recording = files.recording[0];
-    const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
-    console.log("Patient Data received on server:", patientData);
 
-    if (!patientData) {
-        return res.status(400).send('No patient data provided');
+    let patientData = null;
+    try {
+        // Ensure patientData is correctly parsed
+        patientData = JSON.parse(req.body.patientData);
+    } catch (e) {
+        console.error("Error parsing patientData:", e);
     }
+
+    const updateMetaData = async () => {
+        try {
+            const bucket = new mongodb.GridFSBucket(conn.db, { bucketName: 'uploads' });
+            const files = await bucket.find({ filename: recording.filename }).toArray();
+            if (files.length > 0) {
+                const file = files[0];
+                await conn.db.collection('uploads.files').updateOne(
+                    { _id: file._id },
+                    { $set: { metadata: patientData } }
+                );
+                console.log("Metadata updated successfully in the database.");
+            }
+        } catch (error) {
+            console.error("Error updating metadata:", error);
+        }
+    };
+
+    updateMetaData();
 
     // Log the file details and patient data
     console.log("File Details:", recording);
@@ -176,27 +166,26 @@ app.post('/upload', upload, (req: Request, res: Response) => {
     res.json({
         message: "Upload successful",
         fileDetails: recording,
-        patientData
+        patientData: patientData
     });
 });
-
 
 app.get('/get_patients', async (req: Request, res: Response) => {
     const { search } = req.query;
     const query = search
-      ? {
-          $or: [
-            { FirstName: { $regex: RegExp(search as string, 'i') } },
-            { LastName: { $regex: RegExp(search as string, 'i') } }
-          ],
+        ? {
+            $or: [
+                { FirstName: { $regex: RegExp(search as string, 'i') } },
+                { LastName: { $regex: RegExp(search as string, 'i') } }
+            ],
         }
-      : {};
-    
+        : {};
+
     const patients = await Patients.find(query);
     res.json(patients);
 });
 
-app.post('/create_patient', async (req : Request, res: Response) => {
+app.post('/create_patient', async (req: Request, res: Response) => {
     const newPatient = new Patients({
         FirstName: req.body.FirstName,
         LastName: req.body.LastName,
