@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import SummaryComponent from '../components/Summary';
+import SummaryComponent from '../elements/AudioPlayer';
 import CreatePatientForm from '../components/CreatePatientForm';
 import "../styles/CreatePatientForm.css";
 import FlexTable from '../components/FlexTableNew';
@@ -22,7 +22,7 @@ const HomeComponent = ({}) => {
         }
         fetchPatients();
     }, []);
-
+    console.log("HomeComponent.tsx")
     return (
         <div>
             <div className="tabs-inner switch">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import SummaryComponent from '../components/Summary';
+import SummaryComponent from '../elements/AudioPlayer';
 
 interface SummaryPageProps {
     selectedTranscription: string;

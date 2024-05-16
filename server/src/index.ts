@@ -33,6 +33,7 @@ conn.once('open', () => {
 });
 
 const storage = new GridFsStorage({
+    // options: { useNewUrlParser: true, useUnifiedTopology: true },
     url: process.env.MONGO_URL!,
     file: (req: Request, file: Express.Multer.File) => {
         return new Promise((resolve, reject) => {
@@ -43,7 +44,8 @@ const storage = new GridFsStorage({
                         return;
                     }
                     const filename = buf.toString('hex') + path.extname(file.originalname);
-                    const patientData = req.body.patientData;
+                    const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
+                    console.log("Parsed patientData:", patientData);
                     resolve({
                         filename: filename,
                         bucketName: 'uploads',
@@ -155,18 +157,28 @@ app.post('/upload', upload, (req: Request, res: Response) => {
     if (!files || !files.recording || files.recording.length === 0) {
         return res.status(400).send('No recording file uploaded');
     }
-    const recording = files.recording[0];
+    
     if (!req.body.patientData) {
         return res.status(400).send('No patient data provided');
     }
-    const patientData = JSON.parse(req.body.patientData);
+    const recording = files.recording[0];
+    const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
+    console.log("Patient Data received on server:", patientData);
+
+    if (!patientData) {
+        return res.status(400).send('No patient data provided');
+    }
+
+    // Log the file details and patient data
+    console.log("File Details:", recording);
+    console.log("Patient Data:", patientData);
+
     res.json({
         message: "Upload successful",
         fileDetails: recording,
         patientData
     });
 });
-
 
 
 app.get('/get_patients', async (req: Request, res: Response) => {

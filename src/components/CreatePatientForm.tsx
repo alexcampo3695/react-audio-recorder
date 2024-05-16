@@ -30,7 +30,7 @@ const CreatePatientForm = ({}) => {
         setLastName('');
         setDateOfBirth('');
       }
-    
+    console.log('CreatePatientForm.tsx')
     return (
         <div className="form-layout is-separate">
             <div className="form-outer">

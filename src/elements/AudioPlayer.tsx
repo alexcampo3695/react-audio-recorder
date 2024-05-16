@@ -36,17 +36,16 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ fileID }) => {
   }, [fileID]);
 
   return (
-    <div>
-      <h1>Audio Player</h1>
+    <>
       {audioSrc ? (
-        <audio controls>
-          <source src={audioSrc} type="audio/webm" />
-          Your browser does not support the audio element.
-        </audio>
-      ) : (
-        <p>Loading...</p>
-      )}
-    </div>
+          <audio controls>
+            <source src={audioSrc} type="audio/webm" />
+            Your browser does not support the audio element.
+          </audio>
+        ) : (
+          <p>Loading...</p>
+        )}
+    </>
   );
 };
 
