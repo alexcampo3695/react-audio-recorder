@@ -4,7 +4,15 @@ import { format } from "path";
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 
 
+
 const NavBar = ({}) => {
+    const [menuTab, setActiveTab] = useState('home')
+
+    const handleTabClick = (tab:string, event: React.MouseEvent) => {
+        event.preventDefault();
+        setActiveTab(tab);
+    }
+    console.log(menuTab)
     return (
         <div className="main-sidebar">
             <div className="sidebar-brand">
@@ -22,16 +30,28 @@ const NavBar = ({}) => {
 
                 <ul className="icon-menu">
                     <li>
-                        <a href="/admin-dashboards-personal-1.html" id="home-sidebar-menu" data-content="Dashboards" className="is-selected is-active">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-activity sidebar-svg"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        <a 
+                            href="/" 
+                            id="home-sidebar-menu" 
+                            data-content="Dashboards" 
+                            onClick={(e) => handleTabClick('home', e)}
+                            className={menuTab === 'home' ? "is-selected is-active" : ""}
+                        >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-activity sidebar-svg"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
                         </a>
                     </li>
                     <li>
-                        <a href="/admin-grid-users-1.html" id="layouts-sidebar-menu" data-content="Layouts">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-grid sidebar-svg"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        <a 
+                            href="/table" 
+                            id="layouts-sidebar-menu" 
+                            data-content="Layouts"
+                            onClick={(e) => handleTabClick('table', e)}
+                            className={menuTab === 'table' ? "is-selected is-active" : ""} 
+                        >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-grid sidebar-svg"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                         </a>
                     </li>
-                    <li>
+                    {/* <li>
                         <a href="elements-hub.html" id="elements-sidebar-menu" data-content="Elements">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-box sidebar-svg"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                         </a>
@@ -45,7 +65,7 @@ const NavBar = ({}) => {
                         <a href="admin-messaging-chat.html" id="open-messages" data-content="Messaging">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-message-circle sidebar-svg"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                         </a>
-                    </li>
+                    </li> */}
                 </ul>
 
                 <ul className="bottom-menu">

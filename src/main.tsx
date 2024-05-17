@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { transcribeAudio } from "./helpers/transcribe";
 import RecordingPage from './pages/Recorder';
-import RecordingsTable from './pages/RecordingsTable';
+import RecordingsTable from './pages/RecordingsTablePage';
 import SummaryPage from './pages/PatientSummary';
 import CreatePatientForm from './components/CreatePatientForm';
 import Home from './pages/Home';
@@ -13,6 +13,7 @@ import AppWrapper from './pages/AppWrapper';
 import RecorderPage from './pages/Recorder';
 import HomeComponent from './components/HomeComponent';
 import AudioPlayer from './elements/AudioPlayer';
+
 
 
 const audioTable = document.createElement("table");
@@ -29,7 +30,7 @@ const App: React.FC = () => {
   const [audioDataList, setAudioDataList] = useState<AudioData[]>([]);
   const [selectedTranscription, setSelectedTranscription] = useState("");
 
-  const addAudioElement = async (source: 'recording' | 'upload' ,blob: Blob) => {
+  const addAudioElement = async (source: 'recording' | 'upload' , blob: Blob) => {
     try { 
       const response = await transcribeAudio(blob);
       const transcription = response.text;
@@ -85,8 +86,12 @@ const App: React.FC = () => {
         <Route
           path="/summary"
           element={<AudioPlayer 
-            fileID={'6643aca0676ae55032da7ee9'}  
+            fileID={'6646823cd936ec8c005fa460'}  
           />}
+        />
+        <Route
+          path="/summary/:gridID"
+          element={<SummaryPage selectedTranscription={selectedTranscription} />}
         />
       </Routes>
     </Router>
