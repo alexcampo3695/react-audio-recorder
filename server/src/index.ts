@@ -5,6 +5,7 @@ import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import Patients from "./models/Patient";
+import Transcription from "./models/Transcription";
 import cors from 'cors';
 import path from 'path';
 import crypto from 'crypto';
@@ -15,7 +16,7 @@ import methodOverride from 'method-override';
 import fs from 'fs';
 import Uploads from './models/Recordings';
 import { MongoClient, Db, GridFSBucket, ObjectId } from 'mongodb';  // Ensure correct import
-
+import OpenAI from "openai";
 
 const app = express();
 const PORT = 8000;
@@ -137,6 +138,12 @@ app.post('/upload', upload, (req: Request, res: Response) => {
         console.error("Error parsing patientData:", e);
     }
 
+
+    let transcription = null;
+    if (req.body.transcription) {
+        transcription = req.body.transcription;
+    }
+
     // Update metadata after file upload
     const updateMetaData = async () => {
         try {
@@ -154,6 +161,16 @@ app.post('/upload', upload, (req: Request, res: Response) => {
                     { $set: { metadata: patientData } }
                 );
                 console.log("Metadata updated successfully in the database.");
+
+                if (transcription) {
+                    const newTranscription = new Transcription({
+                        patientId: new mongoose.Types.ObjectId(patientData._id),
+                        recordingId: file._id,
+                        transcription: transcription
+                    });
+                    await newTranscription.save();
+                    console.log("Transcription saved successfully.");
+                }
             }
         } catch (error) {
             console.error("Error updating metadata:", error);

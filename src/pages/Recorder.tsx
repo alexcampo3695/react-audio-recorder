@@ -7,6 +7,7 @@ import AppWrapper from "./AppWrapper";
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import "../styles/recorder-button.scss";
 import UserProfile from "../components/UserProfile";
+import { transcribeAudio } from "../helpers/transcribe";
 
 interface RecorderPageProps {
   onRecordingComplete: (blob: Blob) => void;
@@ -61,6 +62,13 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
     }
   
     try {
+      const transcriptionResponse = await transcribeAudio(blob);
+      const transcription = transcriptionResponse.text;
+      console.log("Transcription:", transcription);
+
+      formData.append("transcription", transcription);
+
+      
       const response = await fetch("http://localhost:8000/upload", {
         method: "POST",
         body: formData,
@@ -98,8 +106,12 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
       title="Recorder"
       children={
         <div>
-          <div className="tabs-inner switch">
-            <div className="tabs">
+          <div 
+            // className="tabs-inner switch"
+          >
+            <div 
+              // className="tabs"
+            >
               <ul>
                 <li 
                   data-tab="active-items-tab" 
