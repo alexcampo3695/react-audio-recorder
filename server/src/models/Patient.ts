@@ -1,21 +1,18 @@
-import mongoose from "mongoose";
+import { Schema, model, Document } from 'mongoose';
 
-const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
+interface IPatient extends Document {
+    FirstName: string;
+    LastName: string;
+    DateOfBirth: Date;
+}
 
-// const BlogPost = new Schema({
-//   author: ObjectId,
-//   title: String,
-//   body: String,
-//   date: Date
-// });
-
-const PatientSchema = new Schema({
-    FirstName: String,
-    LastName: String,
-    DateOfBirth: Date
+const PatientSchema = new Schema<IPatient>({
+    FirstName: { type: String, required: true },
+    LastName: { type: String, required: true },
+    DateOfBirth: { type: Date, required: true },
+    // Add other fields as necessary
 });
 
-const Patient = mongoose.model('Patient', PatientSchema);
+const Patients = model<IPatient>('Patients', PatientSchema);
 
-export default Patient;
+export default Patients;

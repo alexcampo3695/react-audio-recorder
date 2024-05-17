@@ -54,7 +54,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
     } else {
       console.error("No patient data found");
     }
-  
+    
     console.log("Form Data entries:");
     for (const entry of formData.entries()) {
       console.log(entry);
