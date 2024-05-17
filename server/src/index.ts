@@ -34,7 +34,6 @@ conn.once('open', () => {
 
 // Configure the storage for GridFS
 const storage = new GridFsStorage({
-    options: { useNewUrlParser: true, useUnifiedTopology: true },
     url: process.env.MONGO_URL!,
     file: (req: Request, file: Express.Multer.File) => {
         return new Promise((resolve, reject) => {
@@ -45,16 +44,13 @@ const storage = new GridFsStorage({
                         return;
                     }
                     const filename = buf.toString('hex') + path.extname(file.originalname);
-                    const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
-                    console.log("Request body:", req.body);
-                    console.log("Parsed patientData in storage config:", patientData); // Log for debugging
-
-                    const fileInfo = {
+                    const patientData = req.body.patientData;
+                    resolve({
                         filename: filename,
                         bucketName: 'uploads',
                         metadata: patientData
-                    }
-                    resolve(fileInfo);
+                    });
+                    // resolve(fileInfo);
                 });
             });
         });

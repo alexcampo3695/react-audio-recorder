@@ -1,6 +1,6 @@
 import React, { useEffect, useState, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
-import SummaryComponent from '../elements/AudioPlayer';
+import SummaryComponent from '../components/Summary';
 import CreatePatientForm from '../components/CreatePatientForm';
 import "../styles/CreatePatientForm.css";
 import FlexTable from '../components/FlexTableNew';
