@@ -18,7 +18,7 @@ const CreatePatientForm = ({}) => {
           LastName: lastName,
           DateOfBirth: dateOfBirth,
         };
-        await fetch('http://localhost:8000/patients/create', {
+        await fetch('http://localhost:8000/api/patients/create', {
           method: 'POST',
           body: JSON.stringify(patientData),
           headers: {

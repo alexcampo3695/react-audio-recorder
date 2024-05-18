@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SummaryComponent from '../elements/AudioPlayer';
-import CreatePatientForm from '../components/CreatePatientForm';
+import CreatePatientForm from './CreatePatientForm';
 import "../styles/CreatePatientForm.css";
-import FlexTable from '../components/FlexTableNew';
-import NavBar from '../components/NavBar';
-import MobileNav from '../components/MobileNav';
+import FlexTable from './FlexTableNew';
+import NavBar from './NavBar';
+import MobileNav from './MobileNav';
 
 const HomeComponent = ({}) => {
     const [activeTab, setActiveTab] = useState('create')

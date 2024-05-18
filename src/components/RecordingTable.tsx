@@ -16,7 +16,9 @@ interface UploadedFile {
   chunkSize: number;
   uploadDate: string;
   contentType: string;
-  metadata: MetaData;
+  metadata: {
+    patientData: MetaData;
+  };
 }
 
 interface TableRowData {
@@ -89,10 +91,13 @@ const RecordingsFlexTable: React.FC = () => {
   useEffect(() => {
     const fetchRecordings = async () => {
       try {
-        const response = await fetch('http://localhost:8000/uploads');
-        const data = await response.json();
+        const response = await fetch('http://localhost:8000/api/audio');
+        if(!response.ok) {
+          throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+        const data: UploadedFile[] = await response.json();
         const parsedData = data.map((recording: UploadedFile, index: number) => {
-          const metadata = recording.metadata;
+          const metadata = recording.metadata?.patientData || {FirstName: 'Unknown', LastName: 'Unknown', DateOfBirth: 'Unknown'};
           return {
             number: index + 1,
             firstName: metadata.FirstName,

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { splitAudioFile, transcribeAudio, updateMetaData } from '../services/audioService';
+import {  updateMetaData } from '../services/audioService';
 import { GridFSBucket, ObjectId } from 'mongodb';
 import { db } from '../utils/gridFsUtils';
 
@@ -10,26 +10,18 @@ export async function uploadRecording(req: Request, res: Response) {
     }
 
     const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
-    const chunks = await splitAudioFile(recording, 25 * 1024 * 1024);
-    let transcription = '';
 
-    for (const chunk of chunks) {
-        try {
-            const transcriptionResponse = await transcribeAudio(chunk);
-            transcription += transcriptionResponse.text + ' ';
-        } catch (error) {
-            console.error("Error transcribing chunk:", error);
-            return res.status(500).send('Error transcribing audio');
-        }
-    }
-
-    await updateMetaData(recording.filename, patientData, transcription);
+    await updateMetaData(
+        recording.filename, 
+        patientData 
+        // transcription
+    );
 
     res.json({
         message: "Upload successful",
         fileDetails: recording,
         patientData,
-        transcription
+        // transcription
     });
 }
 

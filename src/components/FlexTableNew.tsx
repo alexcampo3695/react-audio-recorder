@@ -71,7 +71,7 @@ const FlexTable = ({ }) => {
     const [patients, setPatients] = useState([]);
 
     const fetchPatients = async (searchTerm: string = '') => {
-        const response = await fetch(`http://localhost:8000/get_patients?search=${encodeURIComponent(searchTerm)}`);
+        const response = await fetch(`http://localhost:8000/api/patients?search=${encodeURIComponent(searchTerm)}`);
         const data = await response.json();
         setPatients(data);
     };

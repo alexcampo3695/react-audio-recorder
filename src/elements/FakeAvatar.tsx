@@ -18,12 +18,16 @@ interface AvatarProps {
 }
 
 const FakeAvatar: React.FC<AvatarProps> = ({ FirstName, LastName, Size }) => {
-    let initials = FirstName.charAt(0) + LastName.charAt(0);
+    const getInitials = () => {
+        const firstInitial = FirstName ? FirstName.charAt(0) : '';
+        const lastInitial = LastName ? LastName.charAt(0) : '';
+        return `${firstInitial}${lastInitial}`.toUpperCase();
+    }
     
     return (
         <div className='h-avatar ${Size}'>
             <span className="avatar is-fake">
-                <span>{initials.toUpperCase()}</span>
+                <span>{getInitials()}</span>
             </span>
         </div>
     )

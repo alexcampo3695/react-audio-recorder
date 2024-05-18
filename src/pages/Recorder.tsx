@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react"; 
 import AudioRecorder from "../components/AudioRecordingComponent";
-import AudioUploader from "../components/AudioUploader";
+// import AudioUploader from "../components/AudioUploader";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import PatientDetails from "./PatientDetails";
 import AppWrapper from "./AppWrapper";
@@ -69,7 +69,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
       formData.append("transcription", transcription);
 
       
-      const response = await fetch("http://localhost:8000/upload", {
+      const response = await fetch("http://localhost:8000/api/audio/upload", {
         method: "POST",
         body: formData,
       });
@@ -150,7 +150,8 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
           {activeTab === 'create' ? (
             memoizedAudioRecorder
           ) : (
-            <AudioUploader onFileUpload={onFileUpload} />
+            // <AudioUploader onFileUpload={onFileUpload} />
+            <div>Existing Patients</div>
           )}
           {/* { patientData && <PatientDetails patientData={patientData} />} */}
         </div>
