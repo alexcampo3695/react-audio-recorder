@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { transcribeAudio } from "../helpers/transcribe";
 
 interface AudioUploaderProps {
-  onFileUpload: (file: Blob) => void;
+  onFileUpload: (file: File) => void;
 }
 
 interface PatientData {
@@ -37,31 +37,17 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileUpload }) => {
       return;
     }
 
-    const blob = new Blob([file], { type: "audio/wav" })
-
     const formData = new FormData();
-    formData.append("recording", blob, "recording.webm");
+    formData.append("recording", file, file.name);
     console.log("Patient Data to be sent:", JSON.stringify(patientData));
-    
+
     if (patientData) {
-      formData.append("patientData", JSON.stringify(patientData));  // Correct the key here
+      formData.append("patientData", JSON.stringify(patientData));
     } else {
       console.error("No patient data found");
     }
-    
-    console.log("Form Data entries:");
-    for (const entry of formData.entries()) {
-      console.log(entry);
-    }
-  
+
     try {
-      const transcriptionResponse = await transcribeAudio(blob);
-      const transcription = transcriptionResponse.text;
-      console.log("Transcription:", transcription);
-  
-      formData.append("transcription", transcription);
-  
-      
       const response = await fetch("http://localhost:8000/upload", {
         method: "POST",
         body: formData,
@@ -70,7 +56,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileUpload }) => {
       if (response.ok) {
         const data = await response.json();
         console.log("Recording uploaded successfully", data);
-        onFileUpload(blob);
+        onFileUpload(file);
         navigate('/table');
       } else {
         console.error("Error uploading recording: Server responded with status", response.status);
