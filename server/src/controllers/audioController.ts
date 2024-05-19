@@ -127,7 +127,20 @@ export async function getUploadById(req: Request, res: Response) {
     }
 }
 
-function ffmpeg(inputPath: string) {
-    throw new Error('Function not implemented.');
+export async function getFileData(req: Request, res: Response) {
+    try {
+        const fileID = new ObjectId(req.params.fileID);
+        const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
+
+        const fileDoc = await bucket.find({ _id: fileID }).toArray();
+
+        if (fileDoc.length === 0) {
+            return res.status(404).send('File not found');
+        }
+        res.json(fileDoc[0]);
+    } catch (err) {
+        console.error('Error converting file ID:', err);
+        res.status(400).send('Invalid file ID');
+    }
 }
 

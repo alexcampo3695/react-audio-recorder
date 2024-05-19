@@ -4,9 +4,14 @@ import cors from 'cors';
 import methodOverride from 'method-override';
 import mongoose from 'mongoose';
 import path from 'path';
-import crypto from 'crypto';
-import { storage } from './utils/gridFsUtils';
 import multer from 'multer';
+import { storage } from './utils/gridFsUtils';
+
+
+// Routes
+import patientRoutes from './routes/patientRoutes';
+import audioRoutes from './routes/audioRoutes';
+import transcriptionRoutes from './routes/trascriptionRoutes';
 
 const app = express();
 
@@ -23,10 +28,7 @@ mongoose.connect(dbConnectionUrl).then(() => {
     console.log('Connected to MongoDB');
 });
 
-// Routes
-import patientRoutes from './routes/patientRoutes';
-import audioRoutes from './routes/audioRoutes';
-import transcriptionRoutes from './routes/trascriptionRoutes';
+
 
 app.use('/api/patients', patientRoutes);
 app.use('/api/audio', audioRoutes);

@@ -1,129 +1,123 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import SummaryComponent from '../elements/AudioPlayer';
+import { useParams } from 'react-router-dom';
 import AudioPlayer from '../elements/AudioPlayer';
 import AppWrapper from './AppWrapper';
-import { transcribeAudio } from '../helpers/transcribe';
-import { t } from 'vitest/dist/types-198fd1d9';
 import FakeAvatar, { AvatarSize } from '../elements/FakeAvatar';
 
 interface MetaData {
     FirstName: string;
     LastName: string;
     DateOfBirth: string;
-  }
-  
-  interface UploadedFile {
+}
+
+interface UploadedFile {
     _id: string;
     filename: string;
     length: number;
     chunkSize: number;
     uploadDate: string;
     contentType: string;
-    metadata: MetaData;
-  }
-
-interface SummaryPageProps {
-    selectedTranscription: string;
+    metadata: {
+        patientData: MetaData;
+    };
 }
 
-interface Transcription {
-    text: string;
-  }
-  
+interface TranscriptionPayload {
+    _id: string;
+    filename: string;
+    transcription: string;
+    patientData: MetaData;
+    fileId: string;
+    createdAt: string;
+    updatedAt: string;
+}
 
-const SummaryPage: React.FC<SummaryPageProps> = ({  }) => {
+const SummaryPage: React.FC = () => {
     const { gridID } = useParams<{ gridID: string }>();
     const validGridId = gridID || '';
     const [data, setData] = useState<UploadedFile | null>(null);
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-    const [transcription, setTranscription] = useState<Transcription | null>(null);
+    const [transcription, setTranscription] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchRecordingData = async () => {
-          try {
-            const response = await fetch(`http://localhost:8000/api/audio/${gridID}`);
-            if (!response.ok) {
-              throw new Error(`Failed to fetch audio: ${response.status}`);
+            try {
+                const response = await fetch(`http://localhost:8000/api/audio/uploads_data/${gridID}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch audio data: ${response.status}`);
+                }
+                const data: UploadedFile = await response.json();
+                setData(data);
+            } catch (error) {
+                console.error('Failed to fetch the recording data:', error);
             }
-            const data: UploadedFile = await response.json();
-            setData(data);
-    
-          } catch (error) {
-            console.error('Failed to fetch the recording data:', error);
-          }
         };
-    
+
         fetchRecordingData();
-    
-      }, []);
-    
-      // useEffect(() => {
-      //   const fetchAudio = async () => {
-      //     try {
-      //       const respone = await fetch(`http://localhost:8000/api/audio/${gridID}`);
-      //       if (!respone.ok) {
-      //         throw new Error(`Failed to fetch audio blob: ${respone.status}`);
-      //       }
-      //       const blob = await respone.blob();
-      //       setAudioBlob(blob);
-    
-      //     } catch (error) {
-      //       console.error('Failed to fetch audio:', error);
-      //     }
-      //   };
-    
-      //   fetchAudio();
+    }, [gridID]);
 
-      // }, [gridID]);
+    useEffect(() => {
+        const fetchAudio = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/audio/${gridID}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch audio blob: ${response.status}`);
+                }
+                const blob = await response.blob();
+                setAudioBlob(blob);
+            } catch (error) {
+                console.error('Failed to fetch audio:', error);
+            }
+        };
 
-    //   useEffect(() => {
-    //     const fetchTranscriptions = async () => {
-    //       try {
-    //         const response = await fetch(`http://localhost:8000/api/audio/${gridID}`);
-    //         if (!response.ok) {
-    //           throw new Error(`Failed to fetch audio: ${response.status}`);
-    //         }
-    //         const data: UploadedFile = await response.json();
-    //         setData(data);
-    
-    //       } catch (error) {
-    //         console.error('Failed to fetch the recording data:', error);
-    //       }
-    //     };
-    
-    //     fetchTranscriptions();
-    // }, [data]);
+        if (data) {
+            fetchAudio();
+        }
+    }, [data, gridID]);
 
-    console.log('data', data)
-    console.log('grid', gridID)
+    useEffect(() => {
+        const fetchTranscription = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/transcriptions/file/${gridID}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch transcription: ${response.status}`);
+                }
+                const transcriptionPayload: TranscriptionPayload = await response.json();
+                setTranscription(transcriptionPayload.transcription);
+            } catch (error) {
+                console.error('Failed to fetch transcription:', error);
+            }
+        };
+
+        if (gridID) {
+            fetchTranscription();
+        }
+    }, [gridID]);
+
+    console.log('transcription:', transcription)
     return (
         <AppWrapper
-            title = "Recording Summary"
-            children = {
+            title="Recording Summary"
+            children={
                 <div className="profile-wrapper">
                     <div className="profile-header has-text-centered">
                         <FakeAvatar
-                            FirstName={data?.metadata.FirstName ?? ''}
-                            LastName={data?.metadata.LastName ?? ''}
+                            FirstName={data?.metadata?.patientData?.FirstName ?? ''}
+                            LastName={data?.metadata?.patientData?.LastName ?? ''}
                             Size={AvatarSize.XL}
                         />
-                        <h3 className="title is-4 is-narrow is-thin">{data?.metadata.FirstName} {data?.metadata.LastName}</h3>
+                        <h3 className="title is-4 is-narrow is-thin">
+                            {data?.metadata?.patientData?.FirstName} {data?.metadata?.patientData?.LastName}
+                        </h3>
                         <p className="light-text">
-                            Hey everyone, Iam a product manager from New York and Iam looking
+                            Hey everyone, I am a product manager from New York and I am looking
                             for new opportunities in the software business.
                         </p>
-                        <p>
-                            {transcription?.text}
-                        </p>
-                        <AudioPlayer 
-                            fileID={validGridId}
-                        />
+                        <p>{transcription}</p>
+                        {audioBlob && <AudioPlayer fileID={validGridId} />}
                     </div>
                 </div>
-                
             }
-            
         />
     );
 }

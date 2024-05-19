@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import Transcription from '../models/Transcription';
+import { ObjectId } from 'mongodb';
+import { Schema } from 'mongoose';
 
 export async function getTranscriptions(req: Request, res: Response) {
     try {
@@ -22,11 +24,12 @@ export async function getTranscriptionById(req: Request, res: Response) {
     }
 }
 
-export async function getTranscriptionByFile(req: Request, res: Response) {
+export async function getTranscriptionByFileID(req: Request, res: Response) {
     try {
-        const transcription = await Transcription.findById(req.params.filename);
+        const fileID = new ObjectId(req.params.fileID);
+        const transcription = await Transcription.findOne({ fileId: fileID });
         if (!transcription) {
-            return res.status(404).send('Transcription not found').json({ message: "Transcription not found" });
+            return res.status(404).json({ message: "Transcription not found" });
         }
         res.json(transcription);
     } catch (error) {
