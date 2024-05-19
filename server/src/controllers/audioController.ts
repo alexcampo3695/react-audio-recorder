@@ -19,7 +19,6 @@ export async function uploadRecording(req: Request, res: Response) {
     try {
         const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
 
-        // Create a temporary directory to store the file read from GridFS
         const uploadDir = path.join(__dirname, 'uploads');
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir);
@@ -27,24 +26,18 @@ export async function uploadRecording(req: Request, res: Response) {
 
         const inputPath = path.join(uploadDir, recording.filename);
 
-        // Read the file from GridFS and save it to the temporary directory
         const downloadStream = bucket.openDownloadStreamByName(recording.filename);
         const writeStream = fs.createWriteStream(inputPath);
         
         downloadStream.pipe(writeStream);
 
         downloadStream.on('error', (error) => {
-            console.error('Error downloading file from GridFS:', error);
             return res.status(500).json({ message: 'Failed to download file from GridFS', error });
         });
 
         downloadStream.on('end', async () => {
-            console.log('File downloaded successfully from GridFS');
-
             try {
-                const chunks = await splitAudioFile({ path: inputPath, filename: recording.filename }, 60); // Segment time in seconds
-                console.log(`Audio split into ${chunks.length} chunks`);
-
+                const chunks = await splitAudioFile({ path: inputPath, filename: recording.filename }, 60);
                 let transcription = '';
 
                 for (const chunk of chunks) {
@@ -52,7 +45,6 @@ export async function uploadRecording(req: Request, res: Response) {
                         const transcriptionResponse = await transcribeAudio(chunk);
                         transcription += transcriptionResponse.text + ' ';
                     } catch (error) {
-                        console.error("Error transcribing chunk:", error);
                         return res.status(500).json({ message: "Failed to transcribe audio", error });
                     }
                 }
@@ -64,8 +56,6 @@ export async function uploadRecording(req: Request, res: Response) {
                 });
 
                 await newTranscription.save();
-                console.log("Transcription saved successfully");
-
                 await updateMetaData(recording.filename, patientData);
 
                 res.json({
@@ -75,19 +65,15 @@ export async function uploadRecording(req: Request, res: Response) {
                     transcription: transcription.trim()
                 });
             } catch (error) {
-                console.error("Error processing file:", error);
                 res.status(500).json({ message: "Failed to process recording", error });
             } finally {
-                // Clean up the temporary file
                 fs.unlinkSync(inputPath);
             }
         });
     } catch (error) {
-        console.error("Error during uploadRecording:", error);
         res.status(500).json({ message: "Failed to process recording", error });
     }
 }
-
 
 export async function getUploads(req: Request, res: Response) {
     try {
