@@ -32,8 +32,8 @@ app.use('/api/patients', patientRoutes);
 app.use('/api/audio', audioRoutes);
 app.use('/api/transcriptions', transcriptionRoutes);
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World');
-});
+// app.get('/', (req: Request, res: Response) => {
+//     res.send('Hello World');
+// });
 
 export default app;

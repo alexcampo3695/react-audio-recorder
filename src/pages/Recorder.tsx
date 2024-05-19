@@ -8,6 +8,7 @@ import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import "../styles/recorder-button.scss";
 import UserProfile from "../components/UserProfile";
 import { transcribeAudio } from "../helpers/transcribe";
+import AudioUploader from "../components/AudioUploader";
 
 interface RecorderPageProps {
   onRecordingComplete: (blob: Blob) => void;
@@ -150,8 +151,8 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
           {activeTab === 'create' ? (
             memoizedAudioRecorder
           ) : (
-            // <AudioUploader onFileUpload={onFileUpload} />
-            <div>Existing Patients</div>
+            <AudioUploader onFileUpload={onFileUpload} />
+            
           )}
           {/* { patientData && <PatientDetails patientData={patientData} />} */}
         </div>

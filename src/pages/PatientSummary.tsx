@@ -5,6 +5,7 @@ import AudioPlayer from '../elements/AudioPlayer';
 import AppWrapper from './AppWrapper';
 import { transcribeAudio } from '../helpers/transcribe';
 import { t } from 'vitest/dist/types-198fd1d9';
+import FakeAvatar, { AvatarSize } from '../elements/FakeAvatar';
 
 interface MetaData {
     FirstName: string;
@@ -41,7 +42,7 @@ const SummaryPage: React.FC<SummaryPageProps> = ({  }) => {
     useEffect(() => {
         const fetchRecordingData = async () => {
           try {
-            const response = await fetch(`http://localhost:8000/fetch_recording/${gridID}`);
+            const response = await fetch(`http://localhost:8000/api/audio/${gridID}`);
             if (!response.ok) {
               throw new Error(`Failed to fetch audio: ${response.status}`);
             }
@@ -49,7 +50,7 @@ const SummaryPage: React.FC<SummaryPageProps> = ({  }) => {
             setData(data);
     
           } catch (error) {
-            console.error('Failed to fetch audio:', error);
+            console.error('Failed to fetch the recording data:', error);
           }
         };
     
@@ -57,53 +58,56 @@ const SummaryPage: React.FC<SummaryPageProps> = ({  }) => {
     
       }, []);
     
-      useEffect(() => {
-        const fetchAudio = async () => {
-          try {
-            const respone = await fetch(`http://localhost:8000/fetch_audio/${gridID}`);
-            if (!respone.ok) {
-              throw new Error(`Failed to fetch audio: ${respone.status}`);
-            }
-            const blob = await respone.blob();
-            setAudioBlob(blob);
+      // useEffect(() => {
+      //   const fetchAudio = async () => {
+      //     try {
+      //       const respone = await fetch(`http://localhost:8000/api/audio/${gridID}`);
+      //       if (!respone.ok) {
+      //         throw new Error(`Failed to fetch audio blob: ${respone.status}`);
+      //       }
+      //       const blob = await respone.blob();
+      //       setAudioBlob(blob);
     
-          } catch (error) {
-            console.error('Failed to fetch audio:', error);
-          }
-        };
+      //     } catch (error) {
+      //       console.error('Failed to fetch audio:', error);
+      //     }
+      //   };
     
-        fetchAudio();
+      //   fetchAudio();
 
-      }, [gridID]);
+      // }, [gridID]);
 
-      useEffect(() => {
-        const fetchTranscriptions = async () => {
-            if (audioBlob) {
-                try {
-                    console.log('Starting transcription with audioBlob:', audioBlob);
-                    const transcription = await transcribeAudio(audioBlob);
-                    console.log('Transcription result:', transcription);
-                    setTranscription(transcription);
-                } catch (error) {
-                    console.error('Failed to transcribe audio:', error);
-                }
-            }
-        };
+    //   useEffect(() => {
+    //     const fetchTranscriptions = async () => {
+    //       try {
+    //         const response = await fetch(`http://localhost:8000/api/audio/${gridID}`);
+    //         if (!response.ok) {
+    //           throw new Error(`Failed to fetch audio: ${response.status}`);
+    //         }
+    //         const data: UploadedFile = await response.json();
+    //         setData(data);
     
-        fetchTranscriptions();
-    }, [data]);
+    //       } catch (error) {
+    //         console.error('Failed to fetch the recording data:', error);
+    //       }
+    //     };
+    
+    //     fetchTranscriptions();
+    // }, [data]);
 
-    console.log('Transcription', transcription)
+    console.log('data', data)
+    console.log('grid', gridID)
     return (
         <AppWrapper
             title = "Recording Summary"
             children = {
                 <div className="profile-wrapper">
                     <div className="profile-header has-text-centered">
-                        <div className="h-avatar is-xl">
-                            <img className="avatar" src="assets/img/avatars/photos/8.jpg" data-demo-src="assets/img/avatars/photos/8.jpg" alt="" data-user-popover="3"></img>
-                            <img className="badge" src="assets/img/icons/flags/united-states-of-america.svg" data-demo-src="assets/img/icons/flags/united-states-of-america.svg" alt=""></img>
-                        </div>
+                        <FakeAvatar
+                            FirstName={data?.metadata.FirstName ?? ''}
+                            LastName={data?.metadata.LastName ?? ''}
+                            Size={AvatarSize.XL}
+                        />
                         <h3 className="title is-4 is-narrow is-thin">{data?.metadata.FirstName} {data?.metadata.LastName}</h3>
                         <p className="light-text">
                             Hey everyone, Iam a product manager from New York and Iam looking
