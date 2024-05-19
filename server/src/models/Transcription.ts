@@ -3,11 +3,8 @@ import mongoose from 'mongoose';
 const TranscriptionSchema = new mongoose.Schema({
     filename: { type: String, required: true },
     transcription: { type: String, required: true },
-    patientData: {
-        FirstName: { type: String, required: true },
-        LastName: { type: String, required: true },
-        DateOfBirth: { type: Date, required: true }
-    }
+    patientData: { type: mongoose.Schema.Types.Mixed, required: false },
+    fileId: { type: mongoose.Schema.Types.ObjectId, required: true } // Ensure this field is present
 }, { timestamps: true });
 
 const Transcription = mongoose.model('Transcription', TranscriptionSchema);
