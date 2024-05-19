@@ -26,9 +26,11 @@ mongoose.connect(dbConnectionUrl).then(() => {
 // Routes
 import patientRoutes from './routes/patientRoutes';
 import audioRoutes from './routes/audioRoutes';
+import transcriptionRoutes from './routes/trascriptionRoutes';
 
 app.use('/api/patients', patientRoutes);
 app.use('/api/audio', audioRoutes);
+app.use('/api/transcriptions', transcriptionRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World');

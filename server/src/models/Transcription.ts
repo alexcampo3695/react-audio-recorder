@@ -1,18 +1,15 @@
-import { Schema, model, Document } from 'mongoose';
+import mongoose from 'mongoose';
 
-interface ITranscription extends Document {
-    patientId: string;
-    recordingId: string;
-    transcription: string;
-}
-
-const TranscriptionSchema: Schema = new Schema<ITranscription>({
-    patientId: { type: String, required: true },
-    recordingId: { type: String, required: true },
+const TranscriptionSchema = new mongoose.Schema({
+    filename: { type: String, required: true },
     transcription: { type: String, required: true },
-    // Add other fields as necessary
-});
+    patientData: {
+        FirstName: { type: String, required: true },
+        LastName: { type: String, required: true },
+        DateOfBirth: { type: Date, required: true }
+    }
+}, { timestamps: true });
 
-const Transcription = model<ITranscription>('Transcription', TranscriptionSchema);
+const Transcription = mongoose.model('Transcription', TranscriptionSchema);
 
 export default Transcription;
