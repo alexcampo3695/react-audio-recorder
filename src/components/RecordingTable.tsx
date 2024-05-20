@@ -9,16 +9,15 @@ interface MetaData {
   DateOfBirth: string;
 }
 
-interface UploadedFile {
+interface Transcription {
   _id: string;
   filename: string;
-  length: number;
-  chunkSize: number;
-  uploadDate: string;
-  contentType: string;
-  metadata: {
-    patientData: MetaData;
-  };
+  transcription: string;
+  patientData: MetaData;
+  fileId: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface TableRowData {
@@ -27,6 +26,7 @@ interface TableRowData {
   lastName: string;
   eventDate: string;
   gridID: string;
+  status: string;
 }
 
 
@@ -36,6 +36,7 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
   lastName,
   eventDate,
   gridID,
+  status,
 }) => {
 
   const navigate = useNavigate();
@@ -59,7 +60,16 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
         <span className="light-text">{eventDate}</span>
       </div>
       <div className="flex-table-cell" data-th="ID">
-        <span className="light-text">{gridID}</span>
+        {status === 'complete' 
+          ?   <span className="tag is-rounded is-success is-elevated">Complete</span> 
+          :   <span 
+                className="tag is-rounded is-orange is-elevated"
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                  Transcribing
+                  <span className="spinner"></span>
+              </span>
+        }
       </div>
       <div className="flex-table-cell cell-end" data-th="Actions">
         <div className="dropdown is-spaced is-dots is-right dropdown-trigger is-pushed-mobile is-up">
@@ -87,35 +97,56 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
 
 const RecordingsFlexTable: React.FC = () => {
   const [data, setData] = useState<TableRowData[]>([]);
+  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
+
+  const fetchRecordings = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/transcriptions');
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+      const data: Transcription[] = await response.json();
+      const parsedData = data.map((recording: Transcription, index: number) => {
+        const metadata = recording.patientData || { FirstName: 'Unknown', LastName: 'Unknown', DateOfBirth: 'Unknown' };
+        return {
+          number: index + 1,
+          firstName: metadata.FirstName,
+          lastName: metadata.LastName,
+          birthDate: metadata.DateOfBirth,
+          gridID: recording._id,
+          eventDate: recording.createdAt,
+          status: recording.status
+        };
+      });
+      setData(parsedData);
+      console.log("Data:", parsedData);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
+
 
   useEffect(() => {
-    const fetchRecordings = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/audio');
-        if(!response.ok) {
-          throw new Error(`Error: ${response.status} - ${response.statusText}`);
-        }
-        const data: UploadedFile[] = await response.json();
-        const parsedData = data.map((recording: UploadedFile, index: number) => {
-          const metadata = recording.metadata?.patientData || {FirstName: 'Unknown', LastName: 'Unknown', DateOfBirth: 'Unknown'};
-          return {
-            number: index + 1,
-            firstName: metadata.FirstName,
-            lastName: metadata.LastName,
-            birthDate: metadata.DateOfBirth,
-            gridID: recording._id,
-            eventDate: recording.uploadDate,
-          };
-        });
-        setData(parsedData);
-        console.log("Data:", parsedData);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
-
     fetchRecordings(); // Call the function
   }, []);
+
+  useEffect(() => {
+    const pollData = async () => {
+      await fetchRecordings();
+    };
+
+    pollData();
+    const interval = setInterval(pollData, 5000);
+    setPollingInterval(interval);
+
+    return () => {
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+      }
+    }
+  }, []);
+
+
 
   return (
     <div>
@@ -137,7 +168,7 @@ const RecordingsFlexTable: React.FC = () => {
             <div className="flex-table-header" data-filter-hide="">
               <span className="is-grow">Patient</span>
               <span>Upload Date</span>
-              <span>ID</span>
+              <span>Status</span>
               <span className="cell-end">Actions</span>
             </div>
             <div className="flex-list-inner">
@@ -149,6 +180,7 @@ const RecordingsFlexTable: React.FC = () => {
                   lastName={item.lastName}
                   eventDate={formatDate(item.eventDate)}
                   gridID={item.gridID}
+                  status={item.status}
                 />
               ))}
             </div>

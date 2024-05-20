@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 // import FlexTable from '../components/FlexTable';
 import FlexTable from '../components/RecordingTable';
 import AppWrapper from './AppWrapper';
+import "../styles/spinner.css";
 
 interface AudioData {
     source: 'recording' | 'upload';

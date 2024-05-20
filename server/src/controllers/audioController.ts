@@ -8,84 +8,188 @@ import fs from 'fs';
 import path from 'path';
 
 
-export async function uploadRecording(req: Request, res: Response) {
+// export async function uploadRecording(req: Request, res: Response) {
+//     const recording = req.file;
+//     if (!recording) {
+//         return res.status(400).send('No recording file uploaded');
+//     }
+
+//     const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
+
+//     try {
+//         const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
+
+//         const uploadDir = path.join(__dirname, 'uploads');
+//         if (!fs.existsSync(uploadDir)) {
+//             fs.mkdirSync(uploadDir);
+//         }
+
+//         const inputPath = path.join(uploadDir, recording.filename);
+
+//         const downloadStream = bucket.openDownloadStreamByName(recording.filename);
+//         const writeStream = fs.createWriteStream(inputPath);
+
+//         downloadStream.pipe(writeStream);
+
+//         downloadStream.on('error', (error) => {
+//             return res.status(500).json({ message: 'Failed to download file from GridFS', error });
+//         });
+
+//         downloadStream.on('end', async () => {
+//             try {
+//                 const chunks = await splitAudioFile({ path: inputPath, filename: recording.filename }, 60);
+//                 let transcription = '';
+
+//                 for (const chunk of chunks) {
+//                     try {
+//                         const transcriptionResponse = await transcribeAudio(chunk);
+//                         transcription += transcriptionResponse.text + ' ';
+//                     } catch (error) {
+//                         return res.status(500).json({ message: "Failed to transcribe audio", error });
+//                     }
+//                 }
+
+//                 const fileDoc = await bucket.find({ filename: recording.filename }).toArray();
+//                 if (!fileDoc || fileDoc.length === 0) {
+//                     return res.status(404).send('File not found in GridFS');
+//                 }
+
+//                 const fileId = fileDoc[0]._id;
+
+//                 const newTranscription = new Transcription({
+//                     filename: recording.filename,
+//                     transcription: transcription.trim(),
+//                     patientData,
+//                     fileId: fileId
+//                 });
+
+//                 await newTranscription.save();
+
+//                 await updateMetaData(recording.filename, patientData);
+
+//                 res.json({
+//                     message: "Upload successful",
+//                     fileDetails: recording,
+//                     patientData,
+//                     transcription: transcription.trim(),
+//                     fileId: fileId // Include fileId in the response for verification
+//                 });
+//             } catch (error) {
+//                 console.error('Error processing recording:', error);
+//                 res.status(500).json({ message: "Failed to process recording", error });
+//             } finally {
+//                 fs.unlinkSync(inputPath);
+//             }
+//         });
+//     } catch (error) {
+//         console.error('Error uploading recording:', error);
+//         res.status(500).json({ message: "Failed to process recording", error });
+//     }
+// }
+
+
+
+
+
+
+  export async function uploadRecording(req: Request, res: Response) {
     const recording = req.file;
     if (!recording) {
-        return res.status(400).send('No recording file uploaded');
+      return res.status(400).send('No recording file uploaded');
     }
-
+  
     const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
-
+  
     try {
-        const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
-
-        const uploadDir = path.join(__dirname, 'uploads');
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir);
-        }
-
-        const inputPath = path.join(uploadDir, recording.filename);
-
-        const downloadStream = bucket.openDownloadStreamByName(recording.filename);
-        const writeStream = fs.createWriteStream(inputPath);
-
-        downloadStream.pipe(writeStream);
-
-        downloadStream.on('error', (error) => {
-            return res.status(500).json({ message: 'Failed to download file from GridFS', error });
-        });
-
-        downloadStream.on('end', async () => {
-            try {
-                const chunks = await splitAudioFile({ path: inputPath, filename: recording.filename }, 60);
-                let transcription = '';
-
-                for (const chunk of chunks) {
-                    try {
-                        const transcriptionResponse = await transcribeAudio(chunk);
-                        transcription += transcriptionResponse.text + ' ';
-                    } catch (error) {
-                        return res.status(500).json({ message: "Failed to transcribe audio", error });
-                    }
-                }
-
-                const fileDoc = await bucket.find({ filename: recording.filename }).toArray();
-                if (!fileDoc || fileDoc.length === 0) {
-                    return res.status(404).send('File not found in GridFS');
-                }
-
-                const fileId = fileDoc[0]._id;
-
-                const newTranscription = new Transcription({
-                    filename: recording.filename,
-                    transcription: transcription.trim(),
-                    patientData,
-                    fileId: fileId
-                });
-
-                await newTranscription.save();
-
-                await updateMetaData(recording.filename, patientData);
-
-                res.json({
-                    message: "Upload successful",
-                    fileDetails: recording,
-                    patientData,
-                    transcription: transcription.trim(),
-                    fileId: fileId // Include fileId in the response for verification
-                });
-            } catch (error) {
-                console.error('Error processing recording:', error);
-                res.status(500).json({ message: "Failed to process recording", error });
-            } finally {
-                fs.unlinkSync(inputPath);
-            }
-        });
+      const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
+  
+      // Find the file in the database using the filename
+      const fileDoc = await bucket.find({ filename: recording.filename }).toArray();
+      if (fileDoc.length === 0) {
+        return res.status(404).send('File not found in GridFS');
+      }
+  
+      const fileId = fileDoc[0]._id;
+  
+      const newTranscription = new Transcription({
+        filename: recording.filename,
+        transcription: 'Processing...', // Set initial transcription status
+        patientData,
+        fileId: fileId, // Use the file ID from the database
+        status: 'loading' // Set initial status to 'loading'
+      });
+  
+      await newTranscription.save();
+  
+      res.json({
+        message: "Upload successful",
+        fileDetails: recording,
+        patientData,
+        transcription: 'Processing...',
+        status: 'loading',
+        fileId: fileId
+      });
+  
+      // Process the recording in the background
+      processRecording(fileId, patientData);
     } catch (error) {
-        console.error('Error uploading recording:', error);
-        res.status(500).json({ message: "Failed to process recording", error });
+      console.error('Error uploading recording:', error);
+      res.status(500).json({ message: "Failed to process recording", error });
     }
-}
+  }
+
+  async function processRecording(fileId: any, patientData: any) {
+    try {
+      const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
+      
+      // Find the file in the database using the fileId
+      const fileDoc = await bucket.find({ _id: fileId }).toArray();
+      if (fileDoc.length === 0) {
+        throw new Error('File not found in GridFS');
+      }
+      
+      const recording = fileDoc[0];
+  
+      const uploadDir = path.join(__dirname, 'uploads');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir);
+      }
+  
+      const inputPath = path.join(uploadDir, recording.filename);
+      const downloadStream = bucket.openDownloadStreamByName(recording.filename);
+      const writeStream = fs.createWriteStream(inputPath);
+      downloadStream.pipe(writeStream);
+  
+      downloadStream.on('end', async () => {
+        try {
+          const chunks = await splitAudioFile({ path: inputPath, filename: recording.filename }, 60);
+          let transcription = '';
+  
+          for (const chunk of chunks) {
+            const transcriptionResponse = await transcribeAudio(chunk);
+            transcription += transcriptionResponse.text + ' ';
+          }
+  
+          await Transcription.updateOne(
+            { fileId: fileId },
+            { $set: { transcription: transcription.trim(), status: 'complete' } }
+          );
+  
+          await updateMetaData(recording.filename, patientData);
+        } catch (error) {
+          console.error('Error processing recording:', error);
+          await Transcription.updateOne(
+            { fileId: fileId },
+            { $set: { status: 'error' } }
+          );
+        } finally {
+          fs.unlinkSync(inputPath);
+        }
+      });
+    } catch (error) {
+      console.error('Error processing recording:', error);
+    }
+  }
 
 export async function getUploads(req: Request, res: Response) {
     try {

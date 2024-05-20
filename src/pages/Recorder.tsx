@@ -56,20 +56,8 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
     } else {
       console.error("No patient data found");
     }
-    
-    console.log("Form Data entries:");
-    for (const entry of formData.entries()) {
-      console.log(entry);
-    }
   
     try {
-      const transcriptionResponse = await transcribeAudio(blob);
-      const transcription = transcriptionResponse.text;
-      console.log("Transcription:", transcription);
-
-      formData.append("transcription", transcription);
-
-      
       const response = await fetch("http://localhost:8000/api/audio/upload", {
         method: "POST",
         body: formData,
