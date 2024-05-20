@@ -12,7 +12,7 @@ interface SummaryResponse {
   __v: number;
 }
 
-const AudioUploader: React.FC<EncounterSummaryProps> = ({ fileId }) => {
+const EncounterSummaryComponent: React.FC<EncounterSummaryProps> = ({ fileId }) => {
   const navigate = useNavigate();
   const [summary, setSummary] = useState<string | null>(null);
 
@@ -34,7 +34,7 @@ const AudioUploader: React.FC<EncounterSummaryProps> = ({ fileId }) => {
   }, [fileId]);
 
   return (
-    <div className="profile-card">
+    // <div className="profile-card">
       <div className="profile-card-section">
         <div className="section-title">
           <h4>Encounter Summary</h4>
@@ -46,8 +46,8 @@ const AudioUploader: React.FC<EncounterSummaryProps> = ({ fileId }) => {
           </p>
         </div>
       </div>
-    </div>
+    // </div>
   );
 };
 
-export default AudioUploader;
+export default EncounterSummaryComponent;

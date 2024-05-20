@@ -6,10 +6,12 @@ import { transcribeAudio, splitAudioFile } from '../services/trascriptionService
 import Transcription from '../models/Transcription';
 import fs from 'fs';
 import path from 'path';
-import { diariazeTranscription, summarizeTranscription } from '../services/aiService';
+import { diariazeTranscription, icd10Generator, summarizeTranscription } from '../services/aiService';
 import Summary from '../models/EncounterSummary';
 import EncounterSummary from '../models/EncounterSummary';
 import DiarizedTranscription from '../models/DiarizedTranscription';
+import ICD10 from '../models/ICD10';
+import ICD10CodeModel from '../models/ICD10';
 
 
 
@@ -111,6 +113,26 @@ async function processRecording(fileId: any, patientData: any) {
                 diarization: diarization,
             });
             await newDiarization.save();
+
+            //Generate ICD10 Codes
+            // Generate ICD10 Codes
+            const icd10Codes = await icd10Generator(transcription.trim());
+            for (const code of icd10Codes) {
+                const existingCode = await ICD10.findOne({ code: code.code });
+                 if (existingCode) {
+                    await ICD10.updateOne(
+                        {code: code.code},
+                        { description: code.description }
+                    );
+                 } else {
+                    const newICD10 = new ICD10({
+                        fileId: fileId,
+                        code: code.code,
+                        description: code.description,
+                    });
+                    await newICD10.save();
+                 }
+            }
             
             //apending metaData to audio/upload file
             await updateMetaData(recording.filename, patientData);
@@ -186,4 +208,5 @@ export async function getFileData(req: Request, res: Response) {
         res.status(400).send('Invalid file ID');
     }
 }
+
 

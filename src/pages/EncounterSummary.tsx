@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import AudioPlayer from '../elements/AudioPlayer';
 import AppWrapper from './AppWrapper';
 import FakeAvatar, { AvatarSize } from '../elements/FakeAvatar';
-import EncounterSummary from '../components/EncounterSummary';
+import EncounterSummaryComponent from '../components/EncounterSummaryComponent';
+import DiarizedComponent from '../components/DiarizedTranscription';
 
 interface MetaData {
     FirstName: string;
@@ -94,9 +95,14 @@ const SummaryPage: React.FC = () => {
                     <div className="profile-body">
                         <div className="columns">
                             <div className="column is-8">
-                            <EncounterSummary 
-                                fileId={fileId ?? ''}
-                            />
+                                <div className="profile-card">
+                                    <EncounterSummaryComponent
+                                        fileId={fileId ?? ''}
+                                    />
+                                </div>
+                                <DiarizedComponent
+                                    fileId = {fileId ?? ''}
+                                />
                             </div>
                             <div className="column is-4">
                             </div>

@@ -62,3 +62,52 @@ export async function transcribeAudio(blob: Buffer): Promise<any> {
         throw error;
     }
 }
+
+export async function icd10Generator(text: string): Promise<string> {
+    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    if (!apiKey) {
+        throw new Error("OpenAI API key is not set in environment variables");
+    }
+
+    const requestBody = {
+        model: "gpt-3.5-turbo",
+        messages: [
+            {
+                role: "system",
+                content: "You are a helpful assistant designed to output valid ICD-10 codes in JSON format without periods."
+            },
+            {
+                role: "user",
+                content: `You are receiving a conversation between a provider and a patient.
+                        Your task is to strictly provide valid ICD-10 codes for the conversation in JSON format without periods.
+                        Please ensure the following:
+
+                        - Each ICD-10 code must be valid and without periods.
+                        - The JSON format should follow these examples:
+                        {CODE:"A000", Description:"Cholera due to Vibrio cholerae 01, biovar cholerae"}
+                        {CODE:"A001", Description:"Cholera due to Vibrio cholerae 01, biovar eltor"}
+                        {CODE:"A001", Description:"Cholera, unspecified"}
+                        {CODE:"A009", Description:"Cholera, unspecified"}
+                        {CODE:"A0100", Description:"Typhoid fever, unspecified"}
+                        {CODE:"A0101", Description:"Typhoid meningitis"}
+
+                        Here is the transcription:\n\n${text}`
+            }
+        ],
+        max_tokens: 4096,
+        temperature: 0.0,
+    };
+
+    try {
+        const response = await axios.post("https://api.openai.com/v1/chat/completions", requestBody, {
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            }
+        });
+        return response.data.choices[0].message.content.trim();
+    } catch (error) {
+        console.error('Error from OpenAI API:', error.response?.data);
+        throw new Error(`Failed to generate ICD-10 codes: ${error.response?.status} ${error.response?.statusText}`);
+    }
+}
