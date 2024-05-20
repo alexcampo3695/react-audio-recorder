@@ -11,6 +11,4 @@ router.get('/uploads_data/:fileID', getFileData); //this gets audio file data
 router.get('/:fileID', getUploadById); //this gets audio blob
 router.get('/', getUploads); // gets all uploads
 
-
-
 export default router;

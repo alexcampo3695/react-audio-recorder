@@ -3,23 +3,12 @@ import { useParams } from 'react-router-dom';
 import AudioPlayer from '../elements/AudioPlayer';
 import AppWrapper from './AppWrapper';
 import FakeAvatar, { AvatarSize } from '../elements/FakeAvatar';
+import EncounterSummary from '../components/EncounterSummary';
 
 interface MetaData {
     FirstName: string;
     LastName: string;
     DateOfBirth: string;
-}
-
-interface UploadedFile {
-    _id: string;
-    filename: string;
-    length: number;
-    chunkSize: number;
-    uploadDate: string;
-    contentType: string;
-    metadata: {
-        patientData: MetaData;
-    };
 }
 
 interface TranscriptionPayload {
@@ -35,31 +24,38 @@ interface TranscriptionPayload {
 const SummaryPage: React.FC = () => {
     const { gridID } = useParams<{ gridID: string }>();
     const validGridId = gridID || '';
-    const [data, setData] = useState<UploadedFile | null>(null);
+    const [data, setData] = useState<TranscriptionPayload | null>(null);
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
     const [transcription, setTranscription] = useState<string | null>(null);
+    const [fileId, setFileId] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchRecordingData = async () => {
+        const fetchTranscription = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/api/audio/uploads_data/${gridID}`);
+                const response = await fetch(`http://localhost:8000/api/transcriptions/${validGridId}`);
                 if (!response.ok) {
-                    throw new Error(`Failed to fetch audio data: ${response.status}`);
+                    throw new Error(`Failed to fetch transcription: ${response.status}`);
                 }
-                const data: UploadedFile = await response.json();
-                setData(data);
+                const transcriptionPayload: TranscriptionPayload = await response.json();
+                setTranscription(transcriptionPayload.transcription);
+                setFileId(transcriptionPayload.fileId);
+                setData(transcriptionPayload);
             } catch (error) {
-                console.error('Failed to fetch the recording data:', error);
+                console.error('Failed to fetch transcription:', error);
             }
         };
-
-        fetchRecordingData();
-    }, [gridID]);
+        
+        if (validGridId) {
+            fetchTranscription();
+        }
+    }, [validGridId]);
 
     useEffect(() => {
         const fetchAudio = async () => {
+            if (fileId === null) return;  // Ensure fileId is not null
+
             try {
-                const response = await fetch(`http://localhost:8000/api/audio/${gridID}`);
+                const response = await fetch(`http://localhost:8000/api/audio/${fileId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch audio blob: ${response.status}`);
                 }
@@ -70,31 +66,11 @@ const SummaryPage: React.FC = () => {
             }
         };
 
-        if (data) {
+        if (fileId) {
             fetchAudio();
         }
-    }, [data, gridID]);
+    }, [fileId]);
 
-    useEffect(() => {
-        const fetchTranscription = async () => {
-            try {
-                const response = await fetch(`http://localhost:8000/api/transcriptions/file/${gridID}`);
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch transcription: ${response.status}`);
-                }
-                const transcriptionPayload: TranscriptionPayload = await response.json();
-                setTranscription(transcriptionPayload.transcription);
-            } catch (error) {
-                console.error('Failed to fetch transcription:', error);
-            }
-        };
-
-        if (gridID) {
-            fetchTranscription();
-        }
-    }, [gridID]);
-
-    console.log('transcription:', transcription)
     return (
         <AppWrapper
             title="Recording Summary"
@@ -102,19 +78,29 @@ const SummaryPage: React.FC = () => {
                 <div className="profile-wrapper">
                     <div className="profile-header has-text-centered">
                         <FakeAvatar
-                            FirstName={data?.metadata?.patientData?.FirstName ?? ''}
-                            LastName={data?.metadata?.patientData?.LastName ?? ''}
+                            FirstName={data?.patientData?.FirstName ?? ''}
+                            LastName={data?.patientData?.LastName ?? ''}
                             Size={AvatarSize.XL}
                         />
                         <h3 className="title is-4 is-narrow is-thin">
-                            {data?.metadata?.patientData?.FirstName} {data?.metadata?.patientData?.LastName}
+                            {data?.patientData?.FirstName} {data?.patientData?.LastName}
                         </h3>
                         <p className="light-text">
                             Hey everyone, I am a product manager from New York and I am looking
                             for new opportunities in the software business.
                         </p>
-                        <p>{transcription}</p>
-                        {audioBlob && <AudioPlayer fileID={validGridId} />}
+                        {audioBlob && fileId && <AudioPlayer fileID={fileId} />}
+                    </div>
+                    <div className="profile-body">
+                        <div className="columns">
+                            <div className="column is-8">
+                            <EncounterSummary 
+                                summary={transcription ?? ''}
+                            />      
+                            </div>
+                            <div className="column is-4">
+                            </div>
+                        </div>
                     </div>
                 </div>
             }
@@ -123,3 +109,6 @@ const SummaryPage: React.FC = () => {
 }
 
 export default SummaryPage;
+
+
+
