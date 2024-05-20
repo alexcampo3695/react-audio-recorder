@@ -5,6 +5,7 @@ import AppWrapper from './AppWrapper';
 import FakeAvatar, { AvatarSize } from '../elements/FakeAvatar';
 import EncounterSummaryComponent from '../components/EncounterSummaryComponent';
 import DiarizedComponent from '../components/DiarizedTranscription';
+import Icd10Component from '../components/icd10Component';
 
 interface MetaData {
     FirstName: string;
@@ -105,6 +106,9 @@ const SummaryPage: React.FC = () => {
                                 />
                             </div>
                             <div className="column is-4">
+                                <Icd10Component
+                                    fileId = {fileId ?? ''}
+                                />
                             </div>
                         </div>
                     </div>

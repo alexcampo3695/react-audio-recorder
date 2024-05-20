@@ -14,7 +14,7 @@ export async function getIcd10s(req: Request, res: Response) {
 export async function getICD10sByFile(req: Request, res: Response) {
     try {
         const fileID = new ObjectId(req.params.fileID);
-        const icd10s = await ICD10.findOne({ fileId: fileID });
+        const icd10s = await ICD10.find({ fileId: fileID });
         if (!icd10s) {
             return res.status(404).json({ message: "ICD10's not found" });
         }
