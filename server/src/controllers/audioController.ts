@@ -6,6 +6,10 @@ import { transcribeAudio, splitAudioFile } from '../services/trascriptionService
 import Transcription from '../models/Transcription';
 import fs from 'fs';
 import path from 'path';
+import { diariazeTranscription, summarizeTranscription } from '../services/aiService';
+import Summary from '../models/EncounterSummary';
+import EncounterSummary from '../models/EncounterSummary';
+import DiarizedTranscription from '../models/DiarizedTranscription';
 
 
 
@@ -79,20 +83,38 @@ async function processRecording(fileId: any, patientData: any) {
 
         downloadStream.on('end', async () => {
         try {
+
+            //Generating Transcription
             const chunks = await splitAudioFile({ path: inputPath, filename: recording.filename }, 60);
             let transcription = '';
-
             for (const chunk of chunks) {
-            const transcriptionResponse = await transcribeAudio(chunk);
+                const transcriptionResponse = await transcribeAudio(chunk);
                 transcription += transcriptionResponse.text + ' ';
             }
-
             await Transcription.updateOne(
                 { fileId: fileId },
                 { $set: { transcription: transcription.trim(), status: 'complete' } }
             );
 
+            //Generating Summary
+            const summary = await summarizeTranscription(transcription.trim());
+            const newSummary =  new EncounterSummary({
+                fileId: fileId,
+                summary: summary,
+            })
+            await newSummary.save();
+
+            //Generation Diarization
+            const diarization = await diariazeTranscription(transcription.trim());
+            const newDiarization = new DiarizedTranscription({
+                fileId: fileId,
+                diarization: diarization,
+            });
+            await newDiarization.save();
+            
+            //apending metaData to audio/upload file
             await updateMetaData(recording.filename, patientData);
+
         } catch (error) {
             console.error('Error processing recording:', error);
             await Transcription.updateOne(

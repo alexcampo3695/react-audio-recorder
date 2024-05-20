@@ -12,6 +12,8 @@ import { storage } from './utils/gridFsUtils';
 import patientRoutes from './routes/patientRoutes';
 import audioRoutes from './routes/audioRoutes';
 import transcriptionRoutes from './routes/trascriptionRoutes';
+import summaryRoutes from './routes/encounterSummaryRoutes';
+import diarizationRoutes from './routes/diarizationRoutes';
 
 const app = express();
 
@@ -33,6 +35,8 @@ mongoose.connect(dbConnectionUrl).then(() => {
 app.use('/api/patients', patientRoutes);
 app.use('/api/audio', audioRoutes);
 app.use('/api/transcriptions', transcriptionRoutes);
+app.use('/api/encounter_summary', summaryRoutes);
+app.use('/api/diarization', diarizationRoutes);
 
 // app.get('/', (req: Request, res: Response) => {
 //     res.send('Hello World');
