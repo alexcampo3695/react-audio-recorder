@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { transcribeAudio } from "./helpers/transcribe";
 import RecordingPage from './pages/Recorder';
 import RecordingsTable from './pages/RecordingsTablePage';
-import SummaryPage from './pages/PatientSummary';
+import SummaryPage from './pages/EncounterSummary';
 import CreatePatientForm from './components/CreatePatientForm';
 import Home from './pages/Home';
 import AppWrapper from './pages/AppWrapper';

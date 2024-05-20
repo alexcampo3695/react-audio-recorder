@@ -95,8 +95,8 @@ const SummaryPage: React.FC = () => {
                         <div className="columns">
                             <div className="column is-8">
                             <EncounterSummary 
-                                summary={transcription ?? ''}
-                            />      
+                                fileId={fileId ?? ''}
+                            />
                             </div>
                             <div className="column is-4">
                             </div>
