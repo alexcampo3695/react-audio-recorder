@@ -22,6 +22,7 @@ export async function uploadRecording(req: Request, res: Response) {
     }
 
     const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
+    const patientId = patientData ? patientData.PatientId : null;
 
     try {
         const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
@@ -54,14 +55,14 @@ export async function uploadRecording(req: Request, res: Response) {
         });
 
         // Process the recording in the background
-        processRecording(fileId, patientData);
+        processRecording(fileId, patientId,patientData);
     } catch (error) {
         console.error('Error uploading recording:', error);
         res.status(500).json({ message: "Failed to process recording", error });
     }
 }
 
-async function processRecording(fileId: any, patientData: any) {
+async function processRecording(fileId: any, patientId: any,patientData: any) {
     try {
         const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
         
@@ -103,6 +104,7 @@ async function processRecording(fileId: any, patientData: any) {
             const newSummary =  new EncounterSummary({
                 fileId: fileId,
                 summary: summary,
+                patientId: patientId,
             })
             await newSummary.save();
 
@@ -111,10 +113,10 @@ async function processRecording(fileId: any, patientData: any) {
             const newDiarization = new DiarizedTranscription({
                 fileId: fileId,
                 diarization: diarization,
+                patientId: patientId,
             });
             await newDiarization.save();
 
-            //Generate ICD10 Codes
             // Generate ICD10 Codes
             let maxTries = 3;
             // const icd10Codes = await icd10Generator(transcription.trim());
@@ -131,14 +133,15 @@ async function processRecording(fileId: any, patientData: any) {
                  if (existingCode) {
                     await ICD10.updateOne(
                         {code: code.code},
-                        { description: code.description, status: code.status }
+                        { description: code.description, status: code.status, patientId: patientId, }
                     );
                  } else {
                     const newICD10 = new ICD10({
                         fileId: fileId,
                         code: code.code,
                         description: code.description,
-                        status: code.status
+                        status: code.status,
+                        patientId: patientId,
                     });
                     await newICD10.save();
                  }

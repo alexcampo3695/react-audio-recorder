@@ -145,7 +145,6 @@ export async function icd10Generator(text: string): Promise<ICD10Code[]> {
                             }
                         ]
                         
-
                         Produce with this type: 
                         
                         interface ICD10Code {
@@ -174,11 +173,8 @@ export async function icd10Generator(text: string): Promise<ICD10Code[]> {
         });
         const responseData = response.data.choices[0].message.content.trim();
 
-        // Sanitize the response if needed
-        console.log('Response data:', responseData)
         const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
         const icd10Codes: ICD10Code[] = JSON.parse(sanitizedResponseData);
-
         return icd10Codes;
         
     } catch (error) {

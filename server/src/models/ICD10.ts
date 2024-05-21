@@ -5,6 +5,7 @@ interface IICD10 extends Document {
     code: string;
     description: string;
     status: boolean;
+    patientId: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -14,6 +15,7 @@ const ICD10Schema = new Schema<IICD10>({
     code: { type: String, required: true },
     description: { type: String, required: true },
     status: { type: Boolean, default: false },
+    patientId: { type: String, required: true, ref: 'Patient' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });
