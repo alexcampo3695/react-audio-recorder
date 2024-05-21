@@ -10,10 +10,17 @@ interface Icd10RowData {
 }
 
 const Icd10Row: React.FC<Icd10RowData> = ({ code, description, status }) => {
+  const [isChecked, setIsChecked] = useState<boolean>(false);
   return (
     <div className="inner-list-item media-flex-center">
-        <div className="animated-checkbox is-unchecked">
-            <input type="checkbox"></input>
+        <div 
+          className={`animated-checkbox ${isChecked ? 'is-checked' : 'is-unchecked'}`}
+        >
+            <input 
+              type="checkbox"
+              onClick = {() => setIsChecked(!isChecked)}
+            >
+            </input>
             <div className="checkmark-wrap">
                 <div className="shadow-circle"></div>
                 <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
@@ -28,7 +35,11 @@ const Icd10Row: React.FC<Icd10RowData> = ({ code, description, status }) => {
         </div>
         <div className="flex-end">
             {/* hardcoded need to take care of! */}
-            <span className="tag is-rounded">Saved</span> 
+            <span 
+              className={`tag is-rounded ${isChecked ? 'is-success' : 'is-light'}`}
+            >
+                {isChecked ? 'Active' : 'Inactive'}
+            </span> 
         </div>
     </div>
   );

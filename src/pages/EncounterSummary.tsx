@@ -104,11 +104,12 @@ const SummaryPage: React.FC = () => {
                                 <DiarizedComponent
                                     fileId = {fileId ?? ''}
                                 />
-                            </div>
-                            <div className="column is-4">
                                 <Icd10Component
                                     fileId = {fileId ?? ''}
                                 />
+                            </div>
+                            <div className="column is-4">
+                                
                             </div>
                         </div>
                     </div>
