@@ -15,6 +15,7 @@ import transcriptionRoutes from './routes/trascriptionRoutes';
 import summaryRoutes from './routes/encounterSummaryRoutes';
 import diarizationRoutes from './routes/diarizationRoutes';
 import icd10Routes from './routes/icd10Routes';
+import medicationsRoutes from './routes/medicationsRoutes';
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use('/api/transcriptions', transcriptionRoutes);
 app.use('/api/encounter_summary', summaryRoutes);
 app.use('/api/diarization', diarizationRoutes);
 app.use('/api/icd10', icd10Routes);
+app.use('/api/medcations', medicationsRoutes);
 
 // app.get('/', (req: Request, res: Response) => {
 //     res.send('Hello World');

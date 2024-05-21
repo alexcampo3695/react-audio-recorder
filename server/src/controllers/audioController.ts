@@ -6,12 +6,14 @@ import { transcribeAudio, splitAudioFile } from '../services/trascriptionService
 import Transcription from '../models/Transcription';
 import fs from 'fs';
 import path from 'path';
-import { diariazeTranscription, icd10Generator, summarizeTranscription } from '../services/aiService';
+import { diariazeTranscription, icd10Generator, medicationGenerator, summarizeTranscription } from '../services/aiService';
 import Summary from '../models/EncounterSummary';
 import EncounterSummary from '../models/EncounterSummary';
 import DiarizedTranscription from '../models/DiarizedTranscription';
 import ICD10 from '../models/ICD10';
 import ICD10CodeModel from '../models/ICD10';
+import Medication from '../models/Medication';
+import MedicationModel from '../models/Medication';
 
 
 
@@ -122,7 +124,7 @@ async function processRecording(fileId: any, patientId: any,patientData: any) {
             // const icd10Codes = await icd10Generator(transcription.trim());
             let icd10Codes = [];
             for (let i = 0; i < maxTries; i++) {
-                console.log('Try:', i + 1)
+                console.log('ICD TRY:', i + 1)
                 icd10Codes = await icd10Generator(transcription.trim());
                 if (icd10Codes !== null) {
                     break;
@@ -146,6 +148,32 @@ async function processRecording(fileId: any, patientId: any,patientData: any) {
                     await newICD10.save();
                  }
             }
+
+            // Generate Medications
+            let medications = [];
+                for (let i = 0; i < maxTries; i++) {
+                    console.log('Medication Try:', i + 1)
+                    medications = await medicationGenerator(transcription.trim());
+                    if (medications !== null) {
+                        break;
+                    }
+                }
+                for (const medication of medications) {
+                    const newMedication = new MedicationModel({
+                        patientId: patientId,
+                        fileId: fileId,
+                        drugCode: medication.drugCode,
+                        drugName: medication.drugName,
+                        dosage: medication.dosage,
+                        frequency: medication.frequency,
+                        fillSupply: medication.fillSupply,
+                        methodOfIngestion: medication.methodOfIngestion,
+                        status: medication.status,
+                        startDate: new Date(medication.startDate),
+                        endDate: medication.endDate ? new Date(medication.endDate) : undefined,
+                    });
+                    await newMedication.save();
+                }
             
             //apending metaData to audio/upload file
             await updateMetaData(recording.filename, patientData);

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import { NotFoundError } from 'openai';
 
 dotenv.config();
 
@@ -110,7 +111,7 @@ export async function icd10Generator(text: string): Promise<ICD10Code[]> {
                         Your task is to strictly provide valid ICD-10 codes for the conversation in JSON format without periods.
                         Please ensure the following:
 
-                        - Each ICD-10 code must be valid and without periods.
+                        - Each ICD-10 code must be valid JSON and without periods or special characters.
                         - The JSON format should follow these examples:
                         [
                             {
@@ -153,7 +154,9 @@ export async function icd10Generator(text: string): Promise<ICD10Code[]> {
                             status: boolean;
                         }
 
-                        Please set every 'status' boolean to false.
+                        Please set every 'status' boolean to true.
+
+                        If there are no medications in the transcription, please provide an empty array.
 
                         Provide me only JSON and no superfluous information, text, characters, or comments.
 
@@ -189,3 +192,142 @@ export async function icd10Generator(text: string): Promise<ICD10Code[]> {
     }
     return null;
 }
+
+interface Medication {
+    DrugName: string;
+    Dosage: string;
+    Frequency: string;
+    FillSupply: number;
+    MethodOfIngestion: string;
+    StartDate?: string;
+    EndDate?: string; 
+    SpecialInstructions?: string;
+    Status: boolean;
+}
+
+export async function medicationGenerator(text: string): Promise<Medication[]> {
+    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    if (!apiKey) {
+        throw new Error("OpenAI API key is not set in environment variables");
+    }
+
+    const requestBody = {
+        model: "gpt-4o",
+        messages: [
+            {
+                role: "system",
+                content: "You are a helpful assistant designed to output valid Medications in JSON format without periods."
+            },
+            {
+                role: "user",
+                content: `You are receiving a conversation between a provider and a patient.
+                        Your task is to strictly provide valid ICD-10 codes for the conversation in JSON format without periods.
+                        Please ensure the following:
+
+                        - Each medication must be valid JSON and without periods.
+                        - The JSON format should follow these examples:
+                        [
+                            {
+                                "DrugName": "Aspirin",
+                                "Dosage": "100 mg",
+                                "Frequency": "Once a day",
+                                "FillSupply": 30,
+                                "MethodOfIngestion": "Oral",
+                                "StartDate": "2024-05-01",
+                                "EndDate": "2024-05-30",
+                                "SpecialInstructions": "Take with food",
+                                "Status": true
+                            },
+                            {
+                                "DrugName": "Lisinopril",
+                                "Dosage": "20 mg",
+                                "Frequency": "Twice a day",
+                                "FillSupply": 60,
+                                "MethodOfIngestion": "Oral",
+                                "StartDate": "2024-05-15",
+                                "SpecialInstructions": "Monitor blood pressure regularly",
+                                "Status": true
+                            },
+                            {
+                                "DrugName": "Metformin",
+                                "Dosage": "500 mg",
+                                "Frequency": "Twice a day",
+                                "FillSupply": 60,
+                                "MethodOfIngestion": "Oral",
+                                "StartDate": "2024-06-01",
+                                "EndDate": "2024-06-30",
+                                "SpecialInstructions": "Take with a meal",
+                                "Status": false
+                            },
+                            {
+                                "DrugName": "Albuterol",
+                                "Dosage": "2 puffs",
+                                "Frequency": "As needed",
+                                "FillSupply": 200,
+                                "MethodOfIngestion": "Inhalation",
+                                "StartDate": "2024-05-20",
+                                "SpecialInstructions": "Use as directed for wheezing",
+                                "Status": true
+                            }
+                        ]
+                        
+                        
+                        Produce with this type: 
+                        
+                        interface MedicationResponse {
+                            medicationId: string;
+                            patientId: string;
+                            fileId: string;
+                            drugCode: string;
+                            drugName: string;
+                            dosage: string;
+                            frequency: string;
+                            fillSupply: number;
+                            methodOfIngestion: string;
+                            startDate: Date;
+                            endDate?: Date;
+                            status: boolean;
+                          }
+                          
+
+                        Please set every 'Status' boolean to true.
+
+                        Provide me only JSON and no superfluous information, text, characters, or comments.
+
+                        If there are no medications in the transcription, please provide an empty array.
+
+                        Here is the transcription:\n\n${text}`
+            }
+        ],
+        max_tokens: 4096,
+        temperature: 0.0,
+    };
+
+    try {
+        const response = await axios.post("https://api.openai.com/v1/chat/completions", requestBody, {
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const responseData = response.data.choices[0].message.content.trim();
+        console.log('Response Data:', responseData)
+        const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
+        const medications: Medication[] = JSON.parse(sanitizedResponseData);
+        return medications;
+        
+    } catch (error) {
+        console.error('Error from OpenAI API:', error);
+        
+        if (error.response) {
+            console.error('Response data:', error.response.data);
+            console.error('Status:', error.response.status);
+            console.error('Headers:', error.response.headers);
+        } 
+    }
+    return null;
+}
+
+
+
+

@@ -3,9 +3,11 @@ import { useParams } from 'react-router-dom';
 import AudioPlayer from '../elements/AudioPlayer';
 import AppWrapper from './AppWrapper';
 import FakeAvatar, { AvatarSize } from '../elements/FakeAvatar';
-import EncounterSummaryComponent from '../components/EncounterSummaryComponent';
+import EncounterSummaryComponent from '../components/EncounterSummary';
 import DiarizedComponent from '../components/DiarizedTranscription';
 import Icd10Component from '../components/icd10Component';
+import GeneratedNote from '../components/GeneratedNote';
+import MedicationComponent from '../components/MedicationComponent';
 
 interface MetaData {
     FirstName: string;
@@ -107,9 +109,16 @@ const SummaryPage: React.FC = () => {
                                 <Icd10Component
                                     fileId = {fileId ?? ''}
                                 />
+                                <MedicationComponent
+                                    fileId = {fileId ?? ''}
+                                />
                             </div>
-                            <div className="column is-4">
-                                
+                            <div className="column is-6">
+                                <div className="profile-card">
+                                    <GeneratedNote
+                                        fileId={fileId ?? ''}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

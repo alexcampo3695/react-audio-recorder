@@ -99,6 +99,7 @@
   "dependencies": {
     "@ffmpeg/ffmpeg": "^0.11.6",
     "dotenv": "^16.4.5",
+    "filepond": "^4.31.1",
     "notyf": "^3.10.0",
     "openai": "^4.40.2",
     "react-audio-recorder": "^2.2.0",

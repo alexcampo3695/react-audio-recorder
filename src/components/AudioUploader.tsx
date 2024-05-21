@@ -1,6 +1,12 @@
 import React, { ChangeEvent, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { transcribeAudio } from "../helpers/transcribe";
+import { create, registerPlugin } from 'filepond';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+
+registerPlugin(FilePondPluginFileValidateType, FilePondPluginImagePreview);
+
 
 interface AudioUploaderProps {
   onFileUpload: (file: File) => void;
@@ -29,6 +35,12 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileUpload }) => {
     console.log('Derived state:', state);
     return state?.patientData ?? null;  // Return null if patientData is undefined
   }, [location.state]);  // Dependency on location.state
+
+  const pond = create({
+    multiple: true,
+    name: 'filepond',
+    // Add other configuration options here if needed
+});
 
   async function handleUpload(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
