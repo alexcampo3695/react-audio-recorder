@@ -95,7 +95,7 @@ const SummaryPage: React.FC = () => {
                     </div>
                     <div className="profile-body">
                         <div className="columns">
-                            <div className="column is-8">
+                            <div className="column is-6">
                                 <div className="profile-card">
                                     <EncounterSummaryComponent
                                         fileId={fileId ?? ''}

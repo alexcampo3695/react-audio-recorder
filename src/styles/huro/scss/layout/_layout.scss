@@ -206,11 +206,11 @@ body {
 
 .page-content-wrapper {
   width: 100%;
-  max-width: 1200px;
+  // max-width: 1200px; //I commented out becareful !
   margin: 0 auto;
 
   .page-content {
-    padding: 0 40px;
+    padding: 0 10px; //this was 40px
 
     &.is-relative {
       position: relative;
@@ -241,7 +241,7 @@ body {
 //Enable this setting if you want the dashboard to be larger
 @media only screen and (min-width: 1408px) {
   .page-content-wrapper {
-    max-width: 1380px;
+    max-width: 95%; //at 1380px originally
   }
 }
 

@@ -116,13 +116,22 @@ async function processRecording(fileId: any, patientData: any) {
 
             //Generate ICD10 Codes
             // Generate ICD10 Codes
-            const icd10Codes = await icd10Generator(transcription.trim());
+            let maxTries = 3;
+            // const icd10Codes = await icd10Generator(transcription.trim());
+            let icd10Codes = [];
+            for (let i = 0; i < maxTries; i++) {
+                console.log('Try:', i + 1)
+                icd10Codes = await icd10Generator(transcription.trim());
+                if (icd10Codes !== null) {
+                    break;
+                }
+            }
             for (const code of icd10Codes) {
                 const existingCode = await ICD10.findOne({ code: code.code });
                  if (existingCode) {
                     await ICD10.updateOne(
                         {code: code.code},
-                        { description: code.description }
+                        { description: code.description, status: code.status }
                     );
                  } else {
                     const newICD10 = new ICD10({
