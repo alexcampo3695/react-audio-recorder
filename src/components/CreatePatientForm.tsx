@@ -2,18 +2,20 @@ import React, { useState, useEffect, ReactElement, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { Props } from "./interfaces";
 import "../styles/CreatePatientForm.css";
-import { last } from "lodash";
+import { v4 as uuidv4 } from 'uuid';
 
 
 const CreatePatientForm = ({}) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
+    const [patientId, setPatientId] = useState(() => uuidv4());
     const navigate = useNavigate();
 
     async function handleCreatePatient(e: React.FormEvent) {
         e.preventDefault();
         const patientData = {
+          PatientId: patientId,
           FirstName: firstName,
           LastName: lastName,
           DateOfBirth: dateOfBirth,

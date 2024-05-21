@@ -3,6 +3,7 @@ import Patients from '../models/Patient';
 
 export async function createPatient(req: Request, res: Response) {
     const newPatient = new Patients({
+        PatientId : req.body.PatientId,
         FirstName: req.body.FirstName,
         LastName: req.body.LastName,
         DateOfBirth: req.body.DateOfBirth

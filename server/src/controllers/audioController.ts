@@ -129,6 +129,7 @@ async function processRecording(fileId: any, patientData: any) {
                         fileId: fileId,
                         code: code.code,
                         description: code.description,
+                        status: code.status
                     });
                     await newICD10.save();
                  }

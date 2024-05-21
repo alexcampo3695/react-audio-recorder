@@ -88,6 +88,7 @@ export async function diariazeTranscription(text: string): Promise<string> {
 interface ICD10Code {
     code: string;
     description: string;
+    status: boolean;
 }
 
 export async function icd10Generator(text: string): Promise<ICD10Code[]> {
@@ -123,7 +124,10 @@ export async function icd10Generator(text: string): Promise<ICD10Code[]> {
                         interface ICD10Code {
                             code: string;
                             description: string;
+                            status: boolean;
                         }
+
+                        Please set every boolean to false.
 
                         Here is the transcription:\n\n${text}`
             }

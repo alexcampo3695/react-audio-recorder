@@ -3,7 +3,7 @@ require('dotenv').config();
 
 async function nukeDB() {
     const url = process.env.MONGO_URL;
-    const dbName = 'antidoteTranscribe';
+    const dbName = process.env.DN_NAME;
     const client = new MongoClient(url);
 
     try {

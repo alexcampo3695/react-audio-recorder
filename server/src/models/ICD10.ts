@@ -15,6 +15,10 @@ const ICD10CodeSchema: Schema = new Schema({
     description: {
         type: String,
         required: true
+    },
+    status: {
+        type: Boolean,
+        required: true
     }
 }, {
     timestamps: true
