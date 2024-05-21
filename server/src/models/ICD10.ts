@@ -1,29 +1,23 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
-interface ICD10Code extends Document {
+interface IICD10 extends Document {
+    fileId: string;
     code: string;
     description: string;
+    status: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-const ICD10CodeSchema: Schema = new Schema({
-    fileId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'File' },
-    code: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    status: {
-        type: Boolean,
-        required: true
-    }
-}, {
-    timestamps: true
+const ICD10Schema = new Schema<IICD10>({
+    fileId: { type: String, required: true },
+    code: { type: String, required: true },
+    description: { type: String, required: true },
+    status: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 });
 
-const ICD10CodeModel = mongoose.model<ICD10Code>('ICD10Code', ICD10CodeSchema);
+const ICD10 = model<IICD10>('ICD10', ICD10Schema);
 
-export default ICD10CodeModel;
+export default ICD10;

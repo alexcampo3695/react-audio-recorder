@@ -4,21 +4,30 @@ import ReactMarkdown from 'react-markdown';
 
 
 interface Icd10RowData {
+  id: string;
   code: string;
   description: string;
-  status: string;
+  status: boolean;
+  onStatusChange: (id: string, newStatus: boolean) => void;
 }
 
-const Icd10Row: React.FC<Icd10RowData> = ({ code, description, status }) => {
+const Icd10Row: React.FC<Icd10RowData> = ({ id, code, description, status, onStatusChange }) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
+
+  const handleICD10StatusChange = () => {
+    const newStatus = !isChecked;
+    setIsChecked(newStatus);
+    onStatusChange(id, newStatus);
+  }
   return (
     <div className="inner-list-item media-flex-center">
         <div 
-          className={`animated-checkbox ${isChecked ? 'is-checked' : 'is-unchecked'}`}
+          className={`animated-checkbox ${status === true ? 'is-checked' : 'is-unchecked'}`}
         >
             <input 
               type="checkbox"
               onClick = {() => setIsChecked(!isChecked)}
+              onChange = {handleICD10StatusChange}
             >
             </input>
             <div className="checkmark-wrap">
@@ -36,9 +45,9 @@ const Icd10Row: React.FC<Icd10RowData> = ({ code, description, status }) => {
         <div className="flex-end">
             {/* hardcoded need to take care of! */}
             <span 
-              className={`tag is-rounded ${isChecked ? 'is-success' : 'is-light'}`}
+              className={`tag is-rounded ${status === true ? 'is-success' : 'is-light'}`}
             >
-                {isChecked ? 'Active' : 'Inactive'}
+                {status === true ? 'Active' : 'Inactive'}
             </span> 
         </div>
     </div>
@@ -53,6 +62,7 @@ interface Icd10Response {
   fileId: string;
   code: string;
   description: string;
+  status: boolean;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -79,6 +89,26 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
     fetchIcd10Codes();
   }, [fileId]);
 
+  const handleStatusChange = async (id: string, newStatus: boolean) => {
+    try {
+      await fetch(`http://localhost:8000/api/icd10/update/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: newStatus }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      setIcd10s(prevIcd10s => 
+        prevIcd10s?.map(icd10 =>
+          icd10._id === id ? {...icd10, status: newStatus} : icd10
+        ) || null
+      );
+    } catch (error) {
+      console.error('Failed to update icd10 status:', error);
+    }
+  }
+
   return (
     <div className="list-widget list-widget-v2 tabbed-widget">
       <div className="widget-head">
@@ -100,9 +130,11 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
                 icd10s.map(icd10 => (
                   <Icd10Row
                     key={icd10._id}
+                    id={icd10._id}
                     code={icd10.code}
                     description={icd10.description}
-                    status="Saved"
+                    status={icd10.status}
+                    onStatusChange={handleStatusChange}
                   />
                 ))
               ) : (
