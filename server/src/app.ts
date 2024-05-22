@@ -39,7 +39,7 @@ app.use('/api/transcriptions', transcriptionRoutes);
 app.use('/api/encounter_summary', summaryRoutes);
 app.use('/api/diarization', diarizationRoutes);
 app.use('/api/icd10', icd10Routes);
-app.use('/api/medcations', medicationsRoutes);
+app.use('/api/medications', medicationsRoutes);
 app.use('/api/cpt', cptRoutes);
 
 

@@ -194,10 +194,11 @@ export async function icd10Generator(text: string): Promise<ICD10Code[]> {
 }
 
 interface Medication {
+    DrugCode: string;
     DrugName: string;
-    Dosage: string;
-    Frequency: string;
-    FillSupply: number;
+    Dosage?: string;
+    Frequency?: string;
+    FillSupply?: string;
     MethodOfIngestion: string;
     StartDate?: string;
     EndDate?: string; 
@@ -221,13 +222,14 @@ export async function medicationGenerator(text: string): Promise<Medication[]> {
             {
                 role: "user",
                 content: `You are receiving a conversation between a provider and a patient.
-                        Your task is to strictly provide valid ICD-10 codes for the conversation in JSON format without periods.
+                        Your task is to strictly provide valid medication data for the conversation in JSON format without periods.
                         Please ensure the following:
 
                         - Each medication must be valid JSON and without periods.
                         - The JSON format should follow these examples:
                         [
                             {
+                                "DrugCode": "C01",
                                 "DrugName": "Aspirin",
                                 "Dosage": "100 mg",
                                 "Frequency": "Once a day",
@@ -237,64 +239,28 @@ export async function medicationGenerator(text: string): Promise<Medication[]> {
                                 "EndDate": "2024-05-30",
                                 "SpecialInstructions": "Take with food",
                                 "Status": true
-                            },
-                            {
-                                "DrugName": "Lisinopril",
-                                "Dosage": "20 mg",
-                                "Frequency": "Twice a day",
-                                "FillSupply": 60,
-                                "MethodOfIngestion": "Oral",
-                                "StartDate": "2024-05-15",
-                                "SpecialInstructions": "Monitor blood pressure regularly",
-                                "Status": true
-                            },
-                            {
-                                "DrugName": "Metformin",
-                                "Dosage": "500 mg",
-                                "Frequency": "Twice a day",
-                                "FillSupply": 60,
-                                "MethodOfIngestion": "Oral",
-                                "StartDate": "2024-06-01",
-                                "EndDate": "2024-06-30",
-                                "SpecialInstructions": "Take with a meal",
-                                "Status": false
-                            },
-                            {
-                                "DrugName": "Albuterol",
-                                "Dosage": "2 puffs",
-                                "Frequency": "As needed",
-                                "FillSupply": 200,
-                                "MethodOfIngestion": "Inhalation",
-                                "StartDate": "2024-05-20",
-                                "SpecialInstructions": "Use as directed for wheezing",
-                                "Status": true
                             }
                         ]
                         
-                        
                         Produce with this type: 
                         
-                        interface MedicationResponse {
-                            medicationId: string;
-                            patientId: string;
-                            fileId: string;
-                            drugCode: string;
-                            drugName: string;
-                            dosage: string;
-                            frequency: string;
-                            fillSupply: number;
-                            methodOfIngestion: string;
-                            startDate: Date;
-                            endDate?: Date;
-                            status: boolean;
-                          }
-                          
+                        interface Medication {
+                            DrugCode: string;
+                            DrugName: string;
+                            Dosage?: string;
+                            Frequency?: string;
+                            FillSupply?: number;
+                            MethodOfIngestion: string;
+                            StartDate?: string;
+                            EndDate?: string; 
+                            SpecialInstructions?: string;
+                            Status: boolean;
+                        }
 
-                        Please set every 'Status' boolean to true.
-
-                        Provide me only JSON and no superfluous information, text, characters, or comments.
-
-                        If there are no medications in the transcription, please provide an empty array.
+                        - Set every 'Status' boolean to true.
+                        - If there is no data for a specific field, leave it as null or undefined.
+                        - Do not hallucinate any data. If there are no medications in the transcription, please provide an empty array.
+                        - Provide me only JSON and no superfluous information, text, characters, or comments.
 
                         Here is the transcription:\n\n${text}`
             }

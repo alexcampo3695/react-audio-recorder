@@ -79,20 +79,20 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
   const [isActive, setIsActive] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchIcd10Codes = async () => {
+    const fetchMedications = async () => {
       try {
         const response = await fetch(`http://localhost:8000/api/medications/file/${fileId}`);
         if (!response.ok) {
-          throw new Error(`Failed to fetch icd10 codes: ${response.status}`);
+          throw new Error(`Failed to fetch medications codes: ${response.status}`);
         }
         const data: MedicationResponse[] = await response.json();
         setMedications(data);
       } catch (error) {
-        console.error('Failed to fetch summary:', error);
+        console.error('Failed to fetch medications:', error);
       }
     };
 
-    fetchIcd10Codes();
+    fetchMedications();
   }, [fileId]);
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
@@ -111,9 +111,11 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
       //   ) || null
       // );
     } catch (error) {
-      console.error('Failed to update icd10 status:', error);
+      console.error('Failed to update medication status:', error);
     }
   }
+
+  console.log('fileId:', fileId);
 
   return (
     <div className="list-widget list-widget-v2 tabbed-widget">
@@ -137,7 +139,7 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
                   <Icd10Row
                     key={medication.medicationId}
                     id={medication.medicationId}
-                    code={medication.drugCode}
+                    code={medication.dosage}
                     description={medication.drugName}
                     status={medication.status}
                     onStatusChange={handleStatusChange}

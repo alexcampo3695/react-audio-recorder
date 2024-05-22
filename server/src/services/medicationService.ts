@@ -9,21 +9,24 @@ export async function generateMedications(transcription: string, fileId: any, pa
         if (medications !== null) {
             break;
         }
-        
+    }
+    if (!medications) {
+        return; // Return early if no medications are generated
     }
     for (const medication of medications) {
         const newMedication = new MedicationModel({
             patientId: patientId,
             fileId: fileId,
-            drugCode: medication.drugCode,
-            drugName: medication.drugName,
-            dosage: medication.dosage,
-            frequency: medication.frequency,
-            fillSupply: medication.fillSupply,
-            methodOfIngestion: medication.methodOfIngestion,
-            status: medication.status,
-            startDate: new Date(medication.startDate),
-            endDate: medication.endDate ? new Date(medication.endDate) : undefined,
+            drugCode: medication.DrugCode || undefined,
+            drugName: medication.DrugName,
+            dosage: medication.Dosage,
+            frequency: medication.Frequency,
+            fillSupply: medication.FillSupply,
+            methodOfIngestion: medication.MethodOfIngestion,
+            status: medication.Status,
+            startDate: medication.StartDate ? new Date(medication.StartDate) : undefined,
+            endDate: medication.EndDate ? new Date(medication.EndDate) : undefined,
+            specialInstructions: medication.SpecialInstructions, // Ensure this is added
         });
         await newMedication.save();
     }
