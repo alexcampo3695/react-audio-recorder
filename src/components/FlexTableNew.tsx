@@ -5,17 +5,19 @@ import { useNavigate } from "react-router-dom";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 interface FlexItemProps {
+    patientId: string
     FirstName: string
     LastName: string
     DateOfBirth: string
 }
 
-const FlexTableItem: React.FC<FlexItemProps> = ({ FirstName, LastName, DateOfBirth }) => {
+const FlexTableItem: React.FC<FlexItemProps> = ({ patientId, FirstName, LastName, DateOfBirth }) => {
     const navigate = useNavigate();
     
 
     const handleItemClick = () => {
         const patientData = {
+            patientId,
             FirstName,
             LastName,
             DateOfBirth
@@ -134,9 +136,10 @@ const FlexTable = ({ }) => {
                         {patients.map((patient:any) => (
                             <FlexTableItem
                             key={patient._id}
-                            FirstName={patient.FirstName}
-                            LastName={patient.LastName}
-                            DateOfBirth={patient.DateOfBirth}
+                            patientId = {patient._id}
+                            FirstName = {patient.FirstName}
+                            LastName = {patient.LastName}
+                            DateOfBirth = {patient.DateOfBirth}
                             />
                         ))}
                         </div>
