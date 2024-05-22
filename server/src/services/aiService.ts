@@ -311,7 +311,7 @@ export async function medicationGenerator(text: string): Promise<Medication[]> {
             }
         });
         const responseData = response.data.choices[0].message.content.trim();
-        console.log('Response Data:', responseData)
+        console.log('Medication Response Data:', responseData)
         const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
         const medications: Medication[] = JSON.parse(sanitizedResponseData);
         return medications;
@@ -329,5 +329,101 @@ export async function medicationGenerator(text: string): Promise<Medication[]> {
 }
 
 
+interface CPT {
+    code: string;
+    description: string;
+    status: boolean;
+}
 
+export async function cptGenerator(text: string): Promise<ICD10Code[]> {
+    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    if (!apiKey) {
+        throw new Error("OpenAI API key is not set in environment variables");
+    }
+
+    const requestBody = {
+        model: "gpt-4o",
+        messages: [
+            {
+                role: "system",
+                content: "You are a helpful assistant designed to output valid CPT codes in JSON format without periods."
+            },
+            {
+                role: "user",
+                content: `You are receiving a conversation between a provider and a patient.
+                        Your task is to strictly provide valid CPT codes for the conversation in JSON format without periods.
+                        Please ensure the following:
+
+                        - Each ICD-10 code must be valid JSON and without periods or special characters.
+                        - The JSON format should follow these examples:
+                        [
+                            {
+                                "code": "99213",
+                                "description": "Office or other outpatient visit for the evaluation and management of an established patient",
+                                "status": true
+                            },
+                            {
+                                "code": "93000",
+                                "description": "Electrocardiogram, routine ECG with at least 12 leads; with interpretation and report",
+                                "status": true
+                            },
+                            {
+                                "code": "90471",
+                                "description": "Immunization administration (includes percutaneous, intradermal, subcutaneous, or intramuscular injections); one vaccine (single or combination vaccine/toxoid)",
+                                "status": true
+                            },
+                            {
+                                "code": "85610",
+                                "description": "Prothrombin time (PT)",
+                                "status": true
+                            }
+                        ]
+                        
+                        
+                        Produce with this type: 
+                        
+                        interface CPT {
+                            code: string;
+                            description: string;
+                            status: boolean;
+                        }
+
+                        Please set every 'status' boolean to true.
+
+                        If there are no CPTs valid in the transcription, please provide an empty array.
+
+                        Provide me only JSON and no superfluous information, text, characters, or comments.
+
+                        Here is the transcription:\n\n${text}`
+            }
+        ],
+        max_tokens: 4096,
+        temperature: 0.0,
+    };
+
+    try {
+        const response = await axios.post("https://api.openai.com/v1/chat/completions", requestBody, {
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const responseData = response.data.choices[0].message.content.trim();
+        console.log('CPT Response Data:', responseData)
+        const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
+        const cptCodes: CPT[] = JSON.parse(sanitizedResponseData);
+        return cptCodes;
+        
+    } catch (error) {
+        console.error('Error from OpenAI API:', error);
+        
+        if (error.response) {
+            console.error('Response data:', error.response.data);
+            console.error('Status:', error.response.status);
+            console.error('Headers:', error.response.headers);
+        } 
+        
+    }
+    return null;
+}
 

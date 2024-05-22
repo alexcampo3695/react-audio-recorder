@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
 
 
-interface Icd10RowData {
+interface CPT10RowData {
   id: string;
   code: string;
   description: string;
@@ -11,10 +11,10 @@ interface Icd10RowData {
   onStatusChange: (id: string, newStatus: boolean) => void;
 }
 
-const Icd10Row: React.FC<Icd10RowData> = ({ id, code, description, status, onStatusChange }) => {
+const CPTRow: React.FC<CPT10RowData> = ({ id, code, description, status, onStatusChange }) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
-  const handleICD10StatusChange = () => {
+  const handleCPTStatusChange = () => {
     const newStatus = !isChecked;
     setIsChecked(newStatus);
     onStatusChange(id, newStatus);
@@ -27,7 +27,7 @@ const Icd10Row: React.FC<Icd10RowData> = ({ id, code, description, status, onSta
             <input 
               type="checkbox"
               onClick = {() => setIsChecked(!isChecked)}
-              onChange = {handleICD10StatusChange}
+              onChange = {handleCPTStatusChange}
             >
             </input>
             <div className="checkmark-wrap">
@@ -53,51 +53,45 @@ const Icd10Row: React.FC<Icd10RowData> = ({ id, code, description, status, onSta
     </div>
   );
 };
-
-interface MedicationComponentProps {
+interface CPTComponentProps {
   fileId: string;
 }
 
-interface MedicationResponse {
-  medicationId: string;
-  patientId: string;
+interface CPTResponse {
+  _id: string;
   fileId: string;
-  drugCode: string;
-  drugName: string;
-  dosage: string;
-  frequency: string;
-  fillSupply: number;
-  methodOfIngestion: string; // e.g., orally, intravenously, etc.
-  startDate: Date;
-  endDate?: Date;
+  code: string;
+  description: string;
   status: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
-
-const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => {
-  const [medications, setMedications] = useState<MedicationResponse[] | null>(null);
+const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
+  const [cpts, setCPTs] = useState<CPTResponse[] | null>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchIcd10Codes = async () => {
+    const fetchCPTCodes = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/medications/file/${fileId}`);
+        const response = await fetch(`http://localhost:8000/api/cpt/file/${fileId}`);
         if (!response.ok) {
-          throw new Error(`Failed to fetch icd10 codes: ${response.status}`);
+          throw new Error(`Failed to fetch cpt codes: ${response.status}`);
         }
-        const data: MedicationResponse[] = await response.json();
-        setMedications(data);
+        const data: CPTResponse[] = await response.json();
+        setCPTs(data);
       } catch (error) {
         console.error('Failed to fetch summary:', error);
       }
     };
 
-    fetchIcd10Codes();
+    fetchCPTCodes();
   }, [fileId]);
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
-      await fetch(`http://localhost:8000/api/medications/update/${id}`, {
+      await fetch(`http://localhost:8000/api/cpt/update/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus }),
         headers: {
@@ -105,20 +99,20 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
         }
       });
 
-      // setMedications(prevMedications => 
-      //   prevMedications?.map(medication =>
-      //     medication.medicationId === id ? {...medications, status: newStatus} : medications
-      //   ) || null
-      // );
+      setCPTs(prevCPTs => 
+        prevCPTs?.map(cpt =>
+          cpt._id === id ? {...cpt, status: newStatus} : cpt
+        ) || null
+      );
     } catch (error) {
-      console.error('Failed to update icd10 status:', error);
+      console.error('Failed to update cpt status:', error);
     }
   }
 
   return (
     <div className="list-widget list-widget-v2 tabbed-widget">
       <div className="widget-head">
-          <h3 className="dark-inverted">Medications</h3>
+          <h3 className="dark-inverted">CPT Codes</h3>
           <div className="tabbed-controls">
               <a className="tabbed-control is-active">
                   <span>All</span>
@@ -132,24 +126,25 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
 
       <div className="inner-list-wrapper is-active">
           <div className="inner-list">
-              {medications ? (
-                medications.map(medication => (
-                  <Icd10Row
-                    key={medication.medicationId}
-                    id={medication.medicationId}
-                    code={medication.drugCode}
-                    description={medication.drugName}
-                    status={medication.status}
+              {cpts ? (
+                cpts.map(cpt => (
+                  <CPTRow
+                    key={cpt._id}
+                    id={cpt._id}
+                    code={cpt.code}
+                    description={cpt.description}
+                    status={cpt.status}
                     onStatusChange={handleStatusChange}
                   />
                 ))
               ) : (
-                <div>No Medications Found</div>
+                <div>No CPT Codes Proposed</div>
               )}
+
           </div>
       </div>
   </div>
   );
 };
 
-export default MedicationComponent;
+export default CPTComponent;

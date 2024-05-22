@@ -2,11 +2,11 @@ import { Request, Response } from 'express';
 import {  updateMetaData } from '../services/audioService';
 import { GridFSBucket, ObjectId } from 'mongodb';
 import { db } from '../utils/gridFsUtils';
-import { transcribeAudio, splitAudioFile } from '../services/trascriptionService';
+import { transcribeAudio, splitAudioFile, generateTranscription } from '../services/trascriptionService';
 import Transcription from '../models/Transcription';
 import fs from 'fs';
 import path from 'path';
-import { diariazeTranscription, icd10Generator, medicationGenerator, summarizeTranscription } from '../services/aiService';
+import { cptGenerator, diariazeTranscription, icd10Generator, medicationGenerator, summarizeTranscription } from '../services/aiService';
 import Summary from '../models/EncounterSummary';
 import EncounterSummary from '../models/EncounterSummary';
 import DiarizedTranscription from '../models/DiarizedTranscription';
@@ -14,6 +14,12 @@ import ICD10 from '../models/ICD10';
 import ICD10CodeModel from '../models/ICD10';
 import Medication from '../models/Medication';
 import MedicationModel from '../models/Medication';
+import CPT from '../models/CPT';
+import { generateSummary } from '../services/summaryService';
+import { generateDiarization } from '../services/diarizationService';
+import { generateICD10Codes } from '../services/icd10Service';
+import { generateMedications } from '../services/medicationService';
+import { generateCPTCodes } from '../services/cptService';
 
 
 
@@ -88,93 +94,13 @@ async function processRecording(fileId: any, patientId: any,patientData: any) {
 
         downloadStream.on('end', async () => {
         try {
-
-            //Generating Transcription
-            const chunks = await splitAudioFile({ path: inputPath, filename: recording.filename }, 60);
-            let transcription = '';
-            for (const chunk of chunks) {
-                const transcriptionResponse = await transcribeAudio(chunk);
-                transcription += transcriptionResponse.text + ' ';
-            }
-            await Transcription.updateOne(
-                { fileId: fileId },
-                { $set: { transcription: transcription.trim(), status: 'complete' } }
-            );
-
-            //Generating Summary
-            const summary = await summarizeTranscription(transcription.trim());
-            const newSummary =  new EncounterSummary({
-                fileId: fileId,
-                summary: summary,
-                patientId: patientId,
-            })
-            await newSummary.save();
-
-            //Generation Diarization
-            const diarization = await diariazeTranscription(transcription.trim());
-            const newDiarization = new DiarizedTranscription({
-                fileId: fileId,
-                diarization: diarization,
-                patientId: patientId,
-            });
-            await newDiarization.save();
-
-            // Generate ICD10 Codes
-            let maxTries = 3;
-            // const icd10Codes = await icd10Generator(transcription.trim());
-            let icd10Codes = [];
-            for (let i = 0; i < maxTries; i++) {
-                console.log('ICD TRY:', i + 1)
-                icd10Codes = await icd10Generator(transcription.trim());
-                if (icd10Codes !== null) {
-                    break;
-                }
-            }
-            for (const code of icd10Codes) {
-                const existingCode = await ICD10.findOne({ code: code.code });
-                 if (existingCode) {
-                    await ICD10.updateOne(
-                        {code: code.code},
-                        { description: code.description, status: code.status, patientId: patientId, }
-                    );
-                 } else {
-                    const newICD10 = new ICD10({
-                        fileId: fileId,
-                        code: code.code,
-                        description: code.description,
-                        status: code.status,
-                        patientId: patientId,
-                    });
-                    await newICD10.save();
-                 }
-            }
-
-            // Generate Medications
-            let medications = [];
-                for (let i = 0; i < maxTries; i++) {
-                    console.log('Medication Try:', i + 1)
-                    medications = await medicationGenerator(transcription.trim());
-                    if (medications !== null) {
-                        break;
-                    }
-                }
-                for (const medication of medications) {
-                    const newMedication = new MedicationModel({
-                        patientId: patientId,
-                        fileId: fileId,
-                        drugCode: medication.drugCode,
-                        drugName: medication.drugName,
-                        dosage: medication.dosage,
-                        frequency: medication.frequency,
-                        fillSupply: medication.fillSupply,
-                        methodOfIngestion: medication.methodOfIngestion,
-                        status: medication.status,
-                        startDate: new Date(medication.startDate),
-                        endDate: medication.endDate ? new Date(medication.endDate) : undefined,
-                    });
-                    await newMedication.save();
-                }
-            
+            const transcription = await generateTranscription(inputPath, recording, fileId);
+            await generateSummary(transcription, fileId, patientId);
+            await generateDiarization(transcription, fileId, patientId);
+            await generateICD10Codes(transcription, fileId, patientId);
+            await generateMedications(transcription, fileId, patientId);
+            await generateCPTCodes(transcription, fileId, patientId);
+        
             //apending metaData to audio/upload file
             await updateMetaData(recording.filename, patientData);
 

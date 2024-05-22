@@ -8,6 +8,7 @@ import DiarizedComponent from '../components/DiarizedTranscription';
 import Icd10Component from '../components/icd10Component';
 import GeneratedNote from '../components/GeneratedNote';
 import MedicationComponent from '../components/MedicationComponent';
+import CPTComponent from '../components/cptComponent';
 
 interface MetaData {
     FirstName: string;
@@ -115,10 +116,14 @@ const SummaryPage: React.FC = () => {
                             </div>
                             <div className="column is-6">
                                 <div className="profile-card">
+                                    
                                     <GeneratedNote
                                         fileId={fileId ?? ''}
                                     />
                                 </div>
+                                <CPTComponent
+                                    fileId={fileId ?? ''}
+                                />
                             </div>
                         </div>
                     </div>

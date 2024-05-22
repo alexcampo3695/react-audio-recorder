@@ -16,6 +16,7 @@ import summaryRoutes from './routes/encounterSummaryRoutes';
 import diarizationRoutes from './routes/diarizationRoutes';
 import icd10Routes from './routes/icd10Routes';
 import medicationsRoutes from './routes/medicationsRoutes';
+import cptRoutes from './routes/cptRoutes';
 
 const app = express();
 
@@ -32,8 +33,6 @@ mongoose.connect(dbConnectionUrl).then(() => {
     console.log('Connected to MongoDB');
 });
 
-
-
 app.use('/api/patients', patientRoutes);
 app.use('/api/audio', audioRoutes);
 app.use('/api/transcriptions', transcriptionRoutes);
@@ -41,9 +40,8 @@ app.use('/api/encounter_summary', summaryRoutes);
 app.use('/api/diarization', diarizationRoutes);
 app.use('/api/icd10', icd10Routes);
 app.use('/api/medcations', medicationsRoutes);
+app.use('/api/cpt', cptRoutes);
 
-// app.get('/', (req: Request, res: Response) => {
-//     res.send('Hello World');
-// });
+
 
 export default app;
