@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import SummaryComponent from '../elements/AudioPlayer';
 import CreatePatientForm from './CreatePatientForm';
 import "../styles/CreatePatientForm.css";
-import FlexTable from './FlexTableNew';
-import NavBar from './NavBar';
-import MobileNav from './MobileNav';
+import ExistingPatientsTable from './ExistingPatient';
 
 const HomeComponent = ({}) => {
     const [activeTab, setActiveTab] = useState('create')
@@ -55,7 +52,7 @@ const HomeComponent = ({}) => {
             {activeTab === 'create' ? (
                 <CreatePatientForm />
             ) : (
-                <FlexTable />
+                <ExistingPatientsTable />
             )}
         </div>
     )

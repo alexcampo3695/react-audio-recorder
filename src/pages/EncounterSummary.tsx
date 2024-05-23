@@ -5,10 +5,11 @@ import AppWrapper from './AppWrapper';
 import FakeAvatar, { AvatarSize } from '../elements/FakeAvatar';
 import EncounterSummaryComponent from '../components/EncounterSummary';
 import DiarizedComponent from '../components/DiarizedTranscription';
-import Icd10Component from '../components/icd10Component';
+import Icd10Component from '../components/Icd10Component';
 import GeneratedNote from '../components/GeneratedNote';
 import MedicationComponent from '../components/MedicationComponent';
-import CPTComponent from '../components/cptComponent';
+import CPTComponent from '../components/CptComponent';
+import ClinicalNoteComponent from '../components/ClinicalNote';
 
 interface MetaData {
     FirstName: string;
@@ -117,7 +118,7 @@ const SummaryPage: React.FC = () => {
                             <div className="column is-6">
                                 <div className="profile-card">
                                     
-                                    <GeneratedNote
+                                    <ClinicalNoteComponent
                                         fileId={fileId ?? ''}
                                     />
                                 </div>

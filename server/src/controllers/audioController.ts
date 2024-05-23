@@ -20,6 +20,7 @@ import { generateDiarization } from '../services/diarizationService';
 import { generateICD10Codes } from '../services/icd10Service';
 import { generateMedications } from '../services/medicationService';
 import { generateCPTCodes } from '../services/cptService';
+import { generateClinicalNote } from '../services/clinicalNoteService';
 
 
 
@@ -100,6 +101,26 @@ async function processRecording(fileId: any, patientId: any,patientData: any) {
             await generateICD10Codes(transcription, fileId, patientId);
             await generateMedications(transcription, fileId, patientId);
             await generateCPTCodes(transcription, fileId, patientId);
+
+            // query icd10, cppt and medications
+            const icd10Codes = await ICD10.find({ fileId: fileId });
+            const cptCodes = await CPT.find({ fileId: fileId });
+            const medications = await Medication.find({ fileId: fileId });
+
+            // conversionss
+            const icdCodesString = JSON.stringify(icd10Codes);
+            const cptCodesString = JSON.stringify(cptCodes);
+            const medicationsString = JSON.stringify(medications);
+
+            await generateClinicalNote(
+                transcription,
+                icdCodesString,
+                cptCodesString,
+                medicationsString,
+                fileId,
+                patientId
+            );
+
         
             //apending metaData to audio/upload file
             await updateMetaData(recording.filename, patientData);

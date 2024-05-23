@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import SummaryComponent from '../elements/AudioPlayer';
 import CreatePatientForm from '../components/CreatePatientForm';
 import "../styles/CreatePatientForm.css";
-import FlexTable from '../components/FlexTableNew';
+import FlexTable from '../components/ExistingPatient';
 import NavBar from '../components/NavBar';
 import MobileNav from '../components/MobileNav';
 import HomeComponent from '../components/HomeComponent';

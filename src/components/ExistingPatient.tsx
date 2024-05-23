@@ -11,7 +11,7 @@ interface FlexItemProps {
     DateOfBirth: string
 }
 
-const FlexTableItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, LastName, DateOfBirth }) => {
+const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, LastName, DateOfBirth }) => {
     const navigate = useNavigate();
     
 
@@ -71,7 +71,7 @@ const FlexTableItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, LastName
 
 
 
-const FlexTable = ({ }) => {
+const ExistingPatientsTable = ({ }) => {
     const [patients, setPatients] = useState([]);
 
     const fetchPatients = async (searchTerm: string = '') => {
@@ -138,12 +138,12 @@ const FlexTable = ({ }) => {
 
                         <div className="flex-list-inner">
                         {patients.map((patient:any) => (
-                            <FlexTableItem
-                            key={patient._id}
-                            PatientId = {patient.PatientId}
-                            FirstName = {patient.FirstName}
-                            LastName = {patient.LastName}
-                            DateOfBirth = {patient.DateOfBirth}
+                            <ExistingPatientItem
+                                key={patient._id}
+                                PatientId = {patient.PatientId}
+                                FirstName = {patient.FirstName}
+                                LastName = {patient.LastName}
+                                DateOfBirth = {patient.DateOfBirth}
                             />
                         ))}
                         </div>
@@ -175,4 +175,4 @@ const FlexTable = ({ }) => {
     );
 };
 
-export default FlexTable;
+export default ExistingPatientsTable;

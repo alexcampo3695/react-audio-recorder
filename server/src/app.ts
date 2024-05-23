@@ -17,6 +17,7 @@ import diarizationRoutes from './routes/diarizationRoutes';
 import icd10Routes from './routes/icd10Routes';
 import medicationsRoutes from './routes/medicationsRoutes';
 import cptRoutes from './routes/cptRoutes';
+import clincalNotesRoutes from './routes/clinicalNotesRoutes';
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/api/diarization', diarizationRoutes);
 app.use('/api/icd10', icd10Routes);
 app.use('/api/medications', medicationsRoutes);
 app.use('/api/cpt', cptRoutes);
+app.use('/api/clinical_note', clincalNotesRoutes);
 
 
 

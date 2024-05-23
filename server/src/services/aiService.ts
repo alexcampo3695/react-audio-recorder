@@ -393,3 +393,75 @@ export async function cptGenerator(text: string): Promise<ICD10Code[]> {
     return null;
 }
 
+interface CPT {
+    code: string;
+    description: string;
+    status: boolean;
+}
+
+export async function noteGenerator(transcription: string, icd10Codes: string, cptCode: string, medications: string): Promise<ICD10Code[]> {
+    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    if (!apiKey) {
+        throw new Error("OpenAI API key is not set in environment variables");
+    }
+
+    const requestBody = {
+        model: "gpt-4o",
+        messages: [
+            {
+                role: "system",
+                content: "You are a helpful assistant designed to output valid CPT codes in JSON format without periods."
+            },
+            {
+                role: "user",
+                content: 
+                `
+                    You are receiving multiple payloads for a viit between a provider and a patient or a provider taking notes on a patient vist.
+                    Your task is to generate a comprehensive medical note from the data you are provided. 
+                    Please ensure the following:
+                    - Only include events and information that are explicitly mentioned in the transcript and the data provided.
+                    - Please ensure the note is formatted in markdown.
+                    - Please make the markdown beautiful and easy to read.
+                    - Please use emojis with the bolded headers.
+                    - Please include: Treatment Plans: Creating detailed treatment plans that include medications, therapies, and follow-up appointments.
+                    - Please include: Diagnosis: Listing the diagnosis codes that were discussed during the visit.
+                    - Please include: Procedures: Listing the procedures that were discussed during the visit.
+                    - Please include: Medications: Listing the medications that were discussed during the visit.
+                    - Please include: Follow-up: Scheduling follow-up appointments and tests.
+                    - Please include: Referrals: Making referrals to specialists.
+                    - SOAP Notes: Structuring the transcription into SOAP (Subjective, Objective, Assessment, Plan) notes format for consistency and clarity.
+                    - Chronic Condition Management Plans: Creating specific plans for managing chronic conditions such as diabetes, hypertension, and asthma.
+                    - Format the conversation in markdown.
+                    Here is the transcription:\n\n${transcription}
+                    Here are the diagnosis codes:\n\n${icd10Codes}
+                    Here are the cpt codes:\n\n${cptCode}
+                    Here are the medications:\n\n${medications}
+                `
+
+            }
+        ],
+        max_tokens: 4096,
+        temperature: 0.0,
+    };
+
+    try {
+        const response = await axios.post("https://api.openai.com/v1/chat/completions", requestBody, {
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            }
+        });
+        return response.data.choices[0].message.content.trim();
+        
+    } catch (error) {
+        console.error('Error from OpenAI API:', error);
+        
+        if (error.response) {
+            console.error('Response data:', error.response.data);
+            console.error('Status:', error.response.status);
+            console.error('Headers:', error.response.headers);
+        } 
+        
+    }
+}
+
