@@ -5,24 +5,26 @@ import { useNavigate } from "react-router-dom";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 interface FlexItemProps {
-    patientId: string
+    PatientId: string
     FirstName: string
     LastName: string
     DateOfBirth: string
 }
 
-const FlexTableItem: React.FC<FlexItemProps> = ({ patientId, FirstName, LastName, DateOfBirth }) => {
+const FlexTableItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, LastName, DateOfBirth }) => {
     const navigate = useNavigate();
     
 
     const handleItemClick = () => {
-        const patientData = {
-            patientId,
-            FirstName,
-            LastName,
-            DateOfBirth
+        const patientData: FlexItemProps = {
+            PatientId: PatientId,
+            FirstName: FirstName,
+            LastName: LastName,
+            DateOfBirth: DateOfBirth,
         };
         navigate("/recorder", { state: { patientData } });
+
+        console.log('PatientData:', patientData)
     }
 
     return (
@@ -82,6 +84,8 @@ const FlexTable = ({ }) => {
         fetchPatients();
     }, []);
 
+    console.log(patients)
+
     return (
         // Make this a ReactFragment??
         <div>
@@ -136,7 +140,7 @@ const FlexTable = ({ }) => {
                         {patients.map((patient:any) => (
                             <FlexTableItem
                             key={patient._id}
-                            patientId = {patient._id}
+                            PatientId = {patient.PatientId}
                             FirstName = {patient.FirstName}
                             LastName = {patient.LastName}
                             DateOfBirth = {patient.DateOfBirth}

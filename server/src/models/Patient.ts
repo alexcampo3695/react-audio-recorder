@@ -8,7 +8,7 @@ interface IPatient extends Document {
 }
 
 const PatientSchema = new Schema<IPatient>({
-    PatientId: { type: String, required: true }, // Change to String
+    PatientId: { type: String, required: true, unique: true }, // Change to String
     FirstName: { type: String, required: true },
     LastName: { type: String, required: true },
     DateOfBirth: { type: Date, required: true },

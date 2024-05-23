@@ -104,6 +104,7 @@ async function processRecording(fileId: any, patientId: any,patientData: any) {
             //apending metaData to audio/upload file
             await updateMetaData(recording.filename, patientData);
 
+
         } catch (error) {
             console.error('Error processing recording:', error);
             await Transcription.updateOne(

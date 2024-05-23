@@ -10,6 +10,7 @@ export async function generateICD10Codes(transcription: string, fileId: any, pat
             break;
         }
     }
+    console.log('icd10Codes:', icd10Codes)
     for (const code of icd10Codes) {
         const existingCode = await ICD10.findOne({ code: code.code });
         if (existingCode) {
