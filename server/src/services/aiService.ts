@@ -432,6 +432,7 @@ export async function noteGenerator(transcription: string, icd10Codes: string, c
                     - SOAP Notes: Structuring the transcription into SOAP (Subjective, Objective, Assessment, Plan) notes format for consistency and clarity.
                     - Chronic Condition Management Plans: Creating specific plans for managing chronic conditions such as diabetes, hypertension, and asthma.
                     - Format the conversation in markdown.
+                    - Please do not make a title, I'm already handling this in the UI. Just got straight into the note.
                     Here is the transcription:\n\n${transcription}
                     Here are the diagnosis codes:\n\n${icd10Codes}
                     Here are the cpt codes:\n\n${cptCode}

@@ -13,6 +13,7 @@ import AppWrapper from './pages/AppWrapper';
 import RecorderPage from './pages/Recorder';
 import HomeComponent from './components/HomeComponent';
 import AudioPlayer from './elements/AudioPlayer';
+import ClinicalNoteComponent from './components/ClinicalNote';
 
 
 
@@ -61,6 +62,7 @@ const App: React.FC = () => {
     setSelectedTranscription(transcription);
   }
 
+
   return (
     <Router>
       <Routes>
@@ -92,6 +94,14 @@ const App: React.FC = () => {
         <Route
           path="/summary/:gridID"
           element={<SummaryPage selectedTranscription={selectedTranscription} />}
+        />
+        <Route
+          path="/test"
+          element={
+            <ClinicalNoteComponent
+                fileId={'664ee481236061fe93da63c4' ?? ''}
+            />
+          }
         />
       </Routes>
     </Router>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
+import "../styles/Markdown.css";
 
 
 interface ClinicalNoteProps {
@@ -19,7 +20,8 @@ interface NoteResponse {
 
 const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
   const [clinicalNote, setClinicalNote] = useState<string | null>(null);
-  const [isActive, setIsActive] = useState<boolean>(false);
+  const [markdown, setMarkdown] = useState<string>('');
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchClinicalNote = async () => {
@@ -38,26 +40,70 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
     fetchClinicalNote();
   }, [fileId]);
 
+  const handleEditToggle = () => {
+    if (!isEditing) {
+      setMarkdown(clinicalNote || '');
+    }
+    setIsEditing(!isEditing)
+  }
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/clinical_note/update/${fileId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ clinicalNote: markdown }),
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to update clinical note: ${response.status}`);
+      }
+      const data: NoteResponse = await response.json();
+      setClinicalNote(data.clinicalNote);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Failed to update clinical note:', error);
+    }
+  }
+
   return (
-    <div 
-      className={`collapse has-plus ${isActive ? 'is-active' : ''}`}
-    >
-      <div className="collapse-header">
-          <h3>Clinical Note</h3>
-          <div className="collapse-icon"
-            onClick = {() => setIsActive(!isActive)}
-          >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          </div>
+    <div className="markdown-content">
+    <div className="header"> 
+      <h1>📝 Clinical Note</h1>
+      <div className="buttons">
+        <button 
+          className="button h-button"
+          onClick={handleEditToggle}
+        >
+          <span className="icon">
+            <i data-feather={isEditing ? "eye" : "edit-2"}></i>
+          </span>
+          <span>{isEditing ? "View" : "Edit"}</span>
+        </button>
+        {isEditing && (
+          <button className="button h-button is-success is-elevated">
+            <span className="icon">
+              <i className="fas fa-check"></i>
+            </span>
+            <span>Approve</span>
+          </button>
+        )}
+        
       </div>
-      <div 
-        className="collapse-content"
-        style= {{display: isActive ? 'block' : 'none'}}
-      >
-          <ReactMarkdown>
-              {clinicalNote || ''}
-          </ReactMarkdown>
-      </div>
+    </div>
+    {isEditing ? (
+      <textarea
+        value={markdown}
+        onChange={(e) => setMarkdown(e.target.value)}
+        className="textarea"
+      />
+    ) : (
+      <ReactMarkdown>
+        {clinicalNote || ''}
+      </ReactMarkdown>
+    )}
+    
   </div>
   );
 };
