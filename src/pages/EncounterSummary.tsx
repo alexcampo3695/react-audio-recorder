@@ -9,6 +9,7 @@ import Icd10Component from '../components/Icd10Component';
 import MedicationComponent from '../components/MedicationComponent';
 import CPTComponent from '../components/CptComponent';
 import ClinicalNoteComponent from '../components/ClinicalNote';
+import html2pdf from 'html2pdf.js';
 
 
 interface MetaData {
@@ -27,6 +28,8 @@ interface TranscriptionPayload {
     updatedAt: string;
 }
 
+
+
 const SummaryPage: React.FC = () => {
     const { gridID } = useParams<{ gridID: string }>();
     const validGridId = gridID || '';
@@ -34,6 +37,18 @@ const SummaryPage: React.FC = () => {
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
     const [transcription, setTranscription] = useState<string | null>(null);
     const [fileId, setFileId] = useState<string | null>(null);
+
+    const handlePDF = () => {
+        const element = document.getElementById('summary-content');
+        if (element) {
+            html2pdf(element, {
+                margin: 1,
+                filename: `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${data?.createdAt}_VisitNote.pdf`,
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+                html2canvas: { scale: 2 }
+            })
+        }
+    }
 
     useEffect(() => {
         const fetchTranscription = async () => {
@@ -95,6 +110,11 @@ const SummaryPage: React.FC = () => {
                             Hey everyone, I am a product manager from New York and I am looking
                             for new opportunities in the software business.
                         </p>
+                        <div className="socials">
+                            <a><i aria-hidden="true" className="fab fa-facebook-f"></i></a>
+                            <a><i aria-hidden="true" className="fab fa-twitter"></i></a>
+                            <a><i aria-hidden="true" className="fab fa-linkedin-in"></i></a>
+                        </div>
                         {audioBlob && fileId && <AudioPlayer fileID={fileId} />}
                     </div>
                     <div className="profile-body">

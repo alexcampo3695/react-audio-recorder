@@ -102,6 +102,7 @@
     "filepond": "^4.31.1",
     "filepond-plugin-file-validate-type": "^1.2.9",
     "filepond-plugin-image-preview": "^4.6.12",
+    "html2pdf.js": "^0.10.1",
     "notyf": "^3.10.0",
     "openai": "^4.40.2",
     "react-audio-recorder": "^2.2.0",
