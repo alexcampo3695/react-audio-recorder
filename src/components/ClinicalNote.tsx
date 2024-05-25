@@ -98,6 +98,7 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
       </div>
       {isEditing ? (
         <textarea
+          style = {{minHeight: "1200px"}}
           value={markdown}
           onChange={(e) => setMarkdown(e.target.value)}
           className="textarea"

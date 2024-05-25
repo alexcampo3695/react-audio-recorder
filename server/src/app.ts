@@ -8,6 +8,7 @@ import multer from 'multer';
 import { storage } from './utils/gridFsUtils';
 
 
+
 // Routes
 import patientRoutes from './routes/patientRoutes';
 import audioRoutes from './routes/audioRoutes';
@@ -18,6 +19,7 @@ import icd10Routes from './routes/icd10Routes';
 import medicationsRoutes from './routes/medicationsRoutes';
 import cptRoutes from './routes/cptRoutes';
 import clincalNotesRoutes from './routes/clinicalNotesRoutes';
+import userRoutes from './routes/userRoutes';
 
 const app = express();
 
@@ -43,6 +45,7 @@ app.use('/api/icd10', icd10Routes);
 app.use('/api/medications', medicationsRoutes);
 app.use('/api/cpt', cptRoutes);
 app.use('/api/clinical_note', clincalNotesRoutes);
+app.use('/api/user', userRoutes);
 
 
 

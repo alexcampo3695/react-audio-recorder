@@ -9,9 +9,10 @@ import Icd10Component from '../components/Icd10Component';
 import MedicationComponent from '../components/MedicationComponent';
 import CPTComponent from '../components/CptComponent';
 import ClinicalNoteComponent from '../components/ClinicalNote';
-import html2pdf from 'html2pdf.js';
+
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import feather from 'feather-icons';
+import handlePDF from '../helpers/PDF';
 
 
 
@@ -42,17 +43,17 @@ const SummaryPage: React.FC = () => {
     const [fileId, setFileId] = useState<string | null>(null);
 
 
-    const handlePDF = () => {
-        const element = document.getElementById('clinical-note');
-        if (element) {
-            html2pdf().from(element).set({
-                margin: 1,
-                filename: `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${data?.createdAt}_VisitNote.pdf`,
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-                html2canvas: { scale: 2 }
-            }).save();
-        }
-    };
+    // const handlePDF = () => {
+    //     const element = document.getElementById('clinical-note');
+    //     if (element) {
+    //         html2pdf().from(element).set({
+    //             margin: 1,
+    //             filename: `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${data?.createdAt}_VisitNote.pdf`,
+    //             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    //             html2canvas: { scale: 2 }
+    //         }).save();
+    //     }
+    // };
 
     useEffect(() => {
         const fetchTranscription = async () => {
@@ -120,11 +121,24 @@ const SummaryPage: React.FC = () => {
                         </p>
                         <div className="profile-stats">
                             <div className="socials">
-                                <a
-                                    onClick = {handlePDF}
+                                <button className="button is-circle is-elevated"
+                                    onClick = {() => handlePDF(
+                                        {elementId: 'clinical-note', fileName: `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${data?.createdAt}_VisitNote.pdf`}
+                                    )}
                                 >
-                                    <i data-feather="heart"></i>
-                                </a>
+                                    <span className="icon is-small">
+                                        <i data-feather="download"></i>
+                                    </span>
+                                </button>
+                                <button className="button is-circle is-elevated"
+                                    onClick = {() => handlePDF(
+                                        {elementId: 'clinical-note', fileName: `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${data?.createdAt}_VisitNote.pdf`}
+                                    )}
+                                >
+                                    <span className="icon is-small">
+                                        <i data-feather="mail"></i>
+                                    </span>
+                                </button>
                             </div>
                         </div>
                         {audioBlob && fileId && <AudioPlayer fileID={fileId} />}
