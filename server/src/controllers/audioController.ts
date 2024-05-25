@@ -118,6 +118,7 @@ async function processRecording(fileId: any, patientId: any,patientData: any) {
                 cptCodesString,
                 medicationsString,
                 fileId,
+                patientData,
                 patientId
             );
 

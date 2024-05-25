@@ -10,6 +10,9 @@ import MedicationComponent from '../components/MedicationComponent';
 import CPTComponent from '../components/CptComponent';
 import ClinicalNoteComponent from '../components/ClinicalNote';
 import html2pdf from 'html2pdf.js';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import feather from 'feather-icons';
+
 
 
 interface MetaData {
@@ -38,17 +41,18 @@ const SummaryPage: React.FC = () => {
     const [transcription, setTranscription] = useState<string | null>(null);
     const [fileId, setFileId] = useState<string | null>(null);
 
+
     const handlePDF = () => {
-        const element = document.getElementById('summary-content');
+        const element = document.getElementById('clinical-note');
         if (element) {
-            html2pdf(element, {
+            html2pdf().from(element).set({
                 margin: 1,
                 filename: `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${data?.createdAt}_VisitNote.pdf`,
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
                 html2canvas: { scale: 2 }
-            })
+            }).save();
         }
-    }
+    };
 
     useEffect(() => {
         const fetchTranscription = async () => {
@@ -70,6 +74,10 @@ const SummaryPage: React.FC = () => {
             fetchTranscription();
         }
     }, [validGridId]);
+
+    useEffect(() => {
+        feather.replace();
+      }, []);
 
     useEffect(() => {
         const fetchAudio = async () => {
@@ -110,10 +118,14 @@ const SummaryPage: React.FC = () => {
                             Hey everyone, I am a product manager from New York and I am looking
                             for new opportunities in the software business.
                         </p>
-                        <div className="socials">
-                            <a><i aria-hidden="true" className="fab fa-facebook-f"></i></a>
-                            <a><i aria-hidden="true" className="fab fa-twitter"></i></a>
-                            <a><i aria-hidden="true" className="fab fa-linkedin-in"></i></a>
+                        <div className="profile-stats">
+                            <div className="socials">
+                                <a
+                                    onClick = {handlePDF}
+                                >
+                                    <i data-feather="heart"></i>
+                                </a>
+                            </div>
                         </div>
                         {audioBlob && fileId && <AudioPlayer fileID={fileId} />}
                     </div>
@@ -139,7 +151,7 @@ const SummaryPage: React.FC = () => {
                                 />
                             </div>
                             <div className="column is-6">
-                                <div className="profile-card">
+                                <div className="profile-card" id="clinical-note">
                                     <ClinicalNoteComponent
                                         fileId={fileId ?? ''}
                                     />

@@ -393,13 +393,9 @@ export async function cptGenerator(text: string): Promise<ICD10Code[]> {
     return null;
 }
 
-interface CPT {
-    code: string;
-    description: string;
-    status: boolean;
-}
 
-export async function noteGenerator(transcription: string, icd10Codes: string, cptCode: string, medications: string): Promise<ICD10Code[]> {
+
+export async function noteGenerator(transcription: string, icd10Codes: string, cptCode: string, medications: string, patientData: string): Promise<ICD10Code[]> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
@@ -433,10 +429,13 @@ export async function noteGenerator(transcription: string, icd10Codes: string, c
                     - Chronic Condition Management Plans: Creating specific plans for managing chronic conditions such as diabetes, hypertension, and asthma.
                     - Format the conversation in markdown.
                     - Please do not make a title, I'm already handling this in the UI. Just got straight into the note.
+                    - Please provide the patient details in the note in its own section separated by a line break.
                     Here is the transcription:\n\n${transcription}
                     Here are the diagnosis codes:\n\n${icd10Codes}
                     Here are the cpt codes:\n\n${cptCode}
                     Here are the medications:\n\n${medications}
+                    Here are the patient details:\n\n${patientData}
+                    Here is today's date: ${new Date().toLocaleDateString()}
                 `
 
             }
