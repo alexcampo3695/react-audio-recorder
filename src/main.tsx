@@ -14,6 +14,8 @@ import RecorderPage from './pages/Recorder';
 import HomeComponent from './components/HomeComponent';
 import AudioPlayer from './elements/AudioPlayer';
 import ClinicalNoteComponent from './components/ClinicalNote';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 
 
@@ -66,8 +68,20 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route
+      <Route
           path="/"
+          element={
+            <Login/>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <Register/>
+          }
+        />
+        <Route
+          path="/home"
           element={
             <Home/>
           }
