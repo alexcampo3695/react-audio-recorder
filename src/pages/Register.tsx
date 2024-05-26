@@ -146,7 +146,7 @@ const Register = () => {
                                 <div className="field">
                                     <label>Are you a provider or a patient?</label>
                                     <div className="control">
-                                        <label className="radio">
+                                        <label className="radio is-outlined is-primary">
                                             <input 
                                                 type="radio" 
                                                 name="notification_selection" 
@@ -154,7 +154,7 @@ const Register = () => {
                                                 required
                                             />
                                             <span></span>
-                                            Yes
+                                            Provider
                                         </label>
 
                                         <label className="radio is-outlined is-primary">
@@ -165,7 +165,7 @@ const Register = () => {
                                                 required
                                             />
                                             <span></span>
-                                            No
+                                            Patient
                                         </label>
                                     </div>
                                 </div>

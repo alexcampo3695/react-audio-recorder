@@ -93,7 +93,7 @@ const TwoFactorAuth = () => {
                                     <div className="control has-icon">
                                         <input 
                                             className="input" 
-                                            type="password" 
+                                            type="text" 
                                             placeholder="Enter Code"
                                             value={twoFactorCode}
                                             onChange={(e) => setTwoFactorCode(e.target.value)}

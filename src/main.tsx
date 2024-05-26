@@ -1,7 +1,9 @@
 import './styles/huro/scss/main.scss';
+import './styles/huro/vendor/css/icons.min.css'; // Adjust the path as needed
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 
 import { transcribeAudio } from "./helpers/transcribe";
 import RecordingPage from './pages/Recorder';
@@ -19,6 +21,8 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import TwoFactorAuth from './pages/TwoFactorAuth';
+
+
 
 
 
