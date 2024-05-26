@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 
 // Register new user
 export const registerUser = async (req: Request, res: Response) => {
-    const { username, email, password, role } = req.body;
+    const { email, password, role } = req.body;
   
     const userExists = await User.findOne({ email });
   
@@ -14,7 +14,6 @@ export const registerUser = async (req: Request, res: Response) => {
     }
   
     const user = await User.create({
-        username,
         email,
         password,
         role
@@ -23,7 +22,6 @@ export const registerUser = async (req: Request, res: Response) => {
     if (user) {
         res.status(201).json({
             _id: user._id.toString(),
-            username: user.username,
             email: user.email,
             token: generateToken(user._id.toString()),
         });
@@ -41,7 +39,6 @@ export const authUser = async (req: Request, res: Response) => {
     if (user && (await user.matchPassword(password))) {
         res.json({
             _id: user._id.toString(),
-            username: user.username,
             email: user.email,
             token: generateToken(user._id.toString()),
         });
