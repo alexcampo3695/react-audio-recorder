@@ -15,6 +15,7 @@ const ResetPassword = () => {
 
     async function handleResetPassword(e: React.FormEvent) {
         e.preventDefault();
+        
 
         const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
         if (!passwordRegex.test(password)) {
@@ -59,6 +60,7 @@ const ResetPassword = () => {
         feather.replace();
     }, []);
 
+    console.log('Token',token)
     return (
         <div className="auth-wrapper-inner is-single">
             <div className="auth-nav">

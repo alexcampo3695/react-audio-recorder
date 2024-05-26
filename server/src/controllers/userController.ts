@@ -383,32 +383,34 @@ export const forgotPassword = async (req: Request, res: Response) => {
 };
 
 export const resetPassword = async (req: Request, res: Response) => {
-    // Log the received token for debugging
-    const resetToken = req.params.token;
-    console.log('Received token:', req.params.resetToken);
+  const resetToken = req.params.token;
+  console.log('Received token:', resetToken);
 
-    const resetPasswordToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex');
+  if (!resetToken) {
+      return res.status(400).json({ message: 'Token is required' });
+  }
 
-    try {
-        const user = await User.findOne({
-            resetPasswordToken,
-            resetPasswordExpire: { $gt: new Date() },
-        });
+  const resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
-        if (!user) {
-            res.status(400).json({ message: 'Invalid token' });
-            return;
-        }
+  try {
+      const user = await User.findOne({
+          resetPasswordToken,
+          resetPasswordExpire: { $gt: new Date() },
+      });
 
-        user.password = req.body.password;
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpire = undefined;
+      if (!user) {
+          return res.status(400).json({ message: 'Invalid token' });
+      }
 
-        await user.save();
+      user.password = req.body.password;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
 
-        res.status(200).json({ message: 'Password reset successful' });
-    } catch (error) {
-        console.error('Error during password reset:', error);
-        res.status(500).json({ message: 'Password reset failed' });
-    }
+      await user.save();
+
+      res.status(200).json({ message: 'Password reset successful' });
+  } catch (error) {
+      console.error('Error during password reset:', error);
+      res.status(500).json({ message: 'Password reset failed' });
+  }
 };
