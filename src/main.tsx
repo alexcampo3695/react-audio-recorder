@@ -16,6 +16,8 @@ import AudioPlayer from './elements/AudioPlayer';
 import ClinicalNoteComponent from './components/ClinicalNote';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 
 
@@ -75,9 +77,15 @@ const App: React.FC = () => {
           }
         />
         <Route
-          path="/register"
+          path="/reset_password/:token"
           element={
-            <Register/>
+            <ResetPassword/>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <ForgotPassword/>
           }
         />
         <Route

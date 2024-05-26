@@ -2,12 +2,13 @@ import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
-  username: string;
   email: string;
   password: string;
   role: 'provider' | 'patient';
   loginAttempts: number;
   lockUntil?: number;
+  resetPasswordToken?: string;
+  resetPasswordExpire?: Date;
   matchPassword(password: string): Promise<boolean>;
 }
 
@@ -16,7 +17,9 @@ const userSchema = new Schema<IUser>({
   password: { type: String, required: true },
   role: { type: String, enum: ['provider', 'patient'], required: true },
   loginAttempts: { type: Number, required: true, default: 0 },
-  lockUntil: { type: Number }
+  lockUntil: { type: Number },
+  resetPasswordToken: { type: String },
+  resetPasswordExpire: { type: Date }
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

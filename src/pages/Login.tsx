@@ -123,7 +123,12 @@ const Login = () => {
                                         </span>
                                     </label>
                                     <div className="remember-me">Remember Me</div>
-                                    <a id="forgot-link">Forgot Password?</a>
+                                    <a
+                                        id="forgot-link"
+                                        href = "/forgot-password"
+                                    >
+                                        Forgot Password?
+                                    </a>
                                 </div>
                                 <div className="button-wrap has-help">
                                     <button id="login-submit" type="submit" className="button h-button is-big is-rounded is-primary is-bold is-raised">

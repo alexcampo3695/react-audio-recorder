@@ -6,72 +6,45 @@ import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
 
-const Register = () => {
-    const [role, setRole] = React.useState('');
+const ForgotPassword = () => {
     const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
-    const [repeatPassword, setRepeatPassword] = React.useState('');
     const [error, setError] = React.useState('');
     const navigate = useNavigate();
     const notyf = new Notyf();
-    
 
-    async function handleRegistration(e: React.FormEvent) {
+    async function handleForgotPassword(e: React.FormEvent) {
         e.preventDefault();
-
-        const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
-        if (!passwordRegex.test(password)) {
-            setError('Password must be at least 8 characters long and include at least one special character.');
-            notyf.error('Password must be at least 8 characters long and include at least one special character.');
-            return;
-        }
-
-        if (password !== repeatPassword) {
-            setError('Passwords do not match.');
-            notyf.error('Passwords do not match.');
-            return;
-        }
-
-        const userRegistration = {
-            email: email,
-            password: password,
-            role: role
-        };
-
         try {
-            const response = await fetch('http://localhost:8000/api/user', {
+            const response = await fetch('http://localhost:8000/api/user/forgot_password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(userRegistration),
+                body: JSON.stringify({ email }),
             });
 
             if (!response.ok) {
-                // throw new Error('Invalid registration');
-                notyf.error('Error: Email already exists!');
-                throw new Error('Invalid registration');
+                notyf.error('Error: Email not found!');
+                throw new Error('Invalid email');
             }
-
-            const data = await response.json();
-            notyf.success('Registration successful!');
-            console.log('Registration successful:', data);
-            navigate('/', { state: { userRegistration } });
+            notyf.success('Password reset link sent to email!');
         } catch (error) {
-            console.error('Registration error:', error);
             if (error instanceof Error) {
+                console.error('Error:', error.message);
                 setError(error.message);
+                notyf.error(error.message);
             } else {
                 setError('An unknown error occurred');
+                notyf.error('An unknown error occurred');
             }
         }
     }
 
     useEffect(() => {
         feather.replace();
-      }, []);
+    }, []);
 
-      return (
+    return (
         <div className="auth-wrapper-inner is-single">
             <div className="auth-nav">
                 <div className="left"></div>
@@ -91,12 +64,11 @@ const Register = () => {
             <div className="single-form-wrap">
                 <div className="inner-wrap">
                     <div className="auth-head">
-                        <h2>Join Us Now.</h2>
-                        <p>Start by creating your account</p>
-                        <a href="/">I already have an account </a>
+                        <h2>Reset Your Password.</h2>
+                        <p>Enter your email address below.</p>
                     </div>
                     <div className="form-card">
-                        <form onSubmit={handleRegistration}>
+                        <form onSubmit={handleForgotPassword}>
                             <div id="signin-form" className="login-form">
                                 <div className="field">
                                     <div className="control has-icon">
@@ -113,65 +85,9 @@ const Register = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="field">
-                                    <div className="control has-icon">
-                                        <input 
-                                            className="input" 
-                                            type="password" 
-                                            placeholder="Password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                        />
-                                        <span className="form-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="field">
-                                    <div className="control has-icon">
-                                        <input 
-                                            className="input" 
-                                            type="password" 
-                                            placeholder="Repeat Password"
-                                            value={repeatPassword}
-                                            onChange={(e) => setRepeatPassword(e.target.value)}
-                                            required
-                                        />
-                                        <span className="form-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="field">
-                                    <label>Are you a provider or a patient?</label>
-                                    <div className="control">
-                                        <label className="radio">
-                                            <input 
-                                                type="radio" 
-                                                name="notification_selection" 
-                                                onClick={() => setRole('provider')}
-                                                required
-                                            />
-                                            <span></span>
-                                            Yes
-                                        </label>
-
-                                        <label className="radio is-outlined is-primary">
-                                            <input 
-                                                type="radio" 
-                                                name="notification_selection"
-                                                onClick={() => setRole('patient')}
-                                                required
-                                            />
-                                            <span></span>
-                                            No
-                                        </label>
-                                    </div>
-                                </div>
                                 <div className="control login">
                                     <button className="button h-button is-primary is-bold is-fullwidth is-raised">
-                                        Sign Up
+                                        Reset Password
                                     </button>
                                 </div>
                             </div>
@@ -184,4 +100,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export default ForgotPassword;
