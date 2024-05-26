@@ -18,6 +18,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import TwoFactorAuth from './pages/TwoFactorAuth';
 
 
 
@@ -70,10 +71,22 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-      <Route
+        <Route
           path="/"
           element={
             <Login/>
+          }
+        />
+        <Route
+          path="/authentication"
+          element={
+            <TwoFactorAuth/>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <Register/>
           }
         />
         <Route

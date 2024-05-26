@@ -35,7 +35,7 @@ const Login = () => {
             const data = await response.json();
             console.log('Login successful:', data);
             localStorage.setItem('token', data.token);
-            navigate('/recorder', { state: { loginCredentials } });
+            navigate('/authentication', { state: { loginCredentials } });
         } catch (error) {
             console.error('Login error:', error);
             if (error instanceof Error) {

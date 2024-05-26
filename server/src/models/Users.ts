@@ -9,6 +9,8 @@ export interface IUser extends Document {
   lockUntil?: number;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
+  twoFactorCode?: string;
+  twoFactorExpire?: Date;
   matchPassword(password: string): Promise<boolean>;
 }
 
@@ -19,7 +21,9 @@ const userSchema = new Schema<IUser>({
   loginAttempts: { type: Number, required: true, default: 0 },
   lockUntil: { type: Number },
   resetPasswordToken: { type: String },
-  resetPasswordExpire: { type: Date }
+  resetPasswordExpire: { type: Date },
+  twoFactorCode: { type: String },
+  twoFactorExpire: { type: Date },
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {
