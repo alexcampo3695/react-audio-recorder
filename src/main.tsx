@@ -3,6 +3,7 @@ import './styles/huro/vendor/css/icons.min.css'; // Adjust the path as needed
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { UserProvider } from './context/UserContext';
 
 
 import { transcribeAudio } from "./helpers/transcribe";
@@ -21,6 +22,8 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import TwoFactorAuth from './pages/TwoFactorAuth';
+import ProfileSettings from './pages/ProfileSettings';
+import ProfileSettingsPage from './pages/ProfileSettings';
 
 
 
@@ -112,6 +115,12 @@ const App: React.FC = () => {
           }
         />
         <Route
+          path="/profile_settings"
+          element={
+            <ProfileSettingsPage />
+          }
+        />
+        <Route
           path="/recorder"
           element={
             <RecorderPage
@@ -152,6 +161,8 @@ const App: React.FC = () => {
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <UserProvider>
+      <App />
+    </UserProvider>
   </React.StrictMode>
 );

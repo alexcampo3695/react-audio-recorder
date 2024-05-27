@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Props } from "./interfaces";
 import "../styles/CreatePatientForm.css";
 import { v4 as uuidv4 } from 'uuid';
-
+import { Notyf } from "notyf";
 
 const CreatePatientForm = ({}) => {
     const [firstName, setFirstName] = useState('');
@@ -11,6 +11,7 @@ const CreatePatientForm = ({}) => {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [patientId, setPatientId] = useState(() => uuidv4());
     const navigate = useNavigate();
+    const notyf = new Notyf();
 
     async function handleCreatePatient(e: React.FormEvent) {
         e.preventDefault();
@@ -31,8 +32,8 @@ const CreatePatientForm = ({}) => {
         setFirstName('');
         setLastName('');
         setDateOfBirth('');
+        notyf.success('Patient created successfully!');
       }
-    console.log('CreatePatientForm.tsx')
     return (
         <div className="form-layout is-separate">
             <div className="form-outer">

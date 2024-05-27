@@ -2,11 +2,13 @@ import React, { useState, useEffect, ReactElement, Suspense } from "react";
 import { Props } from "./interfaces";
 import { format } from "path";
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
-
+import { useUser } from '../context/UserContext'
 
 
 const NavBar = ({}) => {
+    const { user } = useUser();
     const [menuTab, setActiveTab] = useState('home')
+    const [settingMenu, setSettingMenu] = useState(false)
 
     const handleTabClick = (tab:string, event: React.MouseEvent) => {
         event.preventDefault();
@@ -79,7 +81,11 @@ const NavBar = ({}) => {
                         </a>
                     </li>
                     <li id="user-menu">
-                        <div id="profile-menu" className="dropdown profile-dropdown dropdown-trigger is-spaced is-up">
+                        <div 
+                            id="profile-menu"
+                            onClick = {() => setSettingMenu(!settingMenu)} 
+                            className= {`dropdown profile-dropdown dropdown-trigger is-spaced is-up ${settingMenu ? 'is-active' : ''}`}
+                        >
                             <img src="assets/img/avatars/photos/8.jpg" data-demo-src="assets/img/avatars/photos/8.jpg" alt=""></img>
                             <span className="status-indicator"></span>
 
@@ -94,41 +100,13 @@ const NavBar = ({}) => {
                                             <span>Product Manager</span>
                                         </div>
                                     </div>
-                                    <a href="/admin-profile-view.html" className="dropdown-item is-media">
+                                    <a href="/profile_settings" className="dropdown-item is-media">
                                         <div className="icon">
                                             <i className="lnil lnil-user-alt"></i>
                                         </div>
                                         <div className="meta">
                                             <span>Profile</span>
                                             <span>View your profile</span>
-                                        </div>
-                                    </a>
-                                    <a className="dropdown-item is-media layout-switcher">
-                                        <div className="icon">
-                                            <i className="lnil lnil-layout"></i>
-                                        </div>
-                                        <div className="meta">
-                                            <span>Layout</span>
-                                            <span>Switch to admin/webapp</span>
-                                        </div>
-                                    </a>
-                                    <hr className="dropdown-divider"></hr>
-                                    <a href="#" className="dropdown-item is-media">
-                                        <div className="icon">
-                                            <i className="lnil lnil-briefcase"></i>
-                                        </div>
-                                        <div className="meta">
-                                            <span>Projects</span>
-                                            <span>All my projects</span>
-                                        </div>
-                                    </a>
-                                    <a href="#" className="dropdown-item is-media">
-                                        <div className="icon">
-                                            <i className="lnil lnil-users-alt"></i>
-                                        </div>
-                                        <div className="meta">
-                                            <span>Team</span>
-                                            <span>Manage your team</span>
                                         </div>
                                     </a>
                                     <hr className="dropdown-divider"></hr>

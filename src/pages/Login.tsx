@@ -1,10 +1,13 @@
-import React, { useEffect, useState, ReactElement } from 'react';
+import React, { useEffect, useState, ReactElement, useContext } from 'react';
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import loginImage from "../styles/assets/login_img.png";
 import { useNavigate } from "react-router-dom";
 
 
-
+type LoginCredentials = {
+    email: string;
+    password: string
+}
 
 
 const Login = () => {
@@ -16,7 +19,7 @@ const Login = () => {
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
 
-        const loginCredentials = {
+        const loginCredentials: LoginCredentials = {
             email: email,
             password: password
         };
@@ -35,7 +38,6 @@ const Login = () => {
             }
 
             const data = await response.json();
-            console.log('Login successful:', data);
             localStorage.setItem('token', data.token);
             navigate('/authentication', { state: { loginCredentials } });
         } catch (error) {

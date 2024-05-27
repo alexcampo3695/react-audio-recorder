@@ -20,6 +20,7 @@ import medicationsRoutes from './routes/medicationsRoutes';
 import cptRoutes from './routes/cptRoutes';
 import clincalNotesRoutes from './routes/clinicalNotesRoutes';
 import userRoutes from './routes/userRoutes';
+import userDetailsRoutes from './routes/userDetailsRoutes';
 
 const app = express();
 
@@ -46,7 +47,7 @@ app.use('/api/medications', medicationsRoutes);
 app.use('/api/cpt', cptRoutes);
 app.use('/api/clinical_note', clincalNotesRoutes);
 app.use('/api/user', userRoutes);
-
+app.use('/api/user_details', userDetailsRoutes);
 
 
 export default app;
