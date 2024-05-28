@@ -2,46 +2,28 @@ import React, { useEffect, useState } from "react";
 import ReactMarkdown from 'react-markdown';
 import "../styles/Markdown.css";
 import { useUser } from "../context/UserContext"; 
+import { Notyf } from "notyf";
+import 'notyf/notyf.min.css';
 
 interface ProfileFormBodyProps {
+    formData: any;
     onUpdateFormData: (formData: any) => void;
 }
 
-
-const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) => {
-    const [firstName, setFirstName] = useState<string>('');
-    const [lastName, setLastName] = useState<string>('');
-    const [gender, setGender] = useState<string>('');
-    const [phoneNumber, setPhoneNumber] = useState<string>('');
-    const [practiceAddress, setPracticeAddress] = useState<string>('');
-    const [providerType, setProviderType] = useState<string>('');
-    const [specialty, setSpecialty] = useState<string>('');
-    const [npiNumber, setNpiNumber] = useState<string>('');
-    const [stateLicenseNumber, setStateLicenseNumber] = useState<string>('');
-    const [deaNumber, setDeaNumber] = useState<string>('');
+const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFormData }) => {
     const [genderDropDown, setGenderDropDown] = useState<boolean>(false);
 
-    useEffect(() => {
-        const formData = {
-            firstName,
-            lastName,
-            gender,
-            phoneNumber,
-            practiceAddress,
-            providerType,
-            specialty,
-            npiNumber,
-            stateLicenseNumber,
-            deaNumber,
-        };
-        console.log('updating form data', formData)
-        onUpdateFormData(formData);
-    }, [firstName, lastName, gender, phoneNumber, practiceAddress, providerType, specialty, npiNumber, stateLicenseNumber, deaNumber]);
-
-    
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        onUpdateFormData({
+            ...formData,
+            [name]: value
+        });
+    };
 
     return (
         <div className="form-body">
+            {/* Profile Picture Section */}
             <div className="fieldset">
                 <div className="fieldset-heading">
                     <h4>Profile Picture</h4>
@@ -50,31 +32,10 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                 <div className="h-avatar profile-h-avatar is-xl">
                     <img className="avatar" src="assets/img/avatars/photos/8.jpg" alt="Avatar" />
                     <div className="filepond-profile-wrap is-hidden">
-                        <div
-                            className="filepond--root profile-filepond filepond--hopper"
-                            data-style-panel-layout="compact circle"
-                            data-style-button-remove-item-position="left bottom"
-                            data-style-button-process-item-position="right bottom"
-                            data-style-load-indicator-position="center bottom"
-                            data-style-progress-indicator-position="right bottom"
-                            data-style-button-remove-item-align="false"
-                            data-style-image-edit-button-edit-item-position="bottom center"
-                        >
-                            <input
-                                className="filepond--browser"
-                                type="file"
-                                name="profile_filepond"
-                                aria-controls="filepond--assistant"
-                                aria-labelledby="filepond--drop-label"
-                            />
+                        <div className="filepond--root profile-filepond filepond--hopper">
+                            <input className="filepond--browser" type="file" name="profile_filepond" aria-controls="filepond--assistant" aria-labelledby="filepond--drop-label" />
                             <div style={{ height: "100%" }}></div>
-                            <a
-                                className="filepond--credits"
-                                aria-hidden="true"
-                                href="https://pqina.nl/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
+                            <a className="filepond--credits" aria-hidden="true" href="https://pqina.nl/" target="_blank" rel="noopener noreferrer">
                                 Powered by PQINA
                             </a>
                             <div className="filepond--drop-label">
@@ -97,18 +58,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                     </div>
                     <button className="button is-circle edit-button is-edit">
                         <span className="icon is-small">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="feather feather-edit-2"
-                            >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-edit-2">
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                             </svg>
                         </span>
@@ -116,35 +66,19 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                 </div>
             </div>
 
+            {/* Personal Info Section */}
             <div className="fieldset">
                 <div className="fieldset-heading">
                     <h4>Personal Info</h4>
-                    <p>This will appear on the clinical clinical note.</p>
+                    <p>This will appear on the clinical note.</p>
                 </div>
                 <div className="columns is-multiline">
                     <div className="column is-6">
                         <div className="field">
                             <div className="control has-icon">
-                                <input 
-                                    type="text" 
-                                    className="input" 
-                                    placeholder="First Name" 
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                />
+                                <input type="text" className="input" placeholder="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
                                 <div className="form-icon">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="feather feather-user"
-                                    >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-user">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="12" cy="7" r="4"></circle>
                                     </svg>
@@ -155,26 +89,9 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                     <div className="column is-6">
                         <div className="field">
                             <div className="control has-icon">
-                                <input 
-                                    type="text" 
-                                    className="input" 
-                                    placeholder="Last Name" 
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
-                                />
+                                <input type="text" className="input" placeholder="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} />
                                 <div className="form-icon">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="feather feather-user"
-                                    >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-user">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="12" cy="7" r="4"></circle>
                                     </svg>
@@ -183,34 +100,35 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                         </div>
                     </div>
                     <div className="column is-6">
-                        <div className="field"
-                            onClick={() => setGenderDropDown(!genderDropDown)}
-                        >
+                        <div className="field">
                             <div className="control">
                                 <div className={`h-select ${genderDropDown ? 'is-active' : ''}`}>
-                                    <div className="select-box">
-                                        <span>Gender</span>
+                                    <div className="select-box" onClick={() => setGenderDropDown(!genderDropDown)}>
+                                        <span>{formData.gender || 'Gender'}</span>
                                     </div>
                                     <div className="select-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-chevron-down">
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </svg>
                                     </div>
-                                    <div className="select-drop has-slimscroll-sm">
-                                        <div className="drop-inner">
-                                            
-                                            <div className="option-row">
-                                                <input type="radio" name="gender_select" value="Male" checked={gender === "Male"} onChange={(e) => setGender(e.target.value)} />
-                                                <div className="option-meta">
-                                                    <span>Male</span>
+                                    {genderDropDown && (
+                                        <div className="select-drop has-slimscroll-sm">
+                                            <div className="drop-inner">
+                                                <div className="option-row">
+                                                    <input type="radio" name="gender" value="Male" onClick={() => setGenderDropDown(false)} checked={formData.gender === "Male"} onChange={handleChange} />
+                                                    <div className="option-meta">
+                                                        <span>Male</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="option-row">
-                                                <input type="radio" name="gender_select" value="Female" checked={gender === "Female"} onChange={(e) => setGender(e.target.value)} />
-                                                <div className="option-meta">
-                                                    <span>Female</span>
+                                                <div className="option-row">
+                                                    <input type="radio" name="gender" value="Female" onClick={() => setGenderDropDown(false)} checked={formData.gender === "Female"} onChange={handleChange} />
+                                                    <div className="option-meta">
+                                                        <span>Female</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -218,15 +136,12 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                     <div className="column is-6">
                         <div className="field">
                             <div className="control has-icon">
-                                <input 
-                                    type="text" 
-                                    className="input" 
-                                    placeholder="Phone Number" 
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                />
+                                <input type="text" className="input" placeholder="Phone Number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} />
                                 <div className="form-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-smartphone"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-smartphone">
+                                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                    </svg>
                                 </div>
                             </div>
                         </div>
@@ -234,26 +149,9 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                     <div className="column is-12">
                         <div className="field">
                             <div className="control has-icon">
-                                <input 
-                                    type="text" 
-                                    className="input" 
-                                    placeholder="Practice Address"
-                                    value={practiceAddress}
-                                    onChange={(e) => setPracticeAddress(e.target.value)}
-                                />
+                                <input type="text" className="input" placeholder="Practice Address" name="practiceAddress" value={formData.practiceAddress} onChange={handleChange} />
                                 <div className="form-icon">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="feather feather-map-pin"
-                                    >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-map-pin">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                         <circle cx="12" cy="10" r="3"></circle>
                                     </svg>
@@ -264,26 +162,9 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                     <div className="column is-12">
                         <div className="field">
                             <div className="control has-icon">
-                                <input 
-                                    type="text" 
-                                    className="input" 
-                                    placeholder="Provider Type (e.g., MD, DO, NP, PA)" 
-                                    value={providerType}
-                                    onChange={(e) => setProviderType(e.target.value)}
-                                />
+                                <input type="text" className="input" placeholder="Provider Type (e.g., MD, DO, NP, PA)" name="providerType" value={formData.providerType} onChange={handleChange} />
                                 <div className="form-icon">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="feather feather-briefcase"
-                                    >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-briefcase">
                                         <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                                         <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                                     </svg>
@@ -294,13 +175,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                     <div className="column is-12">
                         <div className="field">
                             <div className="control has-icon">
-                                <input 
-                                    type="text" 
-                                    className="input" 
-                                    placeholder="Specialty (e.g., Cardiology, Pediatrics)" 
-                                    value={specialty}
-                                    onChange={(e) => setSpecialty(e.target.value)}
-                                />
+                                <input type="text" className="input" placeholder="Specialty (e.g., Cardiology, Pediatrics)" name="specialty" value={formData.specialty} onChange={handleChange} />
                                 <div className="form-icon">
                                     <i className="fas fa-heart"></i>
                                 </div>
@@ -310,13 +185,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                     <div className="column is-12">
                         <div className="field">
                             <div className="control has-icon">
-                                <input 
-                                    type="text" 
-                                    className="input" 
-                                    placeholder="NPI Number" 
-                                    value={npiNumber}
-                                    onChange={(e) => setNpiNumber(e.target.value)}
-                                />
+                                <input type="text" className="input" placeholder="NPI Number" name="npiNumber" value={formData.npiNumber} onChange={handleChange} />
                                 <div className="form-icon">
                                     <i className="fas fa-hashtag"></i>
                                 </div>
@@ -326,13 +195,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                     <div className="column is-12">
                         <div className="field">
                             <div className="control has-icon">
-                                <input 
-                                    type="text" 
-                                    className="input" 
-                                    placeholder="State License Number" 
-                                    value={stateLicenseNumber}
-                                    onChange={(e) => setStateLicenseNumber(e.target.value)}
-                                />
+                                <input type="text" className="input" placeholder="State License Number" name="stateLicenseNumber" value={formData.stateLicenseNumber} onChange={handleChange} />
                                 <div className="form-icon">
                                     <i className="fas fa-flag-usa"></i>
                                 </div>
@@ -342,13 +205,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
                     <div className="column is-12">
                         <div className="field">
                             <div className="control has-icon">
-                                <input 
-                                    type="text" 
-                                    className="input" 
-                                    placeholder="DEA Number"
-                                    value={deaNumber}
-                                    onChange={(e) => setDeaNumber(e.target.value)}
-                                />
+                                <input type="text" className="input" placeholder="DEA Number" name="deaNumber" value={formData.deaNumber} onChange={handleChange} />
                                 <div className="form-icon">
                                     <i className="fas fa-pills"></i>
                                 </div>
@@ -361,20 +218,28 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
     );
 };
 
-
-
-
 const ProfileSettings = () => {
     const { user } = useUser();
     const [general, setGeneral] = useState<boolean>(true);
     const [settings, setSettings] = useState<boolean>(false);
-    const [formData, setFormData] = useState<any>({});
+    const [formData, setFormData] = useState<any>({
+        firstName: '',
+        lastName: '',
+        gender: '',
+        phoneNumber: '',
+        practiceAddress: '',
+        providerType: '',
+        specialty: '',
+        npiNumber: '',
+        stateLicenseNumber: '',
+        deaNumber: ''
+    });
+    const [isNew, setIsNew] = useState<boolean>(true);
+    const notyf = new Notyf();
 
-    console.log('User:', user); // Debugging statement
 
     const handleGeneralDataSubmit = async () => {
-        console.log('handleGeneralDataSubmit called'); // Debugging statement
-
+        console.log('handleGeneralDataSubmit called');
         if (user) {
             const data = {
                 userId: user.id,
@@ -382,8 +247,7 @@ const ProfileSettings = () => {
                 ...formData
             };
 
-            console.log('Data to be sent:', data); // Debugging statement
-             // Debugging statement
+            console.log('Data to be sent:', data);
 
             try {
                 const response = await fetch('http://localhost:8000/api/user_details/create', {
@@ -399,14 +263,41 @@ const ProfileSettings = () => {
                 }
 
                 const results = await response.json();
-                console.log('Updated user data:', results); // Debugging statement
+                console.log('Updated user data:', results);
+                notyf.success('User data updated successfully');
             } catch (error) {
                 console.error('Failed to update user data:', error);
+                notyf.error('Failed to update user data');
             }
         } else {
             console.log('User is not defined');
         }
     };
+
+
+
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            if (user) {
+                try {
+                    const response = await fetch(`http://localhost:8000/api/user_details/${user.id}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch user details');
+                    }
+                    const data = await response.json();
+                    if (data) {
+                        setFormData(data);
+                        setIsNew(false); // If data exists, set isNew to false
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch user details:', error);
+                }
+            }
+        };
+        fetchUserDetails();
+    }, [user]);
+
+
 
     return (
         <div className="account-wrapper">
@@ -425,8 +316,8 @@ const ProfileSettings = () => {
                         </div>
 
                         <div className="account-menu">
-                            <a 
-                                href="#general" 
+                            <a
+                                href="/admin-profile-edit-1.html"
                                 className={`account-menu-item ${general ? 'is-active' : ''}`}
                                 onClick={() => { setGeneral(true); setSettings(false); }}
                             >
@@ -436,8 +327,8 @@ const ProfileSettings = () => {
                                     <i aria-hidden="true" className="fas fa-arrow-right"></i>
                                 </span>
                             </a>
-                            <a 
-                                href="#settings" 
+                            <a
+                                href="/admin-profile-edit-4.html"
                                 className={`account-menu-item ${settings ? 'is-active' : ''}`}
                                 onClick={() => { setGeneral(false); setSettings(true); }}
                             >
@@ -467,8 +358,8 @@ const ProfileSettings = () => {
                                             </span>
                                             <span>Go Back</span>
                                         </a>
-                                        <button 
-                                            id="save-button" 
+                                        <button
+                                            id="save-button"
                                             className="button h-button is-primary is-raised"
                                             onClick={handleGeneralDataSubmit}
                                         >
@@ -478,7 +369,7 @@ const ProfileSettings = () => {
                                 </div>
                             </div>
                         </div>
-                        {general ? <ProfileFormBody onUpdateFormData={setFormData} /> : null}
+                        {general ? <ProfileFormBody formData={formData} onUpdateFormData={setFormData} /> : null}
                     </div>
                 </div>
             </div>
