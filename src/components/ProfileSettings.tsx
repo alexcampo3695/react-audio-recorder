@@ -22,7 +22,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
     const [genderDropDown, setGenderDropDown] = useState<boolean>(false);
 
     useEffect(() => {
-        onUpdateFormData({
+        const formData = {
             firstName,
             lastName,
             gender,
@@ -33,7 +33,9 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ onUpdateFormData }) =
             npiNumber,
             stateLicenseNumber,
             deaNumber,
-        });
+        };
+        console.log('updating form data', formData)
+        onUpdateFormData(formData);
     }, [firstName, lastName, gender, phoneNumber, practiceAddress, providerType, specialty, npiNumber, stateLicenseNumber, deaNumber]);
 
     
@@ -368,13 +370,20 @@ const ProfileSettings = () => {
     const [settings, setSettings] = useState<boolean>(false);
     const [formData, setFormData] = useState<any>({});
 
+    console.log('User:', user); // Debugging statement
+
     const handleGeneralDataSubmit = async () => {
+        console.log('handleGeneralDataSubmit called'); // Debugging statement
+
         if (user) {
             const data = {
                 userId: user.id,
                 email: user.email,
                 ...formData
             };
+
+            console.log('Data to be sent:', data); // Debugging statement
+             // Debugging statement
 
             try {
                 const response = await fetch('http://localhost:8000/api/user_details/create', {
@@ -390,10 +399,12 @@ const ProfileSettings = () => {
                 }
 
                 const results = await response.json();
-                console.log('Updated user data:', results);
+                console.log('Updated user data:', results); // Debugging statement
             } catch (error) {
                 console.error('Failed to update user data:', error);
             }
+        } else {
+            console.log('User is not defined');
         }
     };
 
@@ -415,7 +426,7 @@ const ProfileSettings = () => {
 
                         <div className="account-menu">
                             <a 
-                                href="/admin-profile-edit-1.html" 
+                                href="#general" 
                                 className={`account-menu-item ${general ? 'is-active' : ''}`}
                                 onClick={() => { setGeneral(true); setSettings(false); }}
                             >
@@ -426,7 +437,7 @@ const ProfileSettings = () => {
                                 </span>
                             </a>
                             <a 
-                                href="/admin-profile-edit-4.html" 
+                                href="#settings" 
                                 className={`account-menu-item ${settings ? 'is-active' : ''}`}
                                 onClick={() => { setGeneral(false); setSettings(true); }}
                             >

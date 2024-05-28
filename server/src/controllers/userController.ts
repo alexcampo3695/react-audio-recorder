@@ -34,7 +34,7 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 };
 
-// Authenticate user
+
 export const authUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
   
@@ -325,7 +325,11 @@ export const authUser = async (req: Request, res: Response) => {
         //     email: user.email,
         //     token: generateToken(user._id.toString()),
         // });
-        res.status(200).json({ message: '2FA code sent to your email' });
+        res.status(200).json({ 
+          id: user._id.toString(),
+          email: user.email,
+          role: user.role,
+         });
     } else {
         res.status(401).json({ message: 'Invalid email or password' });
     }
