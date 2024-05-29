@@ -9,31 +9,40 @@ const upload = multer({ storage: signatureStorage });
 
 router.post('/create', upload.single('signature'),createUserDetails);
 router.get('/:userId', getUserDetailsById);
-router.patch('/update/:userId', upload.single('signature'), async (req, res) => {
+router.patch('/update', upload.single('signature'), async (req, res) => {
     try {
-        const { email, ...updateData } = req.body;
-        const { userId } = req.params;
+        const {userId, email, ...updateData} = req.body;
 
-        console.log('useriD', userId)
+        ///this is sososo hideous 😔 🤠
+        const userIdValue = Array.isArray(userId) ? userId[0] : userId;
+        const emailValue = Array.isArray(email) ? email[0] : email;
+
         if (req.file) {
-            updateData.signature = req.file.filename;
+            updateData.signature = req.file.path;
         }
+        console.log('userIdValue', userIdValue)
+        console.log('emailValue', emailValue)
+
 
         const userDetails = await UserDetails.findOneAndUpdate(
-            { userId },
-            { email, ...updateData },
-            { new: true }
+            userIdValue, 
+            {email: emailValue, ...updateData}, 
+            {new: true}
         );
 
+        console.log('userDetails', userDetails)
+
         if (!userDetails) {
-            return res.status(404).json({ message: "User Details not found" });
+            return res.status(404).json({message: "User Details not found"}) && console.log('id', userIdValue)
+            
+            ;
         }
         res.json(userDetails);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({error: error.message});
+        console.log(req.body);
     }
-});
-
+})
 
 
 export default router;
