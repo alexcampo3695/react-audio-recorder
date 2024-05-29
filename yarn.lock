@@ -8938,6 +8938,14 @@
   dependencies:
     "@remix-run/router" "1.16.0"
 
+"react-signature-canvas@^1.0.6":
+  "integrity" "sha512-NoMHomYu9HxFeLjUGbIeV9abPdWSROfFxFNDekGdwmmaIx+w5ziOEiU2C34X0Ao4GxFnwqyUy/BpYlA4lCD1CA=="
+  "resolved" "https://registry.npmjs.org/react-signature-canvas/-/react-signature-canvas-1.0.6.tgz"
+  "version" "1.0.6"
+  dependencies:
+    "signature_pad" "^2.3.2"
+    "trim-canvas" "^0.1.0"
+
 "react@^18.2.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
@@ -9704,6 +9712,11 @@
   "resolved" "https://registry.npmjs.org/signal-exit/-/signal-exit-4.1.0.tgz"
   "version" "4.1.0"
 
+"signature_pad@^2.3.2":
+  "integrity" "sha512-peYXLxOsIY6MES2TrRLDiNg2T++8gGbpP2yaC+6Ohtxr+a2dzoaqWosWDY9sWqTAAk6E/TyQO+LJw9zQwyu5kA=="
+  "resolved" "https://registry.npmjs.org/signature_pad/-/signature_pad-2.3.2.tgz"
+  "version" "2.3.2"
+
 "slash@^3.0.0":
   "integrity" "sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q=="
   "resolved" "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz"
@@ -10283,6 +10296,11 @@
   "integrity" "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw=="
   "resolved" "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz"
   "version" "0.0.3"
+
+"trim-canvas@^0.1.0":
+  "integrity" "sha512-nd4Ga3iLFV94mdhW9JFMLpQbHUyCQuhFOD71PEAt1NjtMD5wbZctzhX8c3agHNybMR5zXD1XTGoIEWk995E6pQ=="
+  "resolved" "https://registry.npmjs.org/trim-canvas/-/trim-canvas-0.1.2.tgz"
+  "version" "0.1.2"
 
 "trim-lines@^3.0.0":
   "integrity" "sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg=="

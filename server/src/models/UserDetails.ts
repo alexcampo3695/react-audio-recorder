@@ -14,6 +14,7 @@ export interface IUserDetails extends Document {
   npiNumber: string;
   stateLicenseNumber: string;
   deaNumber: string;
+  signature: string;
 }
 
 const UserDetailsSchema = new Schema<IUserDetails>({
@@ -28,7 +29,8 @@ const UserDetailsSchema = new Schema<IUserDetails>({
   specialty: { type: String, required: false },
   npiNumber: { type: String, required: false },
   stateLicenseNumber: { type: String, required: false },
-  deaNumber: { type: String, required: false }
+  deaNumber: { type: String, required: false },
+  signature: { type: String, required: false },
 });
 
 const UserDetails = mongoose.model<IUserDetails>('UserDetails', UserDetailsSchema);

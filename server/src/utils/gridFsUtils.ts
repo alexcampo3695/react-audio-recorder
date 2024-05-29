@@ -48,3 +48,31 @@ const storage = new GridFsStorage({
 });
 
 export { storage };
+
+const signatureStorage = new GridFsStorage({
+    options: { useNewUrlParser: true, useUnifiedTopology: true },
+    url: process.env.MONGO_URL!,
+    file: (req: Request, file: Express.Multer.File) => {
+        return new Promise((resolve, reject) => {
+            process.nextTick(() => {
+                crypto.randomBytes(16, (err: Error, buf: Buffer) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    const filename = buf.toString('hex') + path.extname(file.originalname);
+
+                    const fileInfo = {
+                        filename: filename,
+                        bucketName: 'signatures'
+                    }
+                    resolve(fileInfo);
+                })
+            })
+        })
+    }
+});
+
+export { signatureStorage };
+
+

@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from 'react-markdown';
 import "../styles/Markdown.css";
 import { useUser } from "../context/UserContext"; 
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
+import SignatureCanvas from 'react-signature-canvas';
 
 interface ProfileFormBodyProps {
     formData: any;
     onUpdateFormData: (formData: any) => void;
+    onSignatureChange: (signature: File | null) => void;
 }
 
-const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFormData }) => {
+const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFormData, onSignatureChange }) => {
     const [genderDropDown, setGenderDropDown] = useState<boolean>(false);
+    const sigCanvas = useRef<SignatureCanvas>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -20,6 +23,24 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
             [name]: value
         });
     };
+
+    const clearSignature = () => {
+        sigCanvas.current?.clear();
+        onSignatureChange(null);
+    }
+
+    const saveSignature  = () => {
+        if (sigCanvas.current) {
+            sigCanvas.current.getTrimmedCanvas().toBlob((blob: Blob) => {
+                if (blob) {
+                    const file = new File([blob], "signature.png", { type: "image/png" });
+                    onSignatureChange(file);
+                } else {
+                    console.error('Failed to save signature');
+                }
+            })
+        }
+    }
 
     return (
         <div className="form-body">
@@ -212,6 +233,24 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                             </div>
                         </div>
                     </div>
+                    {/* Signature Section */}
+                    <div className="fieldset">
+                        <div className="fieldset-heading">
+                            <h4>Signature</h4>
+                            <p>Sign below</p>
+                        </div>
+                        <div className="signature-container">
+                            <SignatureCanvas
+                                ref={sigCanvas}
+                                penColor="black"
+                                canvasProps={{ width: 500, height: 200, className: 'sigCanvas' }}
+                            />
+                            <div className="signature-buttons">
+                                <button onClick={clearSignature} className="button is-light">Clear</button>
+                                <button onClick={saveSignature} className="button is-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -234,47 +273,59 @@ const ProfileSettings = () => {
         stateLicenseNumber: '',
         deaNumber: ''
     });
+    const [signature, setSignature] = useState<File | null>(null);
     const [isNew, setIsNew] = useState<boolean>(true);
     const notyf = new Notyf();
 
+    console.log('User:', user);
+    console.log('UserID:', user?.id);
+    console.log('UserEmail:', user?.email);
 
     const handleGeneralDataSubmit = async () => {
         console.log('handleGeneralDataSubmit called');
         if (user) {
-            const data = {
-                userId: user.id,
-                email: user.email,
-                ...formData
-            };
-
-            console.log('Data to be sent:', data);
-
-            try {
-                const response = await fetch('http://localhost:8000/api/user_details/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to update user data');
-                }
-
-                const results = await response.json();
-                console.log('Updated user data:', results);
-                notyf.success('User data updated successfully');
-            } catch (error) {
-                console.error('Failed to update user data:', error);
-                notyf.error('Failed to update user data');
+          const data = new FormData();
+      
+          // Append user data fields individually
+          data.append('userId', user.id);
+          data.append('email', user.email);
+      
+          // Append form data fields, excluding '_id' and '__v' fields for new documents
+          Object.keys(formData).forEach(key => {
+            if (key !== 'userId' && key !== 'email' && key !== '_id' && key !== '__v') {
+              data.append(key, formData[key]);
             }
+          });
+      
+          // Append signature file
+          if (signature) {
+            data.append('signature', signature);
+          }
+      
+          console.log('Data to be sent:', Object.fromEntries(data.entries()));
+      
+          try {
+            const response = await fetch(`http://localhost:8000/api/user_details/${isNew ? 'create' : 'update'}`, {
+              method: isNew ? 'POST' : 'PATCH',
+              body: data,
+            });
+      
+            if (!response.ok) {
+              throw new Error('Failed to update user data');
+            }
+      
+            const results = await response.json();
+            console.log('Updated user data:', results);
+            notyf.success('User data updated successfully');
+          } catch (error) {
+            console.error('Failed to update user data:', error);
+            notyf.error('Failed to update user data');
+          }
         } else {
-            console.log('User is not defined');
+          console.log('User is not defined');
         }
-    };
-
-
+      };
+    
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -298,7 +349,7 @@ const ProfileSettings = () => {
     }, [user]);
 
 
-
+    console.log('userEmail:', user?.email);
     return (
         <div className="account-wrapper">
             <div className="columns">
@@ -369,7 +420,7 @@ const ProfileSettings = () => {
                                 </div>
                             </div>
                         </div>
-                        {general ? <ProfileFormBody formData={formData} onUpdateFormData={setFormData} /> : null}
+                        {general ? <ProfileFormBody formData={formData} onUpdateFormData={setFormData} onSignatureChange={setSignature}/> : null}
                     </div>
                 </div>
             </div>
