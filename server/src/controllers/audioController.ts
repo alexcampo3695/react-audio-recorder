@@ -21,6 +21,7 @@ import { generateICD10Codes } from '../services/icd10Service';
 import { generateMedications } from '../services/medicationService';
 import { generateCPTCodes } from '../services/cptService';
 import { generateClinicalNote } from '../services/clinicalNoteService';
+import UserDetails from '../models/UserDetails';
 
 
 
@@ -106,6 +107,7 @@ async function processRecording(fileId: any, patientId: any,patientData: any) {
             const icd10Codes = await ICD10.find({ fileId: fileId });
             const cptCodes = await CPT.find({ fileId: fileId });
             const medications = await Medication.find({ fileId: fileId });
+            const userdetails = await UserDetails.find({}) // need to get the user details
 
             // conversionss
             const icdCodesString = JSON.stringify(icd10Codes);

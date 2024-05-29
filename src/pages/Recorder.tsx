@@ -9,6 +9,7 @@ import "../styles/recorder-button.scss";
 import UserProfile from "../components/UserProfile";
 import { transcribeAudio } from "../helpers/transcribe";
 import AudioUploader from "../components/AudioUploader";
+import { useUser } from "../context/UserContext";
 
 interface RecorderPageProps {
   onRecordingComplete: (blob: Blob) => void;
@@ -41,6 +42,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
   }, [location.state]);  // Dependency on location.state
 
   const [isRecording, setIsRecording] = useState(false);
+  const { user } = useUser();
 
   const handleRecordingStateChange = useCallback((isRecording: boolean) => {
     setIsRecording(isRecording);
@@ -55,6 +57,12 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
       formData.append("patientData", JSON.stringify(patientData));  // Correct the key here
     } else {
       console.error("No patient data found");
+    }
+
+    if (user) {
+      formData.append("userId", user.id);
+    } else {
+      console.error("No user data found");
     }
   
     try {

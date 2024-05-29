@@ -4,15 +4,18 @@ import { format } from "path";
 import { useNavigate } from "react-router-dom";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
+import { useUser } from "../context/UserContext";
 interface FlexItemProps {
     PatientId: string
     FirstName: string
     LastName: string
     DateOfBirth: string
+    UserId: string
 }
 
 const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, LastName, DateOfBirth }) => {
     const navigate = useNavigate();
+    const{ user } = useUser();
     
 
     const handleItemClick = () => {
@@ -21,6 +24,7 @@ const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, La
             FirstName: FirstName,
             LastName: LastName,
             DateOfBirth: DateOfBirth,
+            UserId: user?.id || ''
         };
         navigate("/recorder", { state: { patientData } });
 

@@ -4,6 +4,7 @@ import { Props } from "./interfaces";
 import "../styles/CreatePatientForm.css";
 import { v4 as uuidv4 } from 'uuid';
 import { Notyf } from "notyf";
+import { useUser } from "../context/UserContext";
 
 const CreatePatientForm = ({}) => {
     const [firstName, setFirstName] = useState('');
@@ -11,6 +12,7 @@ const CreatePatientForm = ({}) => {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [patientId, setPatientId] = useState(() => uuidv4());
     const navigate = useNavigate();
+    const{ user } = useUser();
     const notyf = new Notyf();
 
     async function handleCreatePatient(e: React.FormEvent) {
@@ -20,6 +22,7 @@ const CreatePatientForm = ({}) => {
           FirstName: firstName,
           LastName: lastName,
           DateOfBirth: dateOfBirth,
+          UserId: user?.id || ''
         };
         await fetch('http://localhost:8000/api/patients/create', {
           method: 'POST',
