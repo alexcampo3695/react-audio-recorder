@@ -61,10 +61,13 @@ const signatureStorage = new GridFsStorage({
                         return;
                     }
                     const filename = buf.toString('hex') + path.extname(file.originalname);
-
+                    const userId = req.body.userId;
                     const fileInfo = {
                         filename: filename,
-                        bucketName: 'signatures'
+                        bucketName: 'signatures',
+                        metadata: {
+                            userId: userId
+                        }
                     }
                     resolve(fileInfo);
                 })

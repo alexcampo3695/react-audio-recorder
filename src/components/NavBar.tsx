@@ -3,22 +3,55 @@ import { Props } from "./interfaces";
 import { format } from "path";
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { useUser } from '../context/UserContext'
+import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 
 
 const NavBar = ({}) => {
     const { user } = useUser();
     const [menuTab, setActiveTab] = useState('home')
     const [settingMenu, setSettingMenu] = useState(false)
+    const [data, setData] = useState<any>({
+        firstName: '',
+        lastName: '',
+        gender: '',
+        phoneNumber: '',
+        practiceAddress: '',
+        providerType: '',
+        specialty: '',
+        npiNumber: '',
+        stateLicenseNumber: '',
+        deaNumber: ''
+    });
 
     const handleTabClick = (tab:string, event: React.MouseEvent) => {
         event.preventDefault();
         setActiveTab(tab);
     }
-    console.log(menuTab)
+    
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            if (user) {
+                try {
+                    const response = await fetch(`http://localhost:8000/api/user_details/${user.id}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch user details');
+                    }
+                    const data = await response.json();
+                    if (data) {
+                        setData(data);
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch user details:', error);
+                }
+            }
+        };
+        fetchUserDetails();
+    }, [user]);
+
     return (
         <div className="main-sidebar">
             <div className="sidebar-brand">
-                <a href="/">
+                <a href="/home">
                     <img className="light-image" src={antidoteEmblem} alt=""></img>
                     <img className="dark-image" src={antidoteEmblem} alt=""></img>
                 </a>
@@ -71,12 +104,12 @@ const NavBar = ({}) => {
                 </ul>
 
                 <ul className="bottom-menu">
-                    <li className="right-panel-trigger" data-panel="search-panel">
+                    {/* <li className="right-panel-trigger" data-panel="search-panel">
                         <a href="javascript:void(0);" id="open-search" data-content="Search"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-search sidebar-svg"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a>
                         <a href="javascript:void(0);" id="close-search" className="is-hidden is-inactive"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x sidebar-svg"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></a>
-                    </li>
+                    </li> */}
                     <li>
-                        <a href="/admin-profile-settings.html" id="open-settings" data-content="Settings">
+                        <a href="/profile_settings" id="open-settings" data-content="Settings">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-settings sidebar-svg"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                         </a>
                     </li>
@@ -86,18 +119,29 @@ const NavBar = ({}) => {
                             onClick = {() => setSettingMenu(!settingMenu)} 
                             className= {`dropdown profile-dropdown dropdown-trigger is-spaced is-up ${settingMenu ? 'is-active' : ''}`}
                         >
-                            <img src="assets/img/avatars/photos/8.jpg" data-demo-src="assets/img/avatars/photos/8.jpg" alt=""></img>
+                            <FakeAvatar 
+                                FirstName={data.firstName !== '' ? data.firstName : 'U'} 
+                                LastName={data.lastName !== '' ? data.lastName : 'K'} 
+                                Size={AvatarSize.Medium} 
+                            />
                             <span className="status-indicator"></span>
-
                             <div className="dropdown-menu" role="menu">
                                 <div className="dropdown-content">
                                     <div className="dropdown-head">
-                                        <div className="h-avatar is-large">
-                                            <img className="avatar" src="assets/img/avatars/photos/8.jpg" data-demo-src="assets/img/avatars/photos/8.jpg" alt=""></img>
-                                        </div>
+                                    <FakeAvatar 
+                                        FirstName={data.firstName !== '' ? data.firstName : 'U'} 
+                                        LastName={data.lastName !== '' ? data.lastName : 'K'} 
+                                        Size={AvatarSize.Large} 
+                                    />
                                         <div className="meta">
-                                            <span>Erik Kovalsky</span>
-                                            <span>Product Manager</span>
+                                            <span>
+                                                {data.firstName !== '' ? data.firstName : 'Uknown'}{' '}
+                                                
+                                                {data.firstName !== '' ? data.lastName : 'User'}
+                                            </span>
+                                            <span>
+                                                {data.providerType !== '' ? data.providerType : 'Uknown'}
+                                            </span>
                                         </div>
                                     </div>
                                     <a href="/profile_settings" className="dropdown-item is-media">
@@ -109,7 +153,7 @@ const NavBar = ({}) => {
                                             <span>View your profile</span>
                                         </div>
                                     </a>
-                                    <hr className="dropdown-divider"></hr>
+                                    {/* <hr className="dropdown-divider"></hr>
                                     <a href="#" className="dropdown-item is-media">
                                         <div className="icon">
                                             <i className="lnil lnil-cog"></i>
@@ -118,10 +162,16 @@ const NavBar = ({}) => {
                                             <span>Settings</span>
                                             <span>Account settings</span>
                                         </div>
-                                    </a>
+                                    </a> */}
                                     <hr className="dropdown-divider"></hr>
                                     <div className="dropdown-item is-button">
-                                        <button className="button h-button is-primary is-raised is-fullwidth logout-button">
+                                        <button 
+                                            className="button h-button is-primary is-raised is-fullwidth logout-button"
+                                            onClick={() => {
+                                                localStorage.removeItem('user');
+                                                window.location.href = '/';
+                                            }}
+                                        >
                                             <span className="icon is-small">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                                             </span>

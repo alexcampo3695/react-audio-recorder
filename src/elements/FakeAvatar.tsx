@@ -25,7 +25,7 @@ const FakeAvatar: React.FC<AvatarProps> = ({ FirstName, LastName, Size }) => {
     }
     
     return (
-        <div className='h-avatar ${Size}'>
+        <div className={`h-avatar ${Size}`}>
             <span className="avatar is-fake">
                 <span>{getInitials()}</span>
             </span>

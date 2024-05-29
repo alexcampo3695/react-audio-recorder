@@ -5,6 +5,7 @@ import { useUser } from "../context/UserContext";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import SignatureCanvas from 'react-signature-canvas';
+import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 
 interface ProfileFormBodyProps {
     formData: any;
@@ -45,7 +46,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
     return (
         <div className="form-body">
             {/* Profile Picture Section */}
-            <div className="fieldset">
+            {/* <div className="fieldset">
                 <div className="fieldset-heading">
                     <h4>Profile Picture</h4>
                     <p>This is how others will recognize you</p>
@@ -85,7 +86,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                         </span>
                     </button>
                 </div>
-            </div>
+            </div> */}
 
             {/* Personal Info Section */}
             <div className="fieldset">
@@ -237,7 +238,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                     <div className="fieldset">
                         <div className="fieldset-heading">
                             <h4>Signature</h4>
-                            <p>Sign below</p>
+                            <p>This signature will be appended to all clinical notes.</p>
                         </div>
                         <div className="signature-container">
                             <SignatureCanvas
@@ -277,10 +278,6 @@ const ProfileSettings = () => {
     const [isNew, setIsNew] = useState<boolean>(true);
     const notyf = new Notyf();
 
-    console.log('User:', user);
-    console.log('UserID:', user?.id);
-    console.log('UserEmail:', user?.email);
-
     const handleGeneralDataSubmit = async () => {
         console.log('handleGeneralDataSubmit called');
         if (user) {
@@ -315,7 +312,6 @@ const ProfileSettings = () => {
             }
       
             const results = await response.json();
-            console.log('Updated user data:', results);
             notyf.success('User data updated successfully');
           } catch (error) {
             console.error('Failed to update user data:', error);
@@ -349,28 +345,30 @@ const ProfileSettings = () => {
     }, [user]);
 
 
-    console.log('userEmail:', user?.email);
     return (
         <div className="account-wrapper">
             <div className="columns">
                 <div className="column is-4">
                     <div className="account-box is-navigation">
                         <div className="media-flex-center">
-                            <div className="h-avatar is-large">
-                                <img className="avatar" src="assets/img/avatars/photos/8.jpg" alt="Avatar" />
-                                <img className="badge" src="assets/img/icons/flags/united-states-of-america.svg" alt="Flag" />
-                            </div>
+                        <FakeAvatar 
+                            FirstName={formData.firstName !== '' ? formData.firstName : 'U'} 
+                            LastName= {formData.lastName !== '' ? formData.lastName : 'K'} 
+                            Size={AvatarSize.Medium}
+                        />
                             <div className="flex-meta">
-                                <span>Erik Kovalsky</span>
-                                <span>Product Manager</span>
+                                <span>
+                                    {formData.firstName !== '' ? formData.firstName : 'Unknown'} 
+                                    {formData.lastName !== '' ? formData.lastName : 'User'}
+                                </span>
+                                <span>{formData.providerType !== '' ? formData.providerType : 'Unknown'}</span>
                             </div>
                         </div>
 
                         <div className="account-menu">
                             <a
-                                href="/admin-profile-edit-1.html"
                                 className={`account-menu-item ${general ? 'is-active' : ''}`}
-                                onClick={() => { setGeneral(true); setSettings(false); }}
+                                // onClick={() => { setGeneral(true); setSettings(false); }}
                             >
                                 <i className="lnil lnil-user-alt"></i>
                                 <span>General</span>
@@ -378,7 +376,7 @@ const ProfileSettings = () => {
                                     <i aria-hidden="true" className="fas fa-arrow-right"></i>
                                 </span>
                             </a>
-                            <a
+                            {/* <a
                                 href="/admin-profile-edit-4.html"
                                 className={`account-menu-item ${settings ? 'is-active' : ''}`}
                                 onClick={() => { setGeneral(false); setSettings(true); }}
@@ -388,7 +386,7 @@ const ProfileSettings = () => {
                                 <span className="end">
                                     <i aria-hidden="true" className="fas fa-arrow-right"></i>
                                 </span>
-                            </a>
+                            </a> */}
                         </div>
                     </div>
                 </div>
@@ -403,12 +401,12 @@ const ProfileSettings = () => {
                                 </div>
                                 <div className="right">
                                     <div className="buttons">
-                                        <a href="/admin-profile-view.html" className="button h-button is-light is-dark-outlined">
+                                        {/* <a href="/admin-profile-view.html" className="button h-button is-light is-dark-outlined">
                                             <span className="icon">
                                                 <i className="lnir lnir-arrow-left rem-100"></i>
                                             </span>
                                             <span>Go Back</span>
-                                        </a>
+                                        </a> */}
                                         <button
                                             id="save-button"
                                             className="button h-button is-primary is-raised"
