@@ -48,6 +48,8 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
     setIsEditing(!isEditing);
   };
 
+  console.log('FileId:', fileId)
+
   const handleSave = async () => {
     try {
       const response = await fetch(`http://localhost:8000/api/clinical_note/update/${noteId}`, { // Use the note's ID here

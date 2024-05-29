@@ -27,8 +27,8 @@ import ClinicalNote from '../models/ClinicalNote';
 
 export async function getClincalNotesByFileID(req: Request, res: Response) {
     try {
-        const fileID = new ObjectId(req.params.fileID);
-        const clinicalNote = await ClinicalNote.findOne({ fileID });
+        const fileID = req.params.fileID;
+        const clinicalNote = await ClinicalNote.findOne({ fileId: fileID });
 
         if (!clinicalNote) {
             return res.status(404).json({ message: "Cpt's not found" });

@@ -4,7 +4,6 @@ import CPT from '../models/CPT';
 export async function generateCPTCodes(transcription: string, fileId: any, patientId: any) {
     let cpts = [];
     for (let i = 0; i < 3; i++) {
-        console.log('CPT TRY:', i + 1);
         if (cpts !== null) {
             break;
         }

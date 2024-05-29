@@ -51,8 +51,6 @@ const storage = new GridFsStorage({
                     }
                     const filename = buf.toString('hex') + path.extname(file.originalname);
                     const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
-                    console.log("Request body:", req.body);  // Log request body
-                    console.log("Parsed patientData in storage config:", patientData);  // Log parsed patientData
 
                     const fileInfo = {
                         filename: filename,

@@ -101,6 +101,7 @@ const SummaryPage: React.FC = () => {
         }
     }, [fileId]);
 
+    console.log('FILE ID PARENT:', fileId)
     return (
         <AppWrapper
             title="Recording Summary"

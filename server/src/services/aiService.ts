@@ -277,7 +277,6 @@ export async function medicationGenerator(text: string): Promise<Medication[]> {
             }
         });
         const responseData = response.data.choices[0].message.content.trim();
-        console.log('Medication Response Data:', responseData)
         const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
         const medications: Medication[] = JSON.parse(sanitizedResponseData);
         return medications;
@@ -375,7 +374,7 @@ export async function cptGenerator(text: string): Promise<ICD10Code[]> {
             }
         });
         const responseData = response.data.choices[0].message.content.trim();
-        console.log('CPT Response Data:', responseData)
+        
         const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
         const cptCodes: CPT[] = JSON.parse(sanitizedResponseData);
         return cptCodes;

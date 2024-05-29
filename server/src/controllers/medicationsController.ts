@@ -15,9 +15,7 @@ export async function getMedications(req: Request, res: Response) {
 export async function getMedicationsByFile(req: Request, res: Response) {
     try {
         const fileID = new ObjectId(req.params.fileID);
-        console.log('fileID:', fileID)
         const medications = await MedicationModel.find({ fileId: fileID });
-        console.log('medications:', medications)
         if (!medications) {
             return res.status(404).json({ message: "medications's not found" });
         }

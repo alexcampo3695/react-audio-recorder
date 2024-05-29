@@ -4,7 +4,6 @@ import MedicationModel from '../models/Medication';
 export async function generateMedications(transcription: string, fileId: any, patientId: any) {
     let medications = [];
     for (let i = 0; i < 3; i++) {
-        console.log('Medication Try:', i + 1);
         medications = await medicationGenerator(transcription);
         if (medications !== null) {
             break;
