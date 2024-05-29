@@ -8,13 +8,14 @@ export async function generateClinicalNote(
     medications: string,
     fileId: any, 
     patientData: object,  // Keep as object
-    patientId: any
+    patientId: any,
+    userDetails: string
 ) {
     // Convert patientData to a string
     const patientDataString = JSON.stringify(patientData);
 
     // Pass the stringified patientData to noteGenerator
-    const clinicalNote = await noteGenerator(transcription, icd10codes, cptCodes, medications, patientDataString);
+    const clinicalNote = await noteGenerator(transcription, icd10codes, cptCodes, medications, patientDataString, userDetails);
 
     const newClinicalNote = new ClinicalNote({
         fileId: fileId,

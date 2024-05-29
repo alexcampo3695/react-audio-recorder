@@ -33,6 +33,9 @@ export async function uploadRecording(req: Request, res: Response) {
 
     const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
     const patientId = patientData ? patientData.PatientId : null;
+    const userId = patientData ? patientData.UserId : null;
+
+    console.log('userId:', userId);
 
     try {
         const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
@@ -65,14 +68,14 @@ export async function uploadRecording(req: Request, res: Response) {
         });
 
         // Process the recording in the background
-        processRecording(fileId, patientId,patientData);
+        processRecording(fileId, patientId,patientData, userId);
     } catch (error) {
         console.error('Error uploading recording:', error);
         res.status(500).json({ message: "Failed to process recording", error });
     }
 }
 
-async function processRecording(fileId: any, patientId: any,patientData: any) {
+async function processRecording(fileId: any, patientId: any,patientData: any, userId: any) {
     try {
         const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
         
@@ -107,11 +110,12 @@ async function processRecording(fileId: any, patientId: any,patientData: any) {
             const icd10Codes = await ICD10.find({ fileId: fileId });
             const cptCodes = await CPT.find({ fileId: fileId });
             const medications = await Medication.find({ fileId: fileId });
-
+            const userDetails = await UserDetails.find({ userId: patientData.UserId });
             // conversionss
             const icdCodesString = JSON.stringify(icd10Codes);
             const cptCodesString = JSON.stringify(cptCodes);
             const medicationsString = JSON.stringify(medications);
+            const userDetailsString = JSON.stringify(userDetails);
 
             await generateClinicalNote(
                 transcription,
@@ -120,7 +124,8 @@ async function processRecording(fileId: any, patientId: any,patientData: any) {
                 medicationsString,
                 fileId,
                 patientData,
-                patientId
+                patientId,
+                userDetailsString
             );
 
         
