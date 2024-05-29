@@ -279,7 +279,6 @@ const ProfileSettings = () => {
     const notyf = new Notyf();
 
     const handleGeneralDataSubmit = async () => {
-        console.log('handleGeneralDataSubmit called');
         if (user) {
           const data = new FormData();
       
@@ -302,7 +301,7 @@ const ProfileSettings = () => {
           console.log('Data to be sent:', Object.fromEntries(data.entries()));
       
           try {
-            const response = await fetch(`http://localhost:8000/api/user_details/${isNew ? 'create' : 'update'}`, {
+            const response = await fetch(`http://localhost:8000/api/user_details/${isNew ? 'create' : `update/${user.id}`}`, {
               method: isNew ? 'POST' : 'PATCH',
               body: data,
             });
@@ -359,7 +358,7 @@ const ProfileSettings = () => {
                             <div className="flex-meta">
                                 <span>
                                     {formData.firstName !== '' ? formData.firstName : 'Unknown'} 
-                                    {formData.lastName !== '' ? formData.lastName : 'User'}
+                                    {formData.lastName !== '' ? formData.lastName : ''}
                                 </span>
                                 <span>{formData.providerType !== '' ? formData.providerType : 'Unknown'}</span>
                             </div>
