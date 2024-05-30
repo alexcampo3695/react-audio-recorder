@@ -1,0 +1,16 @@
+.sigCanvas,
+.signature-image {
+  width: 500px;
+  height: 200px;
+  border: 1px solid; /* Optional: Add border for visual consistency */
+  border-color: hsl(0, 0%, 86%);
+  border-radius: 4px;
+}
+
+.signature-image {
+  object-fit: scale-down;; /* Ensure the image fits within the container without being cropped */
+}
+
+.button-margin {
+  margin-right: .5rem;
+}

@@ -6,6 +6,7 @@ import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import SignatureCanvas from 'react-signature-canvas';
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
+import '../styles/profile-settings.css'
 
 interface ProfileFormBodyProps {
     formData: any;
@@ -19,6 +20,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
     const sigCanvas = useRef<SignatureCanvas>(null);
     const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
     const [showImage, setShowImage] = useState<boolean>(true);
+    const notyf = new Notyf();
 
     useEffect(() => {
         const loadSignature = async () => {
@@ -58,6 +60,8 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
         sigCanvas.current?.clear();
         onSignatureChange(null);
         setImageDataUrl(null)
+        notyf.error('Signature deleted!')
+        
     }
 
     const saveSignature = () => {
@@ -66,6 +70,10 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                 if (blob) {
                     const file = new File([blob], "signature.png", { type: "image/png" });
                     onSignatureChange(file);
+                    notyf.success({
+                        message: 'Signature stored. Dont forget to save gloal changes above!',
+                        duration: 4000
+                    })
                 } else {
                     console.error('Failed to save signature');
                 }
@@ -272,9 +280,10 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                         </div>
                         <div className="signature-container">
                             {showImage && imageDataUrl ? (
-                                <img src = {imageDataUrl} alt='Signature'/>
+                                <img src = {imageDataUrl} alt='Signature' className= 'signature-image'/>
                             ) : (
                                 <SignatureCanvas
+                                    className="sigCanvas"
                                     ref={sigCanvas}
                                     penColor="black"
                                     canvasProps={{ width: 500, height: 200, className: 'sigCanvas' }}
@@ -282,8 +291,8 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                             )}
                                 
                             <div className="signature-buttons">
-                                <button onClick={clearSignature} className="button is-light">Clear</button>
-                                <button onClick={saveSignature} className="button is-primary">Save</button>
+                                <a onClick={clearSignature} className="button h-button is-danger button-margin is-raised">Clear Signature</a>
+                                <a onClick={saveSignature} className="button h-button is-primary is-raised">Save Signature</a>
                             </div>
                         </div>
                     </div>
