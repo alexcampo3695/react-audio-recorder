@@ -3,7 +3,8 @@ import { Request, Response } from 'express';
 import crypto from 'crypto';
 import UserDetails from '../models/UserDetails';
 import User from '../models/Users';
-
+import { gfs, db } from '../utils/gridFsUtils';
+import { GridFSBucket, ObjectId } from 'mongodb';
 
 export const createUserDetails = async (req: Request, res: Response) => {
   try {
@@ -23,7 +24,7 @@ export const createUserDetails = async (req: Request, res: Response) => {
     } = req.body;
 
     const userDetails = await UserDetails.findOneAndUpdate(
-      { userId },
+      { userId:userId },
       {
         email,
         firstName,
@@ -63,16 +64,58 @@ export const getUserDetailsById = async (req: Request, res: Response) => {
 }
 
 
-// export async function getClincalNotesByFileID(req: Request, res: Response) {
+// export const getSignatureByFileName = async (req: Request, res: Response) => {
 //   try {
-//       const fileID = new ObjectId(req.params.fileID);
-//       const clinicalNote = await ClinicalNote.findOne({ fileID });
+//     const filename = req.params.filename;
+//     const bucket = new GridFSBucket(db, {bucketName: 'signatures'})
 
-//       if (!clinicalNote) {
-//           return res.status(404).json({ message: "Cpt's not found" });
-//       }
-//       res.json(clinicalNote);
+//     const signature = await bucket.find({filename: filename}).toArray()
+
+//     if (signature.length === 0) {
+//       console.log('sig', signature)
+//       return res.status(404).send('File note found')
+//     }
+
+//     res.json(signature)
+
 //   } catch (error) {
-//       res.status(500).json({ message: "Failed to retrieve Cpts", error });
+//     res.status(500).json({ message: "Failed to retrieve signature", error });
 //   }
 // }
+
+
+export const getSignatureByFileName = async (req:Request, res:Response) => {
+  try {
+    const filename = req.params.filename
+    const bucket = new GridFSBucket(db, {bucketName: 'signatures'})
+
+    const files = await bucket.find({ filename }).toArray();
+
+    if (files.length === 0 ) {
+      console.log('sig', files)
+      return res.status(404).send('File not found');
+    }
+
+    const fileId = new ObjectId(files[0]._id)
+
+    const downloadStream = bucket.openDownloadStream(fileId);
+
+    res.set('content-type', 'image/png')
+    res.set('accept-ranges', 'bytes')
+
+    downloadStream.on('data', (chunk: Buffer) => {
+      res.write(chunk);
+    })
+
+    downloadStream.on('error', () => {
+      res.status(404).send('File not found');
+    });
+
+    downloadStream.on('end', () => {
+      res.end();
+    });
+  } catch (error) {
+    console.error('Error retrieving file:', error);
+    res.status(500).json({ message: "Failed to retrieve signature", error });
+  }
+};

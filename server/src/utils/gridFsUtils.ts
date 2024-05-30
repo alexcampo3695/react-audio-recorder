@@ -8,16 +8,22 @@ import path from 'path';
 
 let db: Db;
 let gfs: any;
+let gfsUploads: any;
+let gfsSignatures: any;
 
 const conn = mongoose.createConnection(process.env.MONGO_URL!);
 conn.once('open', () => {
-    gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection('uploads');
+    gfsUploads = Grid(conn.db, mongoose.mongo);
+    gfsUploads.collection('uploads');
+    
+    gfsSignatures = Grid(conn.db, mongoose.mongo);
+    gfsSignatures.collection('signatures');
+    
     db = conn.db as unknown as Db;
     console.log("GridFS initialized");
 });
 
-export { db, gfs };
+export { db, gfs, gfsUploads, gfsSignatures };
 
 const storage = new GridFsStorage({
     options: { useNewUrlParser: true, useUnifiedTopology: true },

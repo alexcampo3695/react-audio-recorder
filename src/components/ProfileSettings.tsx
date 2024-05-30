@@ -11,11 +11,40 @@ interface ProfileFormBodyProps {
     formData: any;
     onUpdateFormData: (formData: any) => void;
     onSignatureChange: (signature: File | null) => void;
+    signature: File | null;
 }
 
-const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFormData, onSignatureChange }) => {
+const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFormData, onSignatureChange, signature }) => {
     const [genderDropDown, setGenderDropDown] = useState<boolean>(false);
     const sigCanvas = useRef<SignatureCanvas>(null);
+    const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
+    const [showImage, setShowImage] = useState<boolean>(true);
+
+    useEffect(() => {
+        const loadSignature = async () => {
+            if (signature) {
+                console.log("Signature file:", signature); // Log the signature file
+    
+                const reader = new FileReader();
+    
+                reader.onload = (event) => {
+                    const dataUrl = event.target?.result as string;
+                    console.log("Signature Data URL:", dataUrl); // Log the Data URL
+                    setImageDataUrl(dataUrl);
+                };
+    
+                reader.onerror = (event) => {
+                    console.error("File could not be read! Code " + event.target?.error);
+                };
+    
+                reader.readAsDataURL(signature);
+            } else {
+                console.log("Signature is not available");
+            }
+        };
+    
+        loadSignature();
+    }, [signature]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -28,9 +57,10 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
     const clearSignature = () => {
         sigCanvas.current?.clear();
         onSignatureChange(null);
+        setImageDataUrl(null)
     }
 
-    const saveSignature  = () => {
+    const saveSignature = () => {
         if (sigCanvas.current) {
             sigCanvas.current.getTrimmedCanvas().toBlob((blob: Blob) => {
                 if (blob) {
@@ -39,7 +69,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                 } else {
                     console.error('Failed to save signature');
                 }
-            })
+            });
         }
     }
 
@@ -241,11 +271,16 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                             <p>This signature will be appended to all clinical notes.</p>
                         </div>
                         <div className="signature-container">
-                            <SignatureCanvas
-                                ref={sigCanvas}
-                                penColor="black"
-                                canvasProps={{ width: 500, height: 200, className: 'sigCanvas' }}
-                            />
+                            {showImage && imageDataUrl ? (
+                                <img src = {imageDataUrl} alt='Signature'/>
+                            ) : (
+                                <SignatureCanvas
+                                    ref={sigCanvas}
+                                    penColor="black"
+                                    canvasProps={{ width: 500, height: 200, className: 'sigCanvas' }}
+                                />
+                            )}
+                                
                             <div className="signature-buttons">
                                 <button onClick={clearSignature} className="button is-light">Clear</button>
                                 <button onClick={saveSignature} className="button is-primary">Save</button>
@@ -277,54 +312,52 @@ const ProfileSettings = () => {
     const [signature, setSignature] = useState<File | null>(null);
     const [isNew, setIsNew] = useState<boolean>(true);
     const notyf = new Notyf();
+    const [loading, setLoading] = useState(true);
 
     const handleGeneralDataSubmit = async () => {
         if (user) {
-          const data = new FormData();
-      
-          // Append user data fields individually
-          data.append('userId', user.id);
-          data.append('email', user.email);
-      
-          // Append form data fields, excluding '_id' and '__v' fields for new documents
-          Object.keys(formData).forEach(key => {
-            if (key !== 'userId' && key !== 'email' && key !== '_id' && key !== '__v') {
-              data.append(key, formData[key]);
-            }
-          });
-      
-          // Append signature file
-          if (signature) {
-            data.append('signature', signature);
-          }
-      
-          console.log('Data to be sent:', Object.fromEntries(data.entries()));
-      
-          try {
-            const response = await fetch(`http://localhost:8000/api/user_details/${isNew ? 'create' : `update/${user.id}`}`, {
-              method: isNew ? 'POST' : 'PATCH',
-              body: data,
+            const data = new FormData();
+        
+            data.append('userId', user.id);
+            data.append('email', user.email);
+        
+            Object.keys(formData).forEach(key => {
+                if (key !== 'userId' && key !== 'email' && key !== '_id' && key !== '__v') {
+                    data.append(key, formData[key]);
+                }
             });
-      
-            if (!response.ok) {
-              throw new Error('Failed to update user data');
+        
+            if (signature) {
+                data.append('signature', signature);
             }
-      
-            const results = await response.json();
-            notyf.success('User data updated successfully');
-          } catch (error) {
-            console.error('Failed to update user data:', error);
-            notyf.error('Failed to update user data');
-          }
+        
+            try {
+                const response = await fetch(`http://localhost:8000/api/user_details/${isNew ? 'create' : `update/${user.id}`}`, {
+                    method: isNew ? 'POST' : 'PATCH',
+                    body: data,
+                });
+        
+                if (!response.ok) {
+                    throw new Error('Failed to update user data');
+                }
+        
+                const results = await response.json();
+                notyf.success('User data updated successfully');
+            } catch (error) {
+                console.error('Failed to update user data:', error);
+                notyf.error('Failed to update user data');
+            }
         } else {
-          console.log('User is not defined');
+            console.log('User is not defined');
         }
-      };
-    
+    };
+
+
 
     useEffect(() => {
         const fetchUserDetails = async () => {
             if (user) {
+                console.log('Fetching user details...');
                 try {
                     const response = await fetch(`http://localhost:8000/api/user_details/${user.id}`);
                     if (!response.ok) {
@@ -332,9 +365,21 @@ const ProfileSettings = () => {
                     }
                     const data = await response.json();
                     if (data) {
+                        console.log('User details:', data);
                         setFormData(data);
                         setIsNew(false); // If data exists, set isNew to false
                     }
+
+                    if (data.signature) {
+                        const signatureResponse = await fetch(`http://localhost:8000/api/user_details/signature/${data.signature}`);
+                        if (signatureResponse.ok) {
+                            const signatureBlob = await signatureResponse.blob();
+                            const file = new File([signatureBlob], 'signature.png', { type: 'image/png' });
+                            setSignature(file);
+                            console.log('Signature file created:', file);
+                        }
+                    }
+                    setLoading(false); // Set loading to false after data is fetched
                 } catch (error) {
                     console.error('Failed to fetch user details:', error);
                 }
@@ -343,18 +388,21 @@ const ProfileSettings = () => {
         fetchUserDetails();
     }, [user]);
 
-
+    useEffect(() => {
+        console.log('final sig', signature);
+    }, [signature]);
+    
     return (
         <div className="account-wrapper">
             <div className="columns">
                 <div className="column is-4">
                     <div className="account-box is-navigation">
                         <div className="media-flex-center">
-                        <FakeAvatar 
-                            FirstName={formData.firstName !== '' ? formData.firstName : 'U'} 
-                            LastName= {formData.lastName !== '' ? formData.lastName : 'K'} 
-                            Size={AvatarSize.Medium}
-                        />
+                            <FakeAvatar 
+                                FirstName={formData.firstName !== '' ? formData.firstName : 'U'} 
+                                LastName={formData.lastName !== '' ? formData.lastName : 'K'} 
+                                Size={AvatarSize.Medium}
+                            />
                             <div className="flex-meta">
                                 <span>
                                     {formData.firstName !== '' ? formData.firstName : 'Unknown'} 
@@ -400,12 +448,6 @@ const ProfileSettings = () => {
                                 </div>
                                 <div className="right">
                                     <div className="buttons">
-                                        {/* <a href="/admin-profile-view.html" className="button h-button is-light is-dark-outlined">
-                                            <span className="icon">
-                                                <i className="lnir lnir-arrow-left rem-100"></i>
-                                            </span>
-                                            <span>Go Back</span>
-                                        </a> */}
                                         <button
                                             id="save-button"
                                             className="button h-button is-primary is-raised"
@@ -417,7 +459,7 @@ const ProfileSettings = () => {
                                 </div>
                             </div>
                         </div>
-                        {general ? <ProfileFormBody formData={formData} onUpdateFormData={setFormData} onSignatureChange={setSignature}/> : null}
+                        {!loading && <ProfileFormBody formData={formData} onUpdateFormData={setFormData} onSignatureChange={setSignature} signature={signature} />}
                     </div>
                 </div>
             </div>
@@ -426,3 +468,11 @@ const ProfileSettings = () => {
 };
 
 export default ProfileSettings;
+
+function load() {
+    throw new Error("Function not implemented.");
+}
+function RestorationEffect(arg0: () => void, arg1: any[]) {
+    throw new Error("Function not implemented.");
+}
+
