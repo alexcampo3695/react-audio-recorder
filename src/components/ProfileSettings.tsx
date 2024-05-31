@@ -42,7 +42,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                 reader.readAsDataURL(signature);
             } else {
                 console.log("Signature is not available");
-            }
+            } 
         };
     
         loadSignature();
@@ -83,49 +83,6 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
 
     return (
         <div className="form-body">
-            {/* Profile Picture Section */}
-            {/* <div className="fieldset">
-                <div className="fieldset-heading">
-                    <h4>Profile Picture</h4>
-                    <p>This is how others will recognize you</p>
-                </div>
-                <div className="h-avatar profile-h-avatar is-xl">
-                    <img className="avatar" src="assets/img/avatars/photos/8.jpg" alt="Avatar" />
-                    <div className="filepond-profile-wrap is-hidden">
-                        <div className="filepond--root profile-filepond filepond--hopper">
-                            <input className="filepond--browser" type="file" name="profile_filepond" aria-controls="filepond--assistant" aria-labelledby="filepond--drop-label" />
-                            <div style={{ height: "100%" }}></div>
-                            <a className="filepond--credits" aria-hidden="true" href="https://pqina.nl/" target="_blank" rel="noopener noreferrer">
-                                Powered by PQINA
-                            </a>
-                            <div className="filepond--drop-label">
-                                <label htmlFor="filepond--browser" id="filepond--drop-label" aria-hidden="true">
-                                    <i className="lnil lnil-cloud-upload"></i>
-                                </label>
-                            </div>
-                            <div className="filepond--list-scroller">
-                                <ul className="filepond--list" role="list"></ul>
-                            </div>
-                            <div className="filepond--panel filepond--panel-root" data-scalable="true">
-                                <div className="filepond--panel-top filepond--panel-root"></div>
-                                <div className="filepond--panel-center filepond--panel-root"></div>
-                                <div className="filepond--panel-bottom filepond--panel-root"></div>
-                            </div>
-                            <div className="filepond--drip"></div>
-                            <span className="filepond--assistant" role="status" aria-live="polite" aria-relevant="additions"></span>
-                            <fieldset className="filepond--data"></fieldset>
-                        </div>
-                    </div>
-                    <button className="button is-circle edit-button is-edit">
-                        <span className="icon is-small">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-edit-2">
-                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                            </svg>
-                        </span>
-                    </button>
-                </div>
-            </div> */}
-
             {/* Personal Info Section */}
             <div className="fieldset">
                 <div className="fieldset-heading">
@@ -391,15 +348,16 @@ const ProfileSettings = () => {
                     setLoading(false); // Set loading to false after data is fetched
                 } catch (error) {
                     console.error('Failed to fetch user details:', error);
+                } finally {
+                    setLoading(false)
                 }
+            } else {
+                setLoading(false)
             }
         };
         fetchUserDetails();
     }, [user]);
 
-    useEffect(() => {
-        console.log('final sig', signature);
-    }, [signature]);
     
     return (
         <div className="account-wrapper">
@@ -432,17 +390,6 @@ const ProfileSettings = () => {
                                     <i aria-hidden="true" className="fas fa-arrow-right"></i>
                                 </span>
                             </a>
-                            {/* <a
-                                href="/admin-profile-edit-4.html"
-                                className={`account-menu-item ${settings ? 'is-active' : ''}`}
-                                onClick={() => { setGeneral(false); setSettings(true); }}
-                            >
-                                <i className="lnil lnil-cog"></i>
-                                <span>Settings</span>
-                                <span className="end">
-                                    <i aria-hidden="true" className="fas fa-arrow-right"></i>
-                                </span>
-                            </a> */}
                         </div>
                     </div>
                 </div>
@@ -478,10 +425,4 @@ const ProfileSettings = () => {
 
 export default ProfileSettings;
 
-function load() {
-    throw new Error("Function not implemented.");
-}
-function RestorationEffect(arg0: () => void, arg1: any[]) {
-    throw new Error("Function not implemented.");
-}
 
