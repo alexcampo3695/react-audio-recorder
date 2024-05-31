@@ -429,7 +429,8 @@ export async function noteGenerator(transcription: string, icd10Codes: string, c
                     - Format the conversation in markdown.
                     - Please do not make a title, I'm already handling this in the UI. Just got straight into the note.
                     - Please provide the patient details in the note in its own section separated by a line break.
-                    - Please provider the user details at the bottom of the note, for the provider signature/info section.
+                    - Please provider from user details. The user details always be the clinical provider
+                    - Please attach a nice cofied provider details section at the bottom of the note, for the provider section.
                     Here is the transcription:\n\n${transcription}
                     Here are the diagnosis codes:\n\n${icd10Codes}
                     Here are the cpt codes:\n\n${cptCode}

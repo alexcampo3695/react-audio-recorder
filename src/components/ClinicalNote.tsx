@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from 'react-markdown';
 import "../styles/Markdown.css";
+import { useUser } from "../context/UserContext";
 
 interface ClinicalNoteProps {
   fileId: string;
@@ -21,6 +22,10 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
   const [markdown, setMarkdown] = useState<string>('');
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [noteId, setNoteId] = useState<string | null>(null); // To store the note's ID
+  const { user } = useUser();
+  const [userDetails, setUserDetails] = useState<any | null>(null)
+  const [signatureUrl, setSignatureUrl] = useState<string | null>('')
+
 
   useEffect(() => {
     const fetchClinicalNote = async () => {
@@ -30,7 +35,6 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
           throw new Error(`Failed to fetch clinical note: ${response.status}`);
         }
         const data: NoteResponse = await response.json();
-        console.log('Fetched Clinical Note:', data); // Log the fetched data
         setClinicalNote(data.clinicalNote);
         setNoteId(data._id); // Store the note's ID
       } catch (error) {
@@ -38,8 +42,43 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
       }
     };
 
+    const fetchUserDetailsAndSignature = async () => {
+      if (!user?.id) return;
+      // get userdata
+      try {
+        const response = await fetch(`http://localhost:8000/api/user_details/${user.id}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user: ${response.status}`);
+        }
+        const userData = await response.json();
+        setUserDetails(userData);
+
+        //get sig
+        if (userData.signature) {
+          const signatureResponse = await fetch(`http://localhost:8000/api/user_details/signature/${userData.signature}`);
+          if (signatureResponse.ok) {
+            const signatureBlob = await signatureResponse.blob();
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              const dataUrl = event.target?.result as string;
+              setSignatureUrl(dataUrl);
+            };
+            reader.onerror = (event) => {
+              console.error("File could not be read! Code " + event.target?.error);
+            };
+            reader.readAsDataURL(signatureBlob);
+          } else {
+            console.log('Signature is not available');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch user details or signature:', error);
+      }
+    };
+
     fetchClinicalNote();
-  }, [fileId]);
+    fetchUserDetailsAndSignature();
+  }, [fileId, user?.id]);
 
   const handleEditToggle = () => {
     if (!isEditing) {
@@ -48,7 +87,7 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
     setIsEditing(!isEditing);
   };
 
-  console.log('FileId:', fileId)
+  console.log('UserDetails', userDetails)
 
   const handleSave = async () => {
     try {
@@ -63,7 +102,6 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
         throw new Error(`Failed to update clinical note: ${response.status}`);
       }
       const data: NoteResponse = await response.json();
-      console.log('Updated Clinical Note:', data); // Log the updated data
       setClinicalNote(data.clinicalNote);
       setIsEditing(false);
     } catch (error) {
@@ -106,9 +144,20 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
           className="textarea"
         />
       ) : (
-        <ReactMarkdown>
-          {clinicalNote || ''}
-        </ReactMarkdown>
+        <>
+          <ReactMarkdown>
+            {clinicalNote || ''}
+          </ReactMarkdown>
+            <div className="dashboard-card">
+                <div className="title-wrap">
+                    <h3 className="dark-inverted">✍🏻 Provider Signature</h3>
+                </div>
+                {signatureUrl && <img src={signatureUrl} alt="Signature" className="signature-image" />}
+                <p className="context-text">
+                    I, hearby attest this information is correct.
+                </p>
+            </div>
+        </>
       )}
     </div>
   );

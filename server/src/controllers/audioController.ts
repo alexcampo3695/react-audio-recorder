@@ -117,6 +117,7 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
             const medicationsString = JSON.stringify(medications);
             const userDetailsString = JSON.stringify(userDetails);
 
+            console.log("userDetails",userDetailsString)
             await generateClinicalNote(
                 transcription,
                 icdCodesString,
