@@ -419,8 +419,8 @@ export async function noteGenerator(transcription: string, icd10Codes: string, c
                     - Please make the markdown beautiful and easy to read.
                     - Please use emojis with the bolded headers.
                     - Please include: Treatment Plans: Creating detailed treatment plans that include medications, therapies, and follow-up appointments.
-                    - Please include: Diagnosis: Listing the diagnosis codes that were discussed during the visit.
-                    - Please include: Procedures: Listing the procedures that were discussed during the visit.
+                    - Please include: Diagnosis: Listing the icd 10 diagnosis codes (code & description) that were discussed during the visit.
+                    - Please include: Procedures: Listing the procedures (with cpt codes, code & description) that were discussed during the visit.
                     - Please include: Medications: Listing the medications that were discussed during the visit.
                     - Please include: Follow-up: Scheduling follow-up appointments and tests.
                     - Please include: Referrals: Making referrals to specialists.
