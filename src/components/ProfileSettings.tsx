@@ -15,15 +15,17 @@ interface ProfileFormBodyProps {
     onUpdateFormData: (formData: any) => void;
     onSignatureChange: (signature: File | null) => void;
     signature: File | null;
+    onDeactivateAccount: () => void;
 }
 
-const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFormData, onSignatureChange, signature }) => {
+const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFormData, onSignatureChange, signature, onDeactivateAccount }) => {
     const [genderDropDown, setGenderDropDown] = useState<boolean>(false);
     const sigCanvas = useRef<SignatureCanvas>(null);
     const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
     const [showImage, setShowImage] = useState<boolean>(true);
     const [modal, setModal] = useState<boolean>(false)
     const notyf = new Notyf();
+
 
     useEffect(() => {
         feather.replace();
@@ -285,7 +287,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                     Subtext="This will deactivate your account and you will lose access to all services."
                     PrimaryButtonText="Delete"
                     SecondaryButtonText="Cancel"
-                    onSubmit={() => {}}
+                    onSubmit={onDeactivateAccount}
                     onClose={() => setModal(false)}
                 />
             )}
@@ -314,6 +316,32 @@ const ProfileSettings = () => {
     const [isNew, setIsNew] = useState<boolean>(true);
     const notyf = new Notyf();
     const [loading, setLoading] = useState(true);
+
+    const handleDeactivateAccount = async () => {
+        if (!user) {
+            notyf.error('User not found')
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/api/user/status', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId: user.id, isActive: false})
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to deactivate account')
+            }
+
+            notyf.success('Account deactivated successfully')
+        } catch (error) {
+            console.error('Failed to deactivate account', error);
+            notyf.error('Failed to deactivate account')
+        }
+    }
 
     const handleGeneralDataSubmit = async () => {
         if (user) {
@@ -450,7 +478,14 @@ const ProfileSettings = () => {
                                 </div>
                             </div>
                         </div>
-                        {!loading && <ProfileFormBody formData={formData} onUpdateFormData={setFormData} onSignatureChange={setSignature} signature={signature} />}
+                        {!loading && 
+                            <ProfileFormBody 
+                                formData={formData} 
+                                onUpdateFormData={setFormData} 
+                                onSignatureChange={setSignature} 
+                                signature={signature}
+                                onDeactivateAccount={handleDeactivateAccount}
+                            />}
                     </div>
                 </div>
             </div>

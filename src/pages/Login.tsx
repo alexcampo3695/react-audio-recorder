@@ -36,6 +36,10 @@ const Login = () => {
             });
 
             if (!response.ok) {
+                const errorData = await response.json();
+                if (response.status === 403 && errorData.message === 'User account is deactivated') {
+                    throw new Error('Your account has been deactivated. Please contact support.');
+                }
                 throw new Error('Invalid email or password');
             }
 

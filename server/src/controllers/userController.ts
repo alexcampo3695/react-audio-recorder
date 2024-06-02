@@ -39,6 +39,14 @@ export const authUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
   
     const user = await User.findOne({ email });
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+  
+    if (!user.isActive) {
+        return res.status(403).json({ message: 'User account is deactivated' });
+    }
   
     if (user && (await user.matchPassword(password))) {
         const twoFactorCode = (crypto.randomInt(0, 1000000) + 1000000).toString().slice(1);
@@ -347,6 +355,11 @@ export const forgotPassword = async (req: Request, res: Response) => {
             res.status(404).json({ message: 'User not found' });
             return;
         }
+
+        if (!user.isActive) {
+          return res.status(403).json({ message: 'User account is deactivated' });
+        }
+
         const resetToken = crypto.randomBytes(20).toString('hex');
         user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
         user.resetPasswordExpire = new Date(Date.now() + 3600000); // 1 hour
@@ -709,6 +722,10 @@ export const verifyTwoFactorCode = async (req: Request, res: Response) => {
     return res.status(404).json({ message: 'User not found' });
   }
 
+  if (!user.isActive) {
+      return res.status(403).json({ message: 'User account is deactivated' });
+  }
+
   if (user.twoFactorCode === twoFactorCode && user.twoFactorExpire && user.twoFactorExpire > new Date()) {
     user.twoFactorCode = undefined;
     user.twoFactorExpire = undefined;
@@ -723,3 +740,17 @@ export const verifyTwoFactorCode = async (req: Request, res: Response) => {
     res.status(401).json({ message: 'Invalid code' });
   }
 };
+
+export const updateUserStatus = async (req: Request, res: Response) => {
+  const { userId, isActive } = req.body;
+  try {
+      const user = await User.findOneAndUpdate(userId, { isActive: isActive }, { new: true });
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json({ message: 'User status updated successfully' });
+  } catch (error) {
+      res.status(500).json({ message: 'Failed to update user status', error });
+  }
+
+}
