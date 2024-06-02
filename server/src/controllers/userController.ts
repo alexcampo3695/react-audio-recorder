@@ -744,7 +744,7 @@ export const verifyTwoFactorCode = async (req: Request, res: Response) => {
 export const updateUserStatus = async (req: Request, res: Response) => {
   const { userId, isActive } = req.body;
   try {
-      const user = await User.findOneAndUpdate(userId, { isActive: isActive }, { new: true });
+      const user = await User.findByIdAndUpdate(userId, { isActive: isActive }, { new: true });
       if (!user) {
           return res.status(404).json({ message: 'User not found' });
       }
