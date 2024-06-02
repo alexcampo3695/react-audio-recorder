@@ -77,11 +77,35 @@ const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, La
 
 const ExistingPatientsTable = ({ }) => {
     const [patients, setPatients] = useState([]);
+    const{ user } = useUser();
 
     const fetchPatients = async (searchTerm: string = '') => {
-        const response = await fetch(`http://localhost:8000/api/patients?search=${encodeURIComponent(searchTerm)}`);
-        const data = await response.json();
-        setPatients(data);
+        if (!user) {
+            console.error('No user found');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8000/api/patients/by_creatorId`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    createdBy: user.id,
+                    search: searchTerm
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch patients: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setPatients(data);
+        } catch (error) {
+            console.error('Error fetching patients:', error);
+        }
     };
 
     useEffect(() => {

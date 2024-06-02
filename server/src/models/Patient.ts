@@ -5,13 +5,15 @@ interface IPatient extends Document {
     FirstName: string;
     LastName: string;
     DateOfBirth: Date;
+    CreatedBy: string;
 }
 
 const PatientSchema = new Schema<IPatient>({
-    PatientId: { type: String, required: true, unique: true }, // Change to String
+    PatientId: { type: String, required: true, unique: true },
     FirstName: { type: String, required: true },
     LastName: { type: String, required: true },
     DateOfBirth: { type: Date, required: true },
+    CreatedBy: {type: String, required: true},
 });
 
 const Patients = model<IPatient>('Patients', PatientSchema);

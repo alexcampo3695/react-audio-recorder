@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createPatient, getPatients } from '../controllers/patientController';
+import { createPatient, getPatients, getPatientsByCreatedUser,  } from '../controllers/patientController';
 
 const router = Router();
 
@@ -12,5 +12,9 @@ router.get('/', (req, res, next) => {
     console.log('GET /api/patients called');
     next();
 }, getPatients);
+
+router.post('/by_creatorId', (req, res, next) => {
+    next();
+}, getPatientsByCreatedUser);
 
 export default router;

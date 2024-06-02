@@ -7,6 +7,8 @@ import 'notyf/notyf.min.css';
 import SignatureCanvas from 'react-signature-canvas';
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import '../styles/profile-settings.css'
+import feather from "feather-icons";
+import Modal from "./Modal";
 
 interface ProfileFormBodyProps {
     formData: any;
@@ -20,7 +22,12 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
     const sigCanvas = useRef<SignatureCanvas>(null);
     const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
     const [showImage, setShowImage] = useState<boolean>(true);
+    const [modal, setModal] = useState<boolean>(false)
     const notyf = new Notyf();
+
+    useEffect(() => {
+        feather.replace();
+    }, []);
 
     useEffect(() => {
         const loadSignature = async () => {
@@ -81,10 +88,13 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
         }
     }
 
+    console.log('Modal', modal)
+
     return (
         <div className="form-body">
             {/* Personal Info Section */}
             <div className="fieldset">
+                
                 <div className="fieldset-heading">
                     <h4>Personal Info</h4>
                     <p>This will appear on the clinical note.</p>
@@ -248,16 +258,41 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                             )}
                                 
                             <div className="signature-buttons">
-                                <a onClick={clearSignature} className="button h-button is-danger button-margin is-raised">Clear Signature</a>
+                                <a onClick={clearSignature} className="button h-button button-margin is-raised">Clear Signature</a>
                                 <a onClick={saveSignature} className="button h-button is-primary is-raised">Save Signature</a>
                             </div>
                         </div>
                     </div>
+                    <div className="fieldset-heading">
+                        <h4>Deactivate Account</h4>
+                        <button 
+                            className="button h-button is-danger is-rounded is-elevated" 
+                            style = {{marginTop:"10px"}}
+                            onClick = {() => setModal(true)}
+                        >
+                                <span className="icon">
+                                    <i data-feather = "user-x"></i>
+                                </span>
+                            <span>Deactivate</span>
+                        </button>
+                    </div>
                 </div>
             </div>
+            { modal && (
+                <Modal
+                    ModalTitle="Account Deactivation"
+                    Header="Confirm Deactivation"
+                    Subtext="This will deactivate your account and you will lose access to all services."
+                    PrimaryButtonText="Delete"
+                    SecondaryButtonText="Cancel"
+                    onSubmit={() => {}}
+                    onClose={() => setModal(false)}
+                />
+            )}
         </div>
     );
 };
+
 
 const ProfileSettings = () => {
     const { user } = useUser();

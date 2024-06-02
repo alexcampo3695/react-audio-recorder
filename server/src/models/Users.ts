@@ -12,6 +12,7 @@ export interface IUser extends Document {
   twoFactorCode?: string;
   twoFactorExpire?: Date;
   matchPassword(password: string): Promise<boolean>;
+  isActive: boolean
 }
 
 const userSchema = new Schema<IUser>({
@@ -24,6 +25,7 @@ const userSchema = new Schema<IUser>({
   resetPasswordExpire: { type: Date },
   twoFactorCode: { type: String },
   twoFactorExpire: { type: Date },
+  isActive: {type: Boolean, default: true}
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

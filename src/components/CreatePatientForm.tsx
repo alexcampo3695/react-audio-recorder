@@ -17,12 +17,17 @@ const CreatePatientForm = ({}) => {
 
     async function handleCreatePatient(e: React.FormEvent) {
         e.preventDefault();
+        if (!user) {
+            // Handle the case where user is not available
+            notyf.error('User not logged in');
+            return;
+        }
         const patientData = {
           PatientId: patientId,
           FirstName: firstName,
           LastName: lastName,
           DateOfBirth: dateOfBirth,
-          UserId: user?.id || ''
+          CreatedBy: user.id
         };
         await fetch('http://localhost:8000/api/patients/create', {
           method: 'POST',
@@ -37,6 +42,8 @@ const CreatePatientForm = ({}) => {
         setDateOfBirth('');
         notyf.success('Patient created successfully!');
       }
+
+    console.log('userId', user?.id)
     return (
         <div className="form-layout is-separate">
             <div className="form-outer">

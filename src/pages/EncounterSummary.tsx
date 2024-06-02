@@ -15,6 +15,7 @@ import feather from 'feather-icons';
 import { handlePDF, handlePDFtoEmail} from '../helpers/PDF';
 import { useUser } from '../context/UserContext';
 import { format } from 'date-fns';
+import { Notyf } from "notyf";
 
 
 interface MetaData {
@@ -43,6 +44,7 @@ const SummaryPage: React.FC = () => {
     const [transcription, setTranscription] = useState<string | null>(null);
     const [fileId, setFileId] = useState<string | null>(null);
     const { user } = useUser();
+    const notyf = new Notyf();
 
     useEffect(() => {
         const fetchTranscription = async () => {
@@ -118,6 +120,7 @@ const SummaryPage: React.FC = () => {
                 throw new Error(`Failed to send email: ${response.status}`);
             }
             console.log('Email send successfully')
+            notyf.success('Email sent successfully!') 
         } catch (error) {
             console.error('Error sending email', error)
         }
