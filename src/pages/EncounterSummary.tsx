@@ -12,8 +12,9 @@ import ClinicalNoteComponent from '../components/ClinicalNote';
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import feather from 'feather-icons';
-import handlePDF from '../helpers/PDF';
-
+import { handlePDF, handlePDFtoEmail} from '../helpers/PDF';
+import { useUser } from '../context/UserContext';
+import { format } from 'date-fns';
 
 
 interface MetaData {
@@ -41,19 +42,7 @@ const SummaryPage: React.FC = () => {
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
     const [transcription, setTranscription] = useState<string | null>(null);
     const [fileId, setFileId] = useState<string | null>(null);
-
-
-    // const handlePDF = () => {
-    //     const element = document.getElementById('clinical-note');
-    //     if (element) {
-    //         html2pdf().from(element).set({
-    //             margin: 1,
-    //             filename: `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${data?.createdAt}_VisitNote.pdf`,
-    //             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-    //             html2canvas: { scale: 2 }
-    //         }).save();
-    //     }
-    // };
+    const { user } = useUser();
 
     useEffect(() => {
         const fetchTranscription = async () => {
@@ -101,7 +90,39 @@ const SummaryPage: React.FC = () => {
         }
     }, [fileId]);
 
-    console.log('FILE ID PARENT:', fileId)
+    const sendPDFViaEmail = async () => {
+        if (!user) {
+            console.error('user not found!')
+            return;
+        }
+        try {
+            const formattedDate = format(new Date(data?.createdAt || ''),'MM-dd-yyyy')
+            const pdfBlob = await handlePDFtoEmail({
+                elementId: 'clinical-note',
+                fileName: `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${formattedDate}_VisitNote.pdf`
+            });
+
+            const formData = new FormData();
+            formData.append('pdf', pdfBlob, `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${formattedDate}_VisitNote.pdf`);
+            formData.append('userId', user.id); // Add user ID here
+            formData.append('fileName', `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${formattedDate}_VisitNote.pdf`);
+            formData.append('patientName', `${data?.patientData?.FirstName} ${data?.patientData?.LastName}`);
+            formData.append('visitDate', data?.createdAt || '');
+
+            const response = await fetch('http://localhost:8000/api/email/send_pdf_email', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to send email: ${response.status}`);
+            }
+            console.log('Email send successfully')
+        } catch (error) {
+            console.error('Error sending email', error)
+        }
+    };
+    
     return (
         <AppWrapper
             title="Recording Summary"
@@ -132,9 +153,7 @@ const SummaryPage: React.FC = () => {
                                     </span>
                                 </button>
                                 <button className="button is-circle is-elevated"
-                                    onClick = {() => handlePDF(
-                                        {elementId: 'clinical-note', fileName: `${data?.patientData?.FirstName}_${data?.patientData?.LastName}_${data?.createdAt}_VisitNote.pdf`}
-                                    )}
+                                    onClick = {sendPDFViaEmail}
                                 >
                                     <span className="icon is-small">
                                         <i data-feather="mail"></i>
