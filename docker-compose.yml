@@ -20,4 +20,4 @@ services:
       - "8001:8000"  # Changed host port to 8001 to avoid conflict
     environment:
       - PORT=8000
-      - MONGO_URL=mongodb+srv://antidoteTranscribe:dQrYiafUGuuUbGWR@cluster0.f7fkxds.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - MONGO_URL=${MONGO_URL}
