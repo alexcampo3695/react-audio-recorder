@@ -8,6 +8,8 @@ import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import "../styles/recorder-button.scss";
 import AudioUploader from "../components/AudioUploader";
 import { useUser } from "../context/UserContext";
+import backendUrl from '../config';
+
 
 interface RecorderPageProps {
   onRecordingComplete: (blob: Blob) => void;
@@ -63,7 +65,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
     }
   
     try {
-      const response = await fetch("http://localhost:8000/api/audio/upload", {
+      const response = await fetch(`${backendUrl}/api/audio/upload`, {
         method: "POST",
         body: formData,
       });

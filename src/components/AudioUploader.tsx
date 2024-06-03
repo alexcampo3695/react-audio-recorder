@@ -5,6 +5,7 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import { FilePond, registerPlugin, FilePondFile, FilePondErrorDescription } from 'react-filepond';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import backendUrl from '../config';
 
 // Register plugins
 registerPlugin(FilePondPluginFileValidateType, FilePondPluginImagePreview);
@@ -81,7 +82,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileUpload }) => {
             }
 
             const request = new XMLHttpRequest();
-            request.open('POST', 'http://localhost:8000/api/audio/upload');
+            request.open('POST', `${backendUrl}/api/audio/upload`);
 
             request.upload.onprogress = (e) => {
               progress(e.lengthComputable, e.loaded, e.total);

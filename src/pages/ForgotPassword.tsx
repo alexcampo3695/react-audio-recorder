@@ -5,6 +5,7 @@ import loginImage from "../styles/assets/login_img.png";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
+import backendUrl from '../config';
 
 const ForgotPassword = () => {
     const [email, setEmail] = React.useState('');
@@ -15,7 +16,7 @@ const ForgotPassword = () => {
     async function handleForgotPassword(e: React.FormEvent) {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:8000/api/user/forgot_password', {
+            const response = await fetch(`${backendUrl}/api/user/forgot_password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

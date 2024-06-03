@@ -9,6 +9,8 @@ import Icd10Component from '../components/Icd10Component';
 import MedicationComponent from '../components/MedicationComponent';
 import CPTComponent from '../components/CptComponent';
 import ClinicalNoteComponent from '../components/ClinicalNote';
+import backendUrl from '../config';
+
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import feather from 'feather-icons';
@@ -49,7 +51,7 @@ const SummaryPage: React.FC = () => {
     useEffect(() => {
         const fetchTranscription = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/api/transcriptions/${validGridId}`);
+                const response = await fetch(`${backendUrl}/api/transcriptions/${validGridId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch transcription: ${response.status}`);
                 }
@@ -76,7 +78,7 @@ const SummaryPage: React.FC = () => {
             if (fileId === null) return;  // Ensure fileId is not null
 
             try {
-                const response = await fetch(`http://localhost:8000/api/audio/${fileId}`);
+                const response = await fetch(`${backendUrl}/api/audio/${fileId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch audio blob: ${response.status}`);
                 }
@@ -111,7 +113,7 @@ const SummaryPage: React.FC = () => {
             formData.append('patientName', `${data?.patientData?.FirstName} ${data?.patientData?.LastName}`);
             formData.append('visitDate', data?.createdAt || '');
 
-            const response = await fetch('http://localhost:8000/api/email/send_pdf_email', {
+            const response = await fetch(`${backendUrl}/api/email/send_pdf_email`, {
                 method: 'POST',
                 body: formData,
             });

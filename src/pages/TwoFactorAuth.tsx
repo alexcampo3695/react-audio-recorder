@@ -4,7 +4,7 @@ import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
-
+import backendUrl from '../config';
 
 interface LoginCredentials {
     email: string;
@@ -35,7 +35,7 @@ const TwoFactorAuth = () => {
     async function handleTwoFactorAuthetication(e: React.FormEvent) {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:8000/api/user/verify_2fa/`, {
+            const response = await fetch(`${backendUrl}/api/user/verify_2fa/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

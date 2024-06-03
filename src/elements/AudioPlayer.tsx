@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import backendUrl from '../config';
 
 interface AudioPlayerProps {
   fileID: string;
@@ -11,7 +11,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ fileID }) => {
   useEffect(() => {
     const fetchAudio = async () => {
       try {
-        const respone = await fetch(`http://localhost:8000/api/audio/${fileID}`);
+        const respone = await fetch(`${backendUrl}/api/audio/${fileID}`);
         if (!respone.ok) {
           throw new Error(`Failed to fetch audio: ${respone.status}`);
         }

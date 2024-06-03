@@ -3,6 +3,7 @@ import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { useUser } from '../context/UserContext';
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import { useNavigate } from "react-router-dom";
+import backendUrl from '../config';
 
 const NavBar = () => {
     const { user } = useUser();
@@ -32,7 +33,7 @@ const NavBar = () => {
         const fetchUserDetails = async () => {
             if (user) {
                 try {
-                    const response = await fetch(`http://localhost:8000/api/user_details/${user.id}`);
+                    const response = await fetch(`${backendUrl}/api/user_details/${user.id}`);
                     if (!response.ok) {
                         throw new Error('Failed to fetch user details');
                     }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 import { useNavigate } from "react-router-dom";
+import backendUrl from '../config';
 
 interface MetaData {
   FirstName: string;
@@ -101,7 +102,7 @@ const RecordingsFlexTable: React.FC = () => {
 
   const fetchRecordings = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/transcriptions');
+      const response = await fetch(`${backendUrl}/api/transcriptions`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }

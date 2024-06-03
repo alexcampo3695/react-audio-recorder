@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import CreatePatientForm from './CreatePatientForm';
 import "../styles/CreatePatientForm.css";
 import ExistingPatientsTable from './ExistingPatient';
+import backendUrl from '../config';
 
 const HomeComponent = ({}) => {
     const [activeTab, setActiveTab] = useState('create')
@@ -14,7 +15,7 @@ const HomeComponent = ({}) => {
 
     useEffect(() => {
         async function fetchPatients() {
-            const patients = await fetch('http://localhost:8000/get_patients');
+            const patients = await fetch(`${backendUrl}/get_patients`);
             setPatients(await patients.json());
         }
         fetchPatients();

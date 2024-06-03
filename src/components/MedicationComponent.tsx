@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
-
+import NoData from "./NoData";
+import backendUrl from '../config';
 
 interface Icd10RowData {
   id: string;
@@ -81,7 +82,7 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
   useEffect(() => {
     const fetchMedications = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/medications/file/${fileId}`);
+        const response = await fetch(`${backendUrl}/api/medications/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch medications codes: ${response.status}`);
         }
@@ -97,7 +98,7 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
-      await fetch(`http://localhost:8000/api/medications/update/${id}`, {
+      await fetch(`${backendUrl}/api/medications/update/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus }),
         headers: {
@@ -120,37 +121,41 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
   return (
     <div className="list-widget list-widget-v2 tabbed-widget">
       <div className="widget-head">
-          <h3 className="dark-inverted">Medications</h3>
-          <div className="tabbed-controls">
-              <a className="tabbed-control is-active">
-                  <span>All</span>
-              </a>
-              <a className="tabbed-control">
-                  <span>Mine</span>
-              </a>
-              <div className="tabbed-naver"></div>
-          </div>
+        <h3 className="dark-inverted">Medications</h3>
+        {/* <div className="tabbed-controls">
+          <a className="tabbed-control is-active">
+            <span>All</span>
+          </a>
+          <a className="tabbed-control">
+            <span>Mine</span>
+          </a>
+          <div className="tabbed-naver"></div>
+        </div> */}
       </div>
-
       <div className="inner-list-wrapper is-active">
-          <div className="inner-list">
-              {medications ? (
-                medications.map(medication => (
-                  <Icd10Row
-                    key={medication.medicationId}
-                    id={medication.medicationId}
-                    code={medication.dosage}
-                    description={medication.drugName}
-                    status={medication.status}
-                    onStatusChange={handleStatusChange}
-                  />
-                ))
-              ) : (
-                <div>No Medications Found</div>
-              )}
-          </div>
+        <div className="inner-list">
+          {medications?.length === 0 ? (
+            <NoData 
+              Title="No Medications Found"
+              Subtext="We couldn't find any medications for the specified recording."
+              ImageLight="assets/img/illustrations/placeholders/search-4.svg"
+              ImageDark="assets/img/illustrations/placeholders/search-4-dark.svg"
+            />
+          ) : (
+            medications && medications.map(medication => (
+              <Icd10Row
+                key={medication.medicationId}
+                id={medication.medicationId}
+                code={medication.dosage}
+                description={medication.drugName}
+                status={medication.status}
+                onStatusChange={handleStatusChange}
+              />
+            ))
+          )}
+        </div>
       </div>
-  </div>
+    </div>
   );
 };
 

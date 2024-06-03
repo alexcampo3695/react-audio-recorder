@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
-
+import NoData from "./NoData";
+import backendUrl from '../config';
 
 interface CPT10RowData {
   id: string;
@@ -75,7 +76,7 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
   useEffect(() => {
     const fetchCPTCodes = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/cpt/file/${fileId}`);
+        const response = await fetch(`${backendUrl}/api/cpt/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch cpt codes: ${response.status}`);
         }
@@ -91,7 +92,7 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
-      await fetch(`http://localhost:8000/api/cpt/update/${id}`, {
+      await fetch(`${backendUrl}/api/cpt/update/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus }),
         headers: {
@@ -126,21 +127,25 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
 
       <div className="inner-list-wrapper is-active">
           <div className="inner-list">
-              {cpts ? (
-                cpts.map(cpt => (
-                  <CPTRow
-                    key={cpt._id}
-                    id={cpt._id}
-                    code={cpt.code}
-                    description={cpt.description}
-                    status={cpt.status}
-                    onStatusChange={handleStatusChange}
-                  />
-                ))
-              ) : (
-                <div>No CPT Codes Proposed</div>
-              )}
-
+            {cpts?.length === 0 ? (
+              <NoData 
+                Title="No CPT Codes Found"
+                Subtext="We couldn't find any CPT codes for the specified recording."
+                ImageLight="assets/img/illustrations/placeholders/search-4.svg"
+                ImageDark="assets/img/illustrations/placeholders/search-4-dark.svg"
+              />
+            ) : (
+              cpts?.map(cpt => (
+                <CPTRow
+                  key={cpt._id}
+                  id={cpt._id}
+                  code={cpt.code}
+                  description={cpt.description}
+                  status={cpt.status}
+                  onStatusChange={handleStatusChange}
+                />
+              ))
+            )}
           </div>
       </div>
   </div>

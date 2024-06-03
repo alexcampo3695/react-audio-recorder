@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
-
+import backendUrl from '../config';
 
 interface DiarizedComponentProps {
   fileId: string;
@@ -23,7 +23,7 @@ const DiarizedComponent: React.FC<DiarizedComponentProps> = ({ fileId }) => {
   useEffect(() => {
     const fetchDiarization = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/diarization/file/${fileId}`);
+        const response = await fetch(`${backendUrl}/api/diarization/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch summary: ${response.status}`);
         }

@@ -4,6 +4,7 @@ import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
+import backendUrl from '../config';
 
 const ResetPassword = () => {
     const { token } = useParams(); // Get the token from the URL
@@ -30,7 +31,7 @@ const ResetPassword = () => {
             return;
         }
         try {
-            const response = await fetch(`http://localhost:8000/api/user/reset_password/${token}`, {
+            const response = await fetch(`${backendUrl}/api/user/reset_password/${token}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

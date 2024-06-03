@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 import { useUser } from "../context/UserContext";
+import NoData from "./NoData";
+import backendUrl from '../config';
 interface FlexItemProps {
     PatientId: string
     FirstName: string
@@ -86,7 +88,7 @@ const ExistingPatientsTable = ({ }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8000/api/patients/by_creatorId`, {
+            const response = await fetch(`${backendUrl}/api/patients/by_creatorId`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -115,7 +117,6 @@ const ExistingPatientsTable = ({ }) => {
     console.log(patients)
 
     return (
-        // Make this a ReactFragment??
         <div>
             <div className="list-flex-toolbar">
                 <div className="control has-icon">
@@ -154,28 +155,39 @@ const ExistingPatientsTable = ({ }) => {
                             </p>
                         </div>
                     </div>
-                    <div className="flex-table">
-                        <div className="flex-table-header" data-filter-hide="">
-                            <span className="is-grow">Patient</span>
-                            {/* <span>First Name</span>
-                            <span>Last Name</span> */}
-                            <span>Date of Birth</span>
-                            {/* <span>Relations</span> */}
-                            <span className="cell-end">Actions</span>
-                        </div>
+                    {patients.length === 0 ? (
+                        <NoData 
+                            Title="No Patients Found"
+                            Subtext="We couldn't find any patients. Please create one or try a different search term."
+                            ImageLight="assets/img/illustrations/placeholders/search-4.svg"
+                            ImageDark="assets/img/illustrations/placeholders/search-4-dark.svg"
+                        />
+                    ) : (
+                        <div className="flex-table">
+                            <div className="flex-table-header" data-filter-hide="">
+                                <span className="is-grow">Patient</span>
+                                {/* <span>First Name</span>
+                                <span>Last Name</span> */}
+                                <span>Date of Birth</span>
+                                {/* <span>Relations</span> */}
+                                <span className="cell-end">Actions</span>
+                            </div>
 
-                        <div className="flex-list-inner">
-                        {patients.map((patient:any) => (
-                            <ExistingPatientItem
-                                key={patient._id}
-                                PatientId = {patient.PatientId}
-                                FirstName = {patient.FirstName}
-                                LastName = {patient.LastName}
-                                DateOfBirth = {patient.DateOfBirth}
-                            />
-                        ))}
+                            <div className="flex-list-inner">
+                            {patients.map((patient:any) => (
+                                <ExistingPatientItem
+                                    key={patient._id}
+                                    PatientId = {patient.PatientId}
+                                    FirstName = {patient.FirstName}
+                                    LastName = {patient.LastName}
+                                    DateOfBirth = {patient.DateOfBirth}
+                                    UserId={user?.id || ''}
+                                />
+                            ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
+                    
                     {/* <nav className="flex-pagination pagination is-rounded" aria-label="pagination" data-filter-hide="">
                         <a className="pagination-previous has-chevron"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
                         <a className="pagination-next has-chevron"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></a>

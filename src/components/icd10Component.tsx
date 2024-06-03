@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
-
+import NoData from "./NoData";
+import backendUrl from '../config';
 
 interface Icd10RowData {
   id: string;
@@ -75,7 +76,7 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
   useEffect(() => {
     const fetchIcd10Codes = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/icd10/file/${fileId}`);
+        const response = await fetch(`${backendUrl}/api/icd10/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch icd10 codes: ${response.status}`);
         }
@@ -91,7 +92,7 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
-      await fetch(`http://localhost:8000/api/icd10/update/${id}`, {
+      await fetch(`${backendUrl}/api/icd10/update/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus }),
         headers: {
@@ -112,38 +113,32 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
   return (
     <div className="list-widget list-widget-v2 tabbed-widget">
       <div className="widget-head">
-          <h3 className="dark-inverted">ICD10 Codes</h3>
-          <div className="tabbed-controls">
-              <a className="tabbed-control is-active">
-                  <span>All</span>
-              </a>
-              <a className="tabbed-control">
-                  <span>Mine</span>
-              </a>
-              <div className="tabbed-naver"></div>
-          </div>
+        <h3 className="dark-inverted">ICD10 Codes</h3>
       </div>
-
       <div className="inner-list-wrapper is-active">
-          <div className="inner-list">
-              {icd10s ? (
-                icd10s.map(icd10 => (
-                  <Icd10Row
-                    key={icd10._id}
-                    id={icd10._id}
-                    code={icd10.code}
-                    description={icd10.description}
-                    status={icd10.status}
-                    onStatusChange={handleStatusChange}
-                  />
-                ))
-              ) : (
-                <div>No ICD 10 Codes</div>
-              )}
-
-          </div>
+        <div className="inner-list">
+          {icd10s && icd10s.length === 0 ? (
+            <NoData 
+              Title="No ICD10 Codes Found"
+              Subtext="We couldn't find any ICD10 codes for the specified recording."
+              ImageLight="assets/img/illustrations/placeholders/search-4.svg"
+              ImageDark="assets/img/illustrations/placeholders/search-4-dark.svg"
+            />
+          ) : (
+            icd10s && icd10s.map(icd10 => (
+              <Icd10Row
+                key={icd10._id}
+                id={icd10._id}
+                code={icd10.code}
+                description={icd10.description}
+                status={icd10.status}
+                onStatusChange={handleStatusChange}
+              />
+            ))
+          )}
+        </div>
       </div>
-  </div>
+    </div>
   );
 };
 

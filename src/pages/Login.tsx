@@ -3,6 +3,7 @@ import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import loginImage from "../styles/assets/login_img.png";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext"; 
+import backendUrl from '../config';
 
 
 type LoginCredentials = {
@@ -27,7 +28,7 @@ const Login = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:8000/api/user/login', {
+            const response = await fetch(`${backendUrl}/api/user/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,6 +71,7 @@ const Login = () => {
             }
         }
     }
+
 
     return (
         <div className="modern-login">
