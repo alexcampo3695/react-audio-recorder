@@ -19,6 +19,20 @@ import Uploads from './models/Recordings';
 import { MongoClient, Db, GridFSBucket, ObjectId } from 'mongodb';  // Ensure correct import
 import OpenAI from "openai";
 
+
+import patientRoutes from './routes/patientRoutes';
+import audioRoutes from './routes/audioRoutes';
+import transcriptionRoutes from './routes/trascriptionRoutes';
+import summaryRoutes from './routes/encounterSummaryRoutes';
+import diarizationRoutes from './routes/diarizationRoutes';
+import icd10Routes from './routes/icd10Routes';
+import medicationsRoutes from './routes/medicationsRoutes';
+import cptRoutes from './routes/cptRoutes';
+import clincalNotesRoutes from './routes/clinicalNotesRoutes';
+import userRoutes from './routes/userRoutes';
+import userDetailsRoutes from './routes/userDetailsRoutes';
+import emailRoutes from './routes/emailRoutes';
+
 const app = express();
 const PORT = 8000;
 
@@ -36,6 +50,19 @@ conn.once('open', () => {
     db = conn.db as unknown as Db;  // Ensure correct type
     console.log("GridFS initialized");  // Log when GridFS is initialized
 });
+
+app.use('/api/patients', patientRoutes);
+app.use('/api/audio', audioRoutes);
+app.use('/api/transcriptions', transcriptionRoutes);
+app.use('/api/encounter_summary', summaryRoutes);
+app.use('/api/diarization', diarizationRoutes);
+app.use('/api/icd10', icd10Routes);
+app.use('/api/medications', medicationsRoutes);
+app.use('/api/cpt', cptRoutes);
+app.use('/api/clinical_note', clincalNotesRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/user_details', userDetailsRoutes);
+app.use('/api/email', emailRoutes)
 
 // Configure the storage for GridFS
 const storage = new GridFsStorage({
