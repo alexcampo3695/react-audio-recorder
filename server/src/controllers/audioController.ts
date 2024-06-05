@@ -100,11 +100,22 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
         downloadStream.on('end', async () => {
         try {
             const transcription = await generateTranscription(inputPath, recording, fileId);
+            console.log('Transcription generated');
+
             await generateSummary(transcription, fileId, patientId);
+            console.log('Summary generated');
+
             await generateDiarization(transcription, fileId, patientId);
+            console.log('Diarization generated');
+
             await generateICD10Codes(transcription, fileId, patientId);
+            console.log('ICD-10 codes generated');
+
             await generateMedications(transcription, fileId, patientId);
+            console.log('Medications generated');
+
             await generateCPTCodes(transcription, fileId, patientId);
+            console.log('CPT codes generated');
 
             // query icd10, cppt and medications
             const icd10Codes = await ICD10.find({ fileId: fileId });
@@ -116,6 +127,8 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
             const cptCodesString = JSON.stringify(cptCodes);
             const medicationsString = JSON.stringify(medications);
             const userDetailsString = JSON.stringify(userDetails);
+
+            console.log('medication string', medicationsString)
 
             console.log("userDetails",userDetailsString)
             await generateClinicalNote(
@@ -133,6 +146,10 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
             //apending metaData to audio/upload file
             await updateMetaData(recording.filename, patientData);
 
+            await Transcription.updateOne(
+                { fileId: fileId },
+                { $set: { status: 'complete' } }
+            );
 
         } catch (error) {
             console.error('Error processing recording:', error);

@@ -15,6 +15,10 @@ export async function generateMedications(transcription: string, fileId: any, pa
         return; // Return early if no medications are generated
     }
     for (const medication of medications) {
+        if (!medication.drugName) {
+            console.error('Medication validation failed: drugName is required');
+            continue; // Skip this medication
+        }
         const newMedication = new MedicationModel({
             patientId: patientId,
             fileId: fileId,
