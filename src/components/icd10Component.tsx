@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
+import NoData from "./NoData";
 
 
 interface Icd10RowData {
@@ -126,8 +127,13 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
 
       <div className="inner-list-wrapper is-active">
           <div className="inner-list">
-              {icd10s ? (
-                icd10s.map(icd10 => (
+              {icd10s?.length === 0 ? (
+                <NoData 
+                  Title='No ICD10 Codes Found'
+                  Subtitle= 'There have been no ICD10 codes found in this transcription file.'
+                />
+              ) : (
+                icd10s?.map(icd10 => (
                   <Icd10Row
                     key={icd10._id}
                     id={icd10._id}
@@ -137,8 +143,6 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
                     onStatusChange={handleStatusChange}
                   />
                 ))
-              ) : (
-                <div>No ICD 10 Codes</div>
               )}
 
           </div>

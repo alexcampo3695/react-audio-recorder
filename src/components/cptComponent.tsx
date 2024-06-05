@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
+import NoData from "./NoData";
 
 
 interface CPT10RowData {
@@ -126,8 +127,13 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
 
       <div className="inner-list-wrapper is-active">
           <div className="inner-list">
-              {cpts ? (
-                cpts.map(cpt => (
+              {cpts?.length === 0 ? (
+                <NoData 
+                  Title='No CPT Codes Found'
+                  Subtitle= 'There have been no CPT Codes found in this transcription file.'
+                />
+              ) : (
+                cpts?.map(cpt => (
                   <CPTRow
                     key={cpt._id}
                     id={cpt._id}
@@ -137,8 +143,6 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
                     onStatusChange={handleStatusChange}
                   />
                 ))
-              ) : (
-                <div>No CPT Codes Proposed</div>
               )}
 
           </div>
