@@ -59,7 +59,7 @@ const signatureStorage = new GridFsStorage({
     file: (req: Request, file: Express.Multer.File) => {
         return new Promise((resolve, reject) => {
             process.nextTick(() => {
-                crypto.randomBytes(16, (err: Error, buf: Buffer) => {
+                crypto.randomBytes(16, (err: Error | null, buf: Buffer) => {
                     if (err) {
                         reject(err);
                         return;

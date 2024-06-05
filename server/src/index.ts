@@ -6,7 +6,7 @@ import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import Patients from "./models/Patient";
-import Transcription from "./models/Transcription";
+import TranscriptionModel from "./models/Transcription";
 import cors from 'cors';
 import path from 'path';
 import crypto from 'crypto';
@@ -18,6 +18,8 @@ import fs from 'fs';
 import Uploads from './models/Recordings';
 import { MongoClient, Db, GridFSBucket, ObjectId } from 'mongodb';  // Ensure correct import
 import OpenAI from "openai";
+import { PatientData } from './types/PatientData'
+import { Transcription } from './types/Transcription'
 
 
 import patientRoutes from './routes/patientRoutes';
@@ -34,7 +36,7 @@ import userDetailsRoutes from './routes/userDetailsRoutes';
 import emailRoutes from './routes/emailRoutes';
 
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT || 8002; // Changed to 8002
 
 app.use(cors());
 app.use(express.json());
@@ -98,6 +100,8 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hello World');
 });
 
+  
+
 app.get("/uploads", async (req: Request, res: Response) => {
     try {
         const bucket = new GridFSBucket(db, { bucketName: 'uploads' });
@@ -141,6 +145,7 @@ app.get('/upload/:fileID', async (req: Request, res: Response) => {
     }
 });
 
+
 app.post('/upload', upload, (req: Request, res: Response) => {
     console.log("Received upload request");  // Log when request is received
     console.log("Request body:", req.body);  // Log request body
@@ -156,7 +161,7 @@ app.post('/upload', upload, (req: Request, res: Response) => {
         return res.status(400).send('No patient data provided');
     }
 
-    let patientData = null;
+    let patientData: PatientData | null = null;
     try {
         patientData = JSON.parse(req.body.patientData);  // Parse patient data
         console.log("Parsed patient data:", patientData);  // Log parsed patient data
@@ -165,7 +170,7 @@ app.post('/upload', upload, (req: Request, res: Response) => {
     }
 
 
-    let transcription = null;
+    let transcription: Transcription | null = null;
     if (req.body.transcription) {
         transcription = req.body.transcription;
     }
@@ -188,8 +193,10 @@ app.post('/upload', upload, (req: Request, res: Response) => {
                 );
                 console.log("Metadata updated successfully in the database.");
 
-                if (transcription) {
-                    const newTranscription = new Transcription({
+
+
+                if (transcription && patientData) {
+                    const newTranscription = new TranscriptionModel({
                         patientId: new mongoose.Types.ObjectId(patientData._id),
                         recordingId: file._id,
                         transcription: transcription

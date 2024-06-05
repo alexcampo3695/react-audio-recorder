@@ -1,8 +1,10 @@
 import { medicationGenerator } from './aiService';
 import MedicationModel from '../models/Medication';
+import { Medication } from '../types/Medication';
+
 
 export async function generateMedications(transcription: string, fileId: any, patientId: any) {
-    let medications = [];
+    let medications: Medication[] = [];
     for (let i = 0; i < 3; i++) {
         medications = await medicationGenerator(transcription);
         if (medications !== null) {
@@ -16,17 +18,18 @@ export async function generateMedications(transcription: string, fileId: any, pa
         const newMedication = new MedicationModel({
             patientId: patientId,
             fileId: fileId,
-            drugCode: medication.DrugCode || undefined,
-            drugName: medication.DrugName,
-            dosage: medication.Dosage,
-            frequency: medication.Frequency,
-            fillSupply: medication.FillSupply,
-            methodOfIngestion: medication.MethodOfIngestion,
-            status: medication.Status,
-            startDate: medication.StartDate ? new Date(medication.StartDate) : undefined,
-            endDate: medication.EndDate ? new Date(medication.EndDate) : undefined,
-            specialInstructions: medication.SpecialInstructions, // Ensure this is added
+            drugCode: medication.drugCode || undefined,
+            drugName: medication.drugName,
+            dosage: medication.dosage,
+            frequency: medication.frequency,
+            fillSupply: medication.fillSupply,
+            methodOfIngestion: medication.methodOfIngestion,
+            status: medication.status,
+            startDate: medication.startDate ? new Date(medication.startDate) : undefined,
+            endDate: medication.endDate ? new Date(medication.endDate) : undefined,
+            specialInstructions: medication.specialInstructions, // Ensure this is added
         });
         await newMedication.save();
     }
+    
 }

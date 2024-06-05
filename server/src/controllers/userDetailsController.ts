@@ -46,7 +46,7 @@ export const createUserDetails = async (req: Request, res: Response) => {
       userDetails
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: (error as Error).message });
   }
 };
 

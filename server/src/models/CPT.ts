@@ -1,16 +1,10 @@
+// src/models/CPT.ts
 import { Schema, model, Document } from 'mongoose';
+import { CPT } from '../types/CPT';
 
-interface CPT extends Document {
-    fileId: string;
-    code: string;
-    description: string;
-    status: boolean;
-    patientId: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
+interface CPTDocument extends CPT, Document {}
 
-const CPTSchema = new Schema<CPT>({
+const CPTSchema = new Schema<CPTDocument>({
     fileId: { type: String, required: true },
     code: { type: String, required: true },
     description: { type: String, required: true },
@@ -20,6 +14,6 @@ const CPTSchema = new Schema<CPT>({
     updatedAt: { type: Date, default: Date.now }
 });
 
-const CPT = model<CPT>('CPT', CPTSchema);
+const CPTModel = model<CPTDocument>('CPT', CPTSchema);
 
-export default CPT;
+export default CPTModel;

@@ -5,13 +5,13 @@ import AppWrapper from './AppWrapper';
 import FakeAvatar, { AvatarSize } from '../elements/FakeAvatar';
 import EncounterSummaryComponent from '../components/EncounterSummary';
 import DiarizedComponent from '../components/DiarizedTranscription';
-import Icd10Component from '../components/Icd10Component';
+import Icd10Component from '../components/icd10Component';
 import MedicationComponent from '../components/MedicationComponent';
-import CPTComponent from '../components/CptComponent';
+import CPTComponent from '../components/cptComponent';
 import ClinicalNoteComponent from '../components/ClinicalNote';
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
-import feather from 'feather-icons';
+// import feather from 'feather-icons';
 import { handlePDF, handlePDFtoEmail} from '../helpers/PDF';
 import { useUser } from '../context/UserContext';
 import { format } from 'date-fns';
@@ -67,9 +67,9 @@ const SummaryPage: React.FC = () => {
         }
     }, [validGridId]);
 
-    useEffect(() => {
-        feather.replace();
-      }, []);
+    // useEffect(() => {
+    //     feather.replace();
+    //   }, []);
 
     useEffect(() => {
         const fetchAudio = async () => {

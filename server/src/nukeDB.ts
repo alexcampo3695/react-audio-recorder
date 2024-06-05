@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
+import { Collection } from 'mongodb'; 
 
 async function nukeDB() {
     const url = process.env.MONGO_URL;
@@ -13,7 +14,7 @@ async function nukeDB() {
 
         // List collections before dropping
         const initialCollections = await db.collections();
-        console.log('Initial collections:', initialCollections.map(c => c.collectionName));
+       console.log('Initial collections:', initialCollections.map((c:Collection) => c.collectionName));
 
         for (let collection of initialCollections) {
             await collection.drop();
@@ -22,7 +23,7 @@ async function nukeDB() {
 
         // List collections after dropping
         const finalCollections = await db.collections();
-        console.log('Final collections:', finalCollections.map(c => c.collectionName));
+        console.log('Final collections:', finalCollections.map((c:Collection) => c.collectionName));
 
         console.log('Dropped all collections in the database');
     } catch (error) {

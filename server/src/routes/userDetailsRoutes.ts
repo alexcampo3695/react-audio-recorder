@@ -31,7 +31,8 @@ router.patch('/update/:userId', upload.single('signature'), async (req, res) => 
         }
         res.json(userDetails);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        const err = error as Error;
+        res.status(500).json({ error: err.message });
     }
 });
 

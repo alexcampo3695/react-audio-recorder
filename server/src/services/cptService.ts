@@ -1,8 +1,9 @@
 import { cptGenerator } from './aiService';
-import CPT from '../models/CPT';
+import CPTModel from '../models/CPT';
+import { CPT } from '../types/CPT'
 
 export async function generateCPTCodes(transcription: string, fileId: any, patientId: any) {
-    let cpts = [];
+    let cpts: CPT[] = [];
     for (let i = 0; i < 3; i++) {
         if (cpts !== null) {
             break;
@@ -11,14 +12,14 @@ export async function generateCPTCodes(transcription: string, fileId: any, patie
     }
     cpts = await cptGenerator(transcription);
     for (const cpt of cpts) {
-        const existingCode = await CPT.findOne({ code: cpt.code });
+        const existingCode = await CPTModel.findOne({ code: cpt.code });
         if (existingCode) {
-            await CPT.updateOne(
+            await CPTModel.updateOne(
                 { code: cpt.code },
                 { description: cpt.description, status: cpt.status, patientId: patientId }
             );
         } else {
-            const newCPT = new CPT({
+            const newCPT = new CPTModel({
                 fileId: fileId,
                 code: cpt.code,
                 description: cpt.description,

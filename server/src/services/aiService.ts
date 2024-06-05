@@ -1,8 +1,16 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import dotenv from 'dotenv';
 import { NotFoundError } from 'openai';
+import mongoose, { Schema, Document } from 'mongoose';
+import { Medication } from '../types/Medication';
+import { ICD10 } from '../types/ICD10'
+import { CPT } from '../types/CPT'
 
 dotenv.config();
+
+function isAxiosError(error: any): error is { response: { data: any; status: number; headers: any } } {
+    return error && error.response && typeof error.response === 'object';
+}
 
 export async function summarizeTranscription(text: string): Promise<string> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
@@ -37,8 +45,18 @@ export async function summarizeTranscription(text: string): Promise<string> {
         });
         return response.data.choices[0].message.content.trim();
     } catch (error) {
-        console.error('Error from OpenAI API:', error.response?.data);
-        throw new Error(`Failed to summarize text: ${error.response?.status} ${error.response?.statusText}`);
+        if (error instanceof Error) {
+            if ('response' in error && error.response) {
+                console.error('Error from OpenAI API:', (error.response as any).data);
+                throw new Error(`Failed to summarize text: ${(error.response as any).status} ${(error.response as any).statusText}`);
+            } else {
+                console.error('Error:', error.message);
+                throw new Error(`Failed to summarize text: ${error.message}`);
+            }
+        } else {
+            console.error('Unknown error:', error);
+            throw new Error('Failed to summarize text: Unknown error occurred');
+        }
     }
 }
 
@@ -80,19 +98,25 @@ export async function diariazeTranscription(text: string): Promise<string> {
             }
         });
         return response.data.choices[0].message.content.trim();
-    } catch (error) {
-        console.error('Error from OpenAI API:', error.response?.data);
-        throw new Error(`Failed to diarize text: ${error.response?.status} ${error.response?.statusText}`);
+    } catch (error: unknown) {
+        if (error instanceof Error && 'response' in error) {
+            const axiosError = error as AxiosError;
+            console.error('Error from OpenAI API:', axiosError.response?.data);
+            throw new Error(`Failed to diarize text: ${axiosError.response?.status} ${axiosError.response?.statusText}`);
+        } else {
+            console.error('Unknown error:', error);
+            throw new Error('An unknown error occurred');
+        }
     }
 }
 
-interface ICD10Code {
-    code: string;
-    description: string;
-    status: boolean;
-}
+// interface ICD10Code {
+//     code: string;
+//     description: string;
+//     status: boolean;
+// }
 
-export async function icd10Generator(text: string): Promise<ICD10Code[]> {
+export async function icd10Generator(text: string): Promise<ICD10[]> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
@@ -177,34 +201,38 @@ export async function icd10Generator(text: string): Promise<ICD10Code[]> {
         const responseData = response.data.choices[0].message.content.trim();
 
         const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
-        const icd10Codes: ICD10Code[] = JSON.parse(sanitizedResponseData);
+        const icd10Codes: ICD10[] = JSON.parse(sanitizedResponseData);
         return icd10Codes;
         
-    } catch (error) {
-        console.error('Error from OpenAI API:', error);
-        
-        if (error.response) {
+    } catch (error: unknown) {
+        if (isAxiosError(error)) {
             console.error('Response data:', error.response.data);
             console.error('Status:', error.response.status);
             console.error('Headers:', error.response.headers);
-        } 
-        
+            throw new Error(`Failed to summarize text: ${error.response.status} `);
+        } else if (error instanceof Error) {
+            console.error('Error:', error.message);
+            throw new Error(`Failed to summarize text: ${error.message}`);
+        } else {
+            console.error('Unknown error:', error);
+            throw new Error('Failed to summarize text: Unknown error occurred');
+        }
     }
-    return null;
+    return [];
 }
 
-interface Medication {
-    DrugCode: string;
-    DrugName: string;
-    Dosage?: string;
-    Frequency?: string;
-    FillSupply?: string;
-    MethodOfIngestion: string;
-    StartDate?: string;
-    EndDate?: string; 
-    SpecialInstructions?: string;
-    Status: boolean;
-}
+// interface Medication {
+//     DrugCode: string;
+//     DrugName: string;
+//     Dosage?: string;
+//     Frequency?: string;
+//     FillSupply?: string;
+//     MethodOfIngestion: string;
+//     StartDate?: string;
+//     EndDate?: string; 
+//     SpecialInstructions?: string;
+//     Status: boolean;
+// }
 
 export async function medicationGenerator(text: string): Promise<Medication[]> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
@@ -281,26 +309,42 @@ export async function medicationGenerator(text: string): Promise<Medication[]> {
         const medications: Medication[] = JSON.parse(sanitizedResponseData);
         return medications;
         
-    } catch (error) {
-        console.error('Error from OpenAI API:', error);
-        
-        if (error.response) {
+    } catch (error: unknown) {
+        if (isAxiosError(error)) {
             console.error('Response data:', error.response.data);
             console.error('Status:', error.response.status);
             console.error('Headers:', error.response.headers);
-        } 
+            throw new Error(`Failed to summarize text: ${error.response.status} `);
+        } else if (error instanceof Error) {
+            console.error('Error:', error.message);
+            throw new Error(`Failed to summarize text: ${error.message}`);
+        } else {
+            console.error('Unknown error:', error);
+            throw new Error('Failed to summarize text: Unknown error occurred');
+        }
     }
-    return null;
+    return [
+        {
+            patientId: 'example_patient_id',
+            fileId: 'example_file_id',
+            drugCode: 'example_drug_code',
+            drugName: 'example_drug_name',
+            dosage: 'example_dosage',
+            frequency: 'example_frequency',
+            fillSupply: 30,
+            methodOfIngestion: 'oral',
+            status: true,
+            startDate: new Date(),
+            endDate: new Date(),
+            specialInstructions: 'Take with food'
+        }
+    ];
 }
 
 
-interface CPT {
-    code: string;
-    description: string;
-    status: boolean;
-}
 
-export async function cptGenerator(text: string): Promise<ICD10Code[]> {
+
+export async function cptGenerator(text: string): Promise<CPT[]> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
@@ -379,22 +423,33 @@ export async function cptGenerator(text: string): Promise<ICD10Code[]> {
         const cptCodes: CPT[] = JSON.parse(sanitizedResponseData);
         return cptCodes;
         
-    } catch (error) {
-        console.error('Error from OpenAI API:', error);
-        
-        if (error.response) {
+    } catch (error: unknown) {
+        if (isAxiosError(error)) {
             console.error('Response data:', error.response.data);
             console.error('Status:', error.response.status);
             console.error('Headers:', error.response.headers);
-        } 
-        
+            throw new Error(`Failed to summarize text: ${error.response.status} `);
+        } else if (error instanceof Error) {
+            console.error('Error:', error.message);
+            throw new Error(`Failed to summarize text: ${error.message}`);
+        } else {
+            console.error('Unknown error:', error);
+            throw new Error('Failed to summarize text: Unknown error occurred');
+        }
     }
-    return null;
+    return [];
 }
 
+interface NoteProps {
+    transcription: string
+    icd10Codes: string
+    cptCodes: string
+    medicatations: string
+    patientData: string
+    userDetails: string
+}
 
-
-export async function noteGenerator(transcription: string, icd10Codes: string, cptCode: string, medications: string, patientData: string, userDetails: string): Promise<ICD10Code[]> {
+export async function noteGenerator(transcription: string, icd10Codes: string, cptCode: string, medications: string, patientData: string, userDetails: string): Promise<NoteProps[]> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
@@ -455,15 +510,20 @@ export async function noteGenerator(transcription: string, icd10Codes: string, c
         });
         return response.data.choices[0].message.content.trim();
         
-    } catch (error) {
-        console.error('Error from OpenAI API:', error);
-        
-        if (error.response) {
+    } catch (error: unknown) {
+        if (isAxiosError(error)) {
             console.error('Response data:', error.response.data);
             console.error('Status:', error.response.status);
             console.error('Headers:', error.response.headers);
-        } 
-        
+            throw new Error(`Failed to summarize text: ${error.response.status} `);
+        } else if (error instanceof Error) {
+            console.error('Error:', error.message);
+            throw new Error(`Failed to summarize text: ${error.message}`);
+        } else {
+            console.error('Unknown error:', error);
+            throw new Error('Failed to summarize text: Unknown error occurred');
+        }
     }
+    return [];
 }
 

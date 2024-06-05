@@ -1,19 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { Medication } from '../types/Medication';
 
-interface Medication extends Document {
-    patientId: string;
-    fileId: string;
-    drugCode?: string; // Made optional
-    drugName: string;
-    dosage?: string;
-    frequency?: string;
-    fillSupply?: number;
-    methodOfIngestion?: string;
-    startDate?: Date;
-    endDate?: Date;
-    specialInstructions?: string;
-    status: boolean;
-}
+interface MedicationDocument extends Medication, Document {}
 
 const MedicationSchema: Schema = new Schema({
     patientId: { type: String, required: true },
@@ -32,6 +20,6 @@ const MedicationSchema: Schema = new Schema({
     timestamps: true
 });
 
-const MedicationModel = mongoose.model<Medication>('Medication', MedicationSchema);
+const MedicationModel = mongoose.model<MedicationDocument>('Medication', MedicationSchema);
 
 export default MedicationModel;

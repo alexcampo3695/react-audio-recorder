@@ -3,6 +3,20 @@ import { sendEmail } from '../services/emailService';
 import User from '../models/Users'
 import { format } from 'date-fns';
 
+interface EmailOptions {
+    to: string;
+    from: string;
+    subject: string;
+    text?: string;
+    html?: string;
+    attachments?: Array<{
+      filename: string;
+      content: string;
+      type: string;
+      disposition: string;
+    }>;
+  }
+
 export const sendPdfEmail = async (req: Request, res: Response) => {
     const { userId, fileName, patientName, visitDate } = req.body
     const pdfBuffer = req.file?.buffer;
@@ -34,7 +48,7 @@ export const sendPdfEmail = async (req: Request, res: Response) => {
                 },
             ]
         };
-        await sendEmail(emailOptions)
+        await sendEmail(emailOptions as EmailOptions)
 
         res.status(200).json({message: 'Email sent successfully'})
     } catch (error) {

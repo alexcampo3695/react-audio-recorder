@@ -1,13 +1,15 @@
-import mongoose from 'mongoose';
+// src/models/Transcription.ts
+import mongoose, { Schema, model } from 'mongoose';
+import { Transcription as ITranscription } from '../types/Transcription';
 
-const TranscriptionSchema = new mongoose.Schema({
+const TranscriptionSchema = new Schema<ITranscription>({
     filename: { type: String, required: true },
     transcription: { type: String, required: true },
-    patientData: { type: mongoose.Schema.Types.Mixed, required: false },
-    fileId: { type: mongoose.Schema.Types.ObjectId, required: true }, // Ensure this field is present
+    patientData: { type: Schema.Types.Mixed, required: false },
+    fileId: { type: Schema.Types.ObjectId, required: true },
     status: { type: String, required: true }
 }, { timestamps: true });
 
-const Transcription = mongoose.model('Transcription', TranscriptionSchema);
+const TranscriptionModel = model<ITranscription>('Transcription', TranscriptionSchema);
 
-export default Transcription;
+export default TranscriptionModel;
