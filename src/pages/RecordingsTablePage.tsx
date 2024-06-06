@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import FlexTable from '../components/RecordingTable';
 import AppWrapper from './AppWrapper';
 import "../styles/spinner.css";
+import RecordingsFlexTable from '../components/RecordingTable';
 
 interface AudioData {
     source: 'recording' | 'upload';
@@ -20,10 +21,9 @@ interface TablePageProps {
 const RecordingsTable: React.FC<TablePageProps> = ({ audioDataList, onTranscriptionClick }) => {
     return (
         <AppWrapper
-            children={<FlexTable />}
+            children={<RecordingsFlexTable />}
             title='Recordings Table'
         />
-            
     );
 };
 

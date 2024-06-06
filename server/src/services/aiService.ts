@@ -60,6 +60,7 @@ export async function summarizeTranscription(text: string): Promise<string> {
     }
 }
 
+
 export async function diariazeTranscription(text: string): Promise<string> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
@@ -83,8 +84,9 @@ export async function diariazeTranscription(text: string): Promise<string> {
               - Label and distinguish between "Provider" and "Patient".
               - Do not add any events or information that did not occur in the provided text.
               - Format the conversation in markdown.
+              - FORMAT in compilable MARKDOWN Format. NO extra characters please.
               Here is the transcription:\n\n${text}`
-              }
+            }
         ],
         max_tokens: 4096,
         temperature: 0.0
@@ -97,18 +99,27 @@ export async function diariazeTranscription(text: string): Promise<string> {
                 "Content-Type": "application/json"
             }
         });
-        return response.data.choices[0].message.content.trim();
+
+        let transcription = response.data.choices[0].message.content.trim();
+        console.log('Raw transcription:', transcription);
+
+        // Ensure the transcription is in markdown format
+        transcription = transcription.replace(/```markdown|```/g, '').trim();
+
+        console.log('Processed transcription:', transcription);
+        return transcription;
     } catch (error: unknown) {
-        if (error instanceof Error && 'response' in error) {
-            const axiosError = error as AxiosError;
-            console.error('Error from OpenAI API:', axiosError.response?.data);
-            throw new Error(`Failed to diarize text: ${axiosError.response?.status} ${axiosError.response?.statusText}`);
+        if (error instanceof AxiosError) {
+            console.error('Error from OpenAI API:', error.response?.data);
+            throw new Error(`Failed to diarize text: ${error.response?.status} ${error.response?.statusText}`);
         } else {
             console.error('Unknown error:', error);
             throw new Error('An unknown error occurred');
         }
     }
 }
+
+
 
 
 export async function icd10Generator(text: string): Promise<ICD10[]> {
@@ -297,19 +308,34 @@ export async function medicationGenerator(text: string): Promise<Medication[]> {
                 "Content-Type": "application/json"
             }
         });
+        
         const responseData = response.data.choices[0].message.content.trim();
-        const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
-        const medications: Medication[] = JSON.parse(sanitizedResponseData);
+        const sanitizedResponseData = responseData.replace(/[`´‘’]/g, '"');
+        
+        let medications: Medication[];
+        
+        try {
+            medications = JSON.parse(sanitizedResponseData);
+        } catch (jsonError) {
+            console.error('Failed to parse JSON:', sanitizedResponseData);
+            throw new Error('Failed to generate medications: Invalid JSON format');
+        }
+
         return medications;
         
     } catch (error) {
-        console.error('Error from OpenAI API:', error);    
+        if (error instanceof AxiosError) {
+            console.error('Error from OpenAI API:', error.response?.data);
+            throw new Error(`Failed to generate medications: ${error.response?.status} ${error.response?.statusText}`);
+        } else if (error instanceof Error) {
+            console.error('Error:', error.message);
+            throw new Error(`Failed to generate medications: ${error.message}`);
+        } else {
+            console.error('Unknown error:', error);
+            throw new Error('An unknown error occurred');
+        }
     }
-    return [];
 }
-
-
-
 
 export async function cptGenerator(text: string): Promise<CPT[]> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
@@ -331,7 +357,7 @@ export async function cptGenerator(text: string): Promise<CPT[]> {
                         Your task is to strictly provide valid CPT codes for the conversation in JSON format without periods.
                         Please ensure the following:
 
-                        - Each ICD-10 code must be valid JSON and without periods or special characters.
+                        - Each CPT code must be valid JSON and without periods or special characters.
                         - The JSON format should follow these examples:
                         [
                             {
@@ -355,7 +381,6 @@ export async function cptGenerator(text: string): Promise<CPT[]> {
                                 "status": true
                             }
                         ]
-                        
                         
                         Produce with this type: 
                         
@@ -387,14 +412,30 @@ export async function cptGenerator(text: string): Promise<CPT[]> {
         });
         const responseData = response.data.choices[0].message.content.trim();
         
-        const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
-        const cptCodes: CPT[] = JSON.parse(sanitizedResponseData);
-        return cptCodes;
+        const sanitizedResponseData = responseData.replace(/[`´‘’]/g, '"');
+
+        let cptCodes: CPT[];
+        try {
+            cptCodes = JSON.parse(sanitizedResponseData); // <-- Corrected: removed `const` keyword
+        } catch (jsonError) {
+            console.error('Failed to parse JSON:', sanitizedResponseData);
+            throw new Error('Failed to generate CPT codes: Invalid JSON format'); // <-- Corrected error message
+        }
+        
+        return cptCodes; // <-- Now this variable is properly defined and returned
         
     } catch (error) {
-        console.error('Error from OpenAI API:', error);
+        if (error instanceof AxiosError) {
+            console.error('Error from OpenAI API:', error.response?.data);
+            throw new Error(`Failed to generate CPT codes: ${error.response?.status} ${error.response?.statusText}`);
+        } else if (error instanceof Error) {
+            console.error('Error:', error.message);
+            throw new Error(`Failed to generate CPT codes: ${error.message}`);
+        } else {
+            console.error('Unknown error:', error);
+            throw new Error('An unknown error occurred');
+        }
     }
-    return [];
 }
 
 interface NoteProps {
@@ -481,6 +522,5 @@ export async function noteGenerator(transcription: string, icd10Codes: string, c
             throw new Error('Failed to generate clinical note: Unknown error occurred');
         }
     }
-    return [];
 }
 

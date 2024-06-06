@@ -38,7 +38,7 @@ export async function getPatients(req: Request, res: Response) {
 }
 
 export async function getPatientsByCreatedUser(req: Request, res: Response) {
-    const { search, createdBy } = req.body;
+    const { search, createdBy, page = 1, limit = 10 } = req.body;
 
     if (!createdBy) {
         return res.status(400).json({ message: 'CreatedBy is required' });
@@ -55,8 +55,19 @@ export async function getPatientsByCreatedUser(req: Request, res: Response) {
     };
 
     try { 
+        const skip = (page - 1) * limit
         const patients = await Patients.find(query)
-        res.json(patients)
+            .skip(skip)
+            .limit(limit)
+        
+        const total = await Patients.countDocuments(query);
+
+        res.json({
+            patients,
+            total,
+            currentPage: page,
+            totalPages: Math.ceil(total/limit)
+        })
     } catch (error) {
         res.status(500).json({ message: 'Error fetching patients', error})
     }

@@ -5,6 +5,19 @@ import { useNavigate } from "react-router-dom";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 import { useUser } from "../context/UserContext";
+import FlexTable from "./FlexTable";
+import "../styles/flex-list.css";
+
+interface Patient {
+    _id: string;
+    PatientId: string
+    FirstName: string;
+    LastName: string;
+    DateOfBirth: string;
+    CreatedBy: string;
+    __v: number
+  }
+  
 interface FlexItemProps {
     PatientId: string
     FirstName: string
@@ -32,7 +45,7 @@ const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, La
     }
 
     return (
-        <div className="flex-table-item" onClick={handleItemClick}>
+        <div className="flex-table-item flex-table-item-animation" onClick={handleItemClick}>
             <div className="flex-table-cell is-media is-grow">
                 <FakeAvatar
                     FirstName={FirstName}
@@ -76,8 +89,10 @@ const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, La
 
 
 const ExistingPatientsTable = ({ }) => {
-    const [patients, setPatients] = useState([]);
+    const [patients, setPatients] = useState<Patient[]>([]);
     const{ user } = useUser();
+    const [page, setPage] = useState(1)
+    const [hasMore, setHasMore] = useState(true)
 
     const fetchPatients = async (searchTerm: string = '') => {
         if (!user) {
@@ -93,7 +108,9 @@ const ExistingPatientsTable = ({ }) => {
                 },
                 body: JSON.stringify({
                     createdBy: user.id,
-                    search: searchTerm
+                    search: searchTerm,
+                    page,
+                    limit: 10
                 })
             });
 
@@ -102,7 +119,13 @@ const ExistingPatientsTable = ({ }) => {
             }
 
             const data = await response.json();
-            setPatients(data);
+
+            console.log('DATA', data)
+            setPatients((prevPatients) => {
+                const newPatients = data.patients.filter((newPatient: Patient) => !prevPatients.some(patient => patient._id === newPatient._id));
+                return [...prevPatients, ...newPatients];
+            });
+            setHasMore(page < data.totalPages);
         } catch (error) {
             console.error('Error fetching patients:', error);
         }
@@ -110,96 +133,29 @@ const ExistingPatientsTable = ({ }) => {
 
     useEffect(() => {
         fetchPatients();
-    }, []);
+    }, [page]);
 
-    console.log(patients)
+    const loadMoreData = () => {
+        setPage((prevPage) => prevPage + 1)
+    }
 
     return (
-        // Make this a ReactFragment??
-        <div>
-            <div className="list-flex-toolbar">
-                <div className="control has-icon">
-                    <input 
-                        className="input custom-text-filter" 
-                        placeholder="Search..." 
-                        data-filter-target=".flex-table-item"
-                        onChange={(e) => fetchPatients(e.target.value)}
-                    >
-                    </input>
-                    <div className="form-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    </div>
-                </div>
-
-                {/* <div className="buttons">
-                    <button className="button h-button is-primary is-elevated">
-                        <span className="icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-user-plus"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
-                        </span>
-                        <span>Add User</span>
-                    </button>
-                </div> */}
-            </div>
-            <div className="page-content-inner">
-                <div className="flex-list-wrapper flex-list-v1">
-                    <div className="page-placeholder custom-text-filter-placeholder is-hidden">
-                        <div className="placeholder-content">
-                            <img className="light-image" src="assets/img/illustrations/placeholders/search-4.svg" alt=""></img>
-                            <img className="strokeWidth-image" src="assets/img/illustrations/placeholders/search-4-strokeWidth.svg" alt=""></img>
-                            <h3>We couldn't find any matching results.</h3>
-                            <p className="is-larger">
-                                Too bad. Looks like we couldn't find any matching results for
-                                the search terms you've entered. Please try different search
-                                terms or criteria.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex-table">
-                        <div className="flex-table-header" data-filter-hide="">
-                            <span className="is-grow">Patient</span>
-                            {/* <span>First Name</span>
-                            <span>Last Name</span> */}
-                            <span>Date of Birth</span>
-                            {/* <span>Relations</span> */}
-                            <span className="cell-end">Actions</span>
-                        </div>
-
-                        <div className="flex-list-inner">
-                        {patients.map((patient:any) => (
-                            <ExistingPatientItem
-                                key={patient._id}
-                                PatientId = {patient.PatientId}
-                                FirstName = {patient.FirstName}
-                                LastName = {patient.LastName}
-                                DateOfBirth = {patient.DateOfBirth}
-                            />
-                        ))}
-                        </div>
-                    </div>
-                    {/* <nav className="flex-pagination pagination is-rounded" aria-label="pagination" data-filter-hide="">
-                        <a className="pagination-previous has-chevron"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-                        <a className="pagination-next has-chevron"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
-                        <ul className="pagination-list">
-                            <li><a className="pagination-link" aria-label="Goto page 1">1</a></li>
-                            <li><span className="pagination-ellipsis">…</span></li>
-                            <li>
-                                <a className="pagination-link" aria-label="Goto page 45">45</a>
-                            </li>
-                            <li>
-                                <a className="pagination-link is-current" aria-label="Page 46" aria-current="page">46</a>
-                            </li>
-                            <li>
-                                <a className="pagination-link" aria-label="Goto page 47">47</a>
-                            </li>
-                            <li><span className="pagination-ellipsis">…</span></li>
-                            <li>
-                                <a className="pagination-link" aria-label="Goto page 86">86</a>
-                            </li>
-                        </ul>
-                    </nav> */}
-                </div>
-            </div>
-        </div>
+        <FlexTable
+            titles = {["Name", "DOB", "Actions"]}
+            hasMore = {hasMore}
+            loadMore = {loadMoreData}
+        >
+            {patients.map((patient:any) => (
+                <ExistingPatientItem
+                    key={patient._id}
+                    PatientId = {patient.PatientId}
+                    FirstName = {patient.FirstName}
+                    LastName = {patient.LastName}
+                    DateOfBirth = {patient.DateOfBirth}
+                    UserId={patient.id}
+                />
+            ))}
+        </FlexTable>     
     );
 };
 

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 import { useNavigate } from "react-router-dom";
+import FlexTable from "./FlexTable";
 
 interface MetaData {
   FirstName: string;
@@ -98,15 +99,22 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
 const RecordingsFlexTable: React.FC = () => {
   const [data, setData] = useState<TableRowData[]>([]);
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
+  const [hasMore, setHasMore] = useState(true)
+  const [page, setPage] = useState(1);
+  const isFetching = useRef(false);
 
-  const fetchRecordings = async () => {
+  const fetchRecordings = async (page: number) => {
+    if (isFetching.current) return;
+    isFetching.current = true;
+
     try {
-      const response = await fetch('http://localhost:8000/api/transcriptions');
+      const response = await fetch(`http://localhost:8000/api/transcriptions?page=${page}&limit=10`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
-      const data: Transcription[] = await response.json();
-      const parsedData = data.map((recording: Transcription, index: number) => {
+      const result = await response.json();
+      const transcriptions = result.transcriptions;
+      const parsedData = transcriptions.map((recording: Transcription, index: number) => {
         const metadata = recording.patientData || { FirstName: 'Unknown', LastName: 'Unknown', DateOfBirth: 'Unknown' };
         return {
           number: index + 1,
@@ -118,21 +126,28 @@ const RecordingsFlexTable: React.FC = () => {
           status: recording.status
         };
       });
-      setData(parsedData);
+      setData((prevData) => {
+        const newTranscriptions = parsedData.filter((newTranscription: TableRowData) => !prevData.some(transcription => transcription.gridID === newTranscription.gridID));
+        return [...prevData, ...parsedData]; //fix this
+      });
+      setHasMore(page < result.totalPages);
       console.log("Data:", parsedData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
+    } finally {
+      isFetching.current = false;
     }
   };
 
 
+
   useEffect(() => {
-    fetchRecordings(); // Call the function
-  }, []);
+    fetchRecordings(page); // Call the function
+  }, [page]);
 
   useEffect(() => {
     const pollData = async () => {
-      await fetchRecordings();
+      await fetchRecordings(page);
     };
 
     pollData();
@@ -146,48 +161,45 @@ const RecordingsFlexTable: React.FC = () => {
     }
   }, []);
 
+  const loadMoreData = () => {
+    if (hasMore && !isFetching.current) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || !hasMore) {
+        return;
+      }
+      loadMoreData();
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [hasMore]);
 
   return (
-    <div>
-      <div className="list-flex-toolbar">
-        <div className="control has-icon">
-          <input 
-            className="input custom-text-filter" 
-            placeholder="Search..." 
-            data-filter-target=".flex-table-item"
-          />
-          <div className="form-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          </div>
-        </div>
-      </div>
-      <div className="page-content-inner">
-        <div className="flex-list-wrapper flex-list-v1">
-          <div className="flex-table">
-            <div className="flex-table-header" data-filter-hide="">
-              <span className="is-grow">Patient</span>
-              <span>Upload Date</span>
-              <span>Status</span>
-              <span className="cell-end">Actions</span>
-            </div>
-            <div className="flex-list-inner">
-              {data.map((item) => (
-                <RecordingFlexItem
-                  key={item.gridID}
-                  number={item.number}
-                  firstName={item.firstName}
-                  lastName={item.lastName}
-                  eventDate={formatDate(item.eventDate)}
-                  gridID={item.gridID}
-                  status={item.status}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <FlexTable
+        titles = {["Name", "DOB", "Actions"]}
+        hasMore = {hasMore}
+        loadMore = {loadMoreData}
+    >
+        {data.map((item) => (
+            <RecordingFlexItem
+              key={item.gridID}
+              number={item.number}
+              firstName={item.firstName}
+              lastName={item.lastName}
+              eventDate={formatDate(item.eventDate)}
+              gridID={item.gridID}
+              status={item.status}
+            />
+          ))}
+    </FlexTable>
+              
   );
 };
 

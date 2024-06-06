@@ -9,6 +9,7 @@ import Icd10Component from '../components/icd10Component';
 import MedicationComponent from '../components/MedicationComponent';
 import CPTComponent from '../components/cptComponent';
 import ClinicalNoteComponent from '../components/ClinicalNote';
+import feather from "feather-icons";
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
 // import feather from 'feather-icons';
@@ -67,9 +68,9 @@ const SummaryPage: React.FC = () => {
         }
     }, [validGridId]);
 
-    // useEffect(() => {
-    //     feather.replace();
-    //   }, []);
+    useEffect(() => {
+        feather.replace();
+      }, []);
 
     useEffect(() => {
         const fetchAudio = async () => {
@@ -155,7 +156,9 @@ const SummaryPage: React.FC = () => {
                                         <i data-feather="download"></i>
                                     </span>
                                 </button>
-                                <button className="button is-circle is-elevated"
+                                <button 
+                                    className="button is-circle is-elevated"
+                                    style = {{marginLeft: '5px'}}
                                     onClick = {sendPDFViaEmail}
                                 >
                                     <span className="icon is-small">

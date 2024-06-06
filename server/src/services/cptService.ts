@@ -10,6 +10,7 @@ export async function generateCPTCodes(transcription: string, fileId: any, patie
         }
         console.log('cpts:', cpts);
     }
+    console.log('Cpt codes', cpts)
     
     const cptPromises = cpts.map(async(cpt) => {
         const existingCode = await CPTModel.findOne({code: cpt})
@@ -35,8 +36,9 @@ export async function generateCPTCodes(transcription: string, fileId: any, patie
         }
     });
     await Promise.all(cptPromises)
-    
+
     const savedCPTs = await CPTModel.find({ fileId: fileId})
+    console.log('saved CPTs', savedCPTs)
 
     return savedCPTs
 }
