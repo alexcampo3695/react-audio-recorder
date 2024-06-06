@@ -121,7 +121,6 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
 
             // query icd10, cppt and medications
             const icd10Codes = await ICD10.find({ fileId: fileId });
-            console.log('ICD10Codes', icd10Codes)
             const cptCodes = await CPT.find({ fileId: fileId });
             const medications = await Medication.find({ fileId: fileId });
             const userDetails = await UserDetails.find({ userId: patientData.UserId });

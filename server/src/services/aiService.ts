@@ -194,19 +194,36 @@ export async function icd10Generator(text: string): Promise<ICD10[]> {
             }
         });
         const responseData = response.data.choices[0].message.content.trim();
-        console.log('ICD 10 Response Data', responseData)
-        const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
+        console.log('Raw ICD-10 response data:', responseData);
+        
+        // Remove backticks and other potential anomalies
+        const sanitizedResponseData = responseData.replace(/[`´‘’]/g, '"');
+        console.log('Sanitized response data:', sanitizedResponseData);
+
+        // Ensure the response data is valid JSON
         let icd10Codes: ICD10[];
         try {
-            const icd10Codes = JSON.parse(sanitizedResponseData);
+            icd10Codes = JSON.parse(sanitizedResponseData);
         } catch (jsonError) {
-            console.error('Failed to parse Json', sanitizedResponseData)
+            console.error('Failed to parse JSON:', sanitizedResponseData);
+            throw new Error('Failed to generate ICD-10 codes: Invalid JSON format');
         }
 
         return icd10Codes;
         
-    } catch (error) {
-        console.error('Error from OpenAI API:', error);
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            console.error('Response data:', error.response?.data);
+            console.error('Status:', error.response?.status);
+            console.error('Headers:', error.response?.headers);
+            throw new Error(`Failed to generate ICD-10 codes: ${error.response?.status} `);
+        } else if (error instanceof Error) {
+            console.error('Error:', error.message);
+            throw new Error(`Failed to generate ICD-10 codes: ${error.message}`);
+        } else {
+            console.error('Unknown error:', error);
+            throw new Error('Failed to generate ICD-10 codes: Unknown error occurred');
+        }
     }
 }
 

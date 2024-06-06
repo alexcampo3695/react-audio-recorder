@@ -10,23 +10,33 @@ export async function generateCPTCodes(transcription: string, fileId: any, patie
         }
         console.log('cpts:', cpts);
     }
-    cpts = await cptGenerator(transcription);
-    for (const cpt of cpts) {
-        const existingCode = await CPTModel.findOne({ code: cpt.code });
-        if (existingCode) {
-            await CPTModel.updateOne(
-                { code: cpt.code },
-                { description: cpt.description, status: cpt.status, patientId: patientId }
+    
+    const cptPromises = cpts.map(async(cpt) => {
+        const existingCode = await CPTModel.findOne({code: cpt})
+        if(existingCode) {
+            return CPTModel.updateOne(
+                {code: cpt},
+                {
+                    description: cpt.description,
+                    status: cpt.status,
+                    patientId: cpt.patientId,
+                    fileId: cpt.fileId
+                }
             );
         } else {
             const newCPT = new CPTModel({
-                fileId: fileId,
-                code: cpt.code,
+                file: fileId,
+                code: cpt,
                 description: cpt.description,
-                status: cpt.status,
-                patientId: patientId,
-            });
-            await newCPT.save();
+                status: cpt.description,
+                patientId: cpt.patientId,
+            })
+            return newCPT.save()
         }
-    }
+    });
+    await Promise.all(cptPromises)
+    
+    const savedCPTs = await CPTModel.find({ fileId: fileId})
+
+    return savedCPTs
 }

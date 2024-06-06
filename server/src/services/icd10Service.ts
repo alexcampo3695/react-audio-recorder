@@ -11,12 +11,18 @@ export async function generateICD10Codes(transcription: string, fileId: any, pat
         }
         console.log('ICD10 Codes',icd10Codes)
     }
-    for (const code of icd10Codes) {
-        const existingCode = await ICD10Model.findOne({ code: code.code });
+    
+    const icd10Promises = icd10Codes.map(async(code) => {
+        const existingCode =await ICD10Model.findOne({code: code.code})
         if (existingCode) {
-            await ICD10Model.updateOne(
-                { code: code.code },
-                { description: code.description, status: code.status, patientId: patientId }
+            return ICD10Model.updateOne(
+                { code: code.code},
+                {
+                    description: code.description,
+                    status: code.status,
+                    patientId: patientId,
+                    fileId: fileId
+                }
             );
         } else {
             const newICD10 = new ICD10Model({
@@ -24,9 +30,15 @@ export async function generateICD10Codes(transcription: string, fileId: any, pat
                 code: code.code,
                 description: code.description,
                 status: code.status,
-                patientId: patientId,
+                patientId: patientId
             });
-            await newICD10.save();
+            return newICD10.save()
         }
-    }
+    });
+
+    await Promise.all(icd10Promises);
+
+    const savedIcd10Codes = await ICD10Model.find({ file: fileId })
+
+    return savedIcd10Codes
 }
