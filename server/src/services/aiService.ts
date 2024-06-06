@@ -19,7 +19,7 @@ export async function summarizeTranscription(text: string): Promise<string> {
     }
 
     const requestBody = {
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o",
         messages: [
             {
                 role: "system",
@@ -67,7 +67,7 @@ export async function diariazeTranscription(text: string): Promise<string> {
     }
 
     const requestBody = {
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o",
         messages: [
             {
                 role: "system",
@@ -110,11 +110,6 @@ export async function diariazeTranscription(text: string): Promise<string> {
     }
 }
 
-// interface ICD10Code {
-//     code: string;
-//     description: string;
-//     status: boolean;
-// }
 
 export async function icd10Generator(text: string): Promise<ICD10[]> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
@@ -134,7 +129,7 @@ export async function icd10Generator(text: string): Promise<ICD10[]> {
                 content: `You are receiving a conversation between a provider and a patient.
                         Your task is to strictly provide valid ICD-10 codes for the conversation in JSON format without periods.
                         Please ensure the following:
-
+                        INCLUDE ALL ICD10S THAT YOU WOULD FIND RELEVANT FOR THE VISIT!
                         - Each ICD-10 code must be valid JSON and without periods or special characters.
                         - The JSON format should follow these examples:
                         [
@@ -199,40 +194,21 @@ export async function icd10Generator(text: string): Promise<ICD10[]> {
             }
         });
         const responseData = response.data.choices[0].message.content.trim();
-
+        console.log('ICD 10 Response Data', responseData)
         const sanitizedResponseData = responseData.replace(/(`|´|‘|’)/g, '"');
-        const icd10Codes: ICD10[] = JSON.parse(sanitizedResponseData);
+        let icd10Codes: ICD10[];
+        try {
+            const icd10Codes = JSON.parse(sanitizedResponseData);
+        } catch (jsonError) {
+            console.error('Failed to parse Json', sanitizedResponseData)
+        }
+
         return icd10Codes;
         
-    } catch (error: unknown) {
-        if (isAxiosError(error)) {
-            console.error('Response data:', error.response.data);
-            console.error('Status:', error.response.status);
-            console.error('Headers:', error.response.headers);
-            throw new Error(`Failed to summarize text: ${error.response.status} `);
-        } else if (error instanceof Error) {
-            console.error('Error:', error.message);
-            throw new Error(`Failed to summarize text: ${error.message}`);
-        } else {
-            console.error('Unknown error:', error);
-            throw new Error('Failed to summarize text: Unknown error occurred');
-        }
+    } catch (error) {
+        console.error('Error from OpenAI API:', error);
     }
-    return [];
 }
-
-// interface Medication {
-//     DrugCode: string;
-//     DrugName: string;
-//     Dosage?: string;
-//     Frequency?: string;
-//     FillSupply?: string;
-//     MethodOfIngestion: string;
-//     StartDate?: string;
-//     EndDate?: string; 
-//     SpecialInstructions?: string;
-//     Status: boolean;
-// }
 
 export async function medicationGenerator(text: string): Promise<Medication[]> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
@@ -309,36 +285,10 @@ export async function medicationGenerator(text: string): Promise<Medication[]> {
         const medications: Medication[] = JSON.parse(sanitizedResponseData);
         return medications;
         
-    } catch (error: unknown) {
-        if (isAxiosError(error)) {
-            console.error('Response data:', error.response.data);
-            console.error('Status:', error.response.status);
-            console.error('Headers:', error.response.headers);
-            throw new Error(`Failed to summarize text: ${error.response.status} `);
-        } else if (error instanceof Error) {
-            console.error('Error:', error.message);
-            throw new Error(`Failed to summarize text: ${error.message}`);
-        } else {
-            console.error('Unknown error:', error);
-            throw new Error('Failed to summarize text: Unknown error occurred');
-        }
+    } catch (error) {
+        console.error('Error from OpenAI API:', error);    
     }
-    return [
-        {
-            patientId: 'example_patient_id',
-            fileId: 'example_file_id',
-            drugCode: 'example_drug_code',
-            drugName: 'example_drug_name',
-            dosage: 'example_dosage',
-            frequency: 'example_frequency',
-            fillSupply: 30,
-            methodOfIngestion: 'oral',
-            status: true,
-            startDate: new Date(),
-            endDate: new Date(),
-            specialInstructions: 'Take with food'
-        }
-    ];
+    return [];
 }
 
 
@@ -360,6 +310,7 @@ export async function cptGenerator(text: string): Promise<CPT[]> {
             {
                 role: "user",
                 content: `You are receiving a conversation between a provider and a patient.
+                        INCLUDE ALL CPTS THAT YOU WOULD FIND RELEVANT FOR THE VISIT!
                         Your task is to strictly provide valid CPT codes for the conversation in JSON format without periods.
                         Please ensure the following:
 
@@ -423,19 +374,8 @@ export async function cptGenerator(text: string): Promise<CPT[]> {
         const cptCodes: CPT[] = JSON.parse(sanitizedResponseData);
         return cptCodes;
         
-    } catch (error: unknown) {
-        if (isAxiosError(error)) {
-            console.error('Response data:', error.response.data);
-            console.error('Status:', error.response.status);
-            console.error('Headers:', error.response.headers);
-            throw new Error(`Failed to summarize text: ${error.response.status} `);
-        } else if (error instanceof Error) {
-            console.error('Error:', error.message);
-            throw new Error(`Failed to summarize text: ${error.message}`);
-        } else {
-            console.error('Unknown error:', error);
-            throw new Error('Failed to summarize text: Unknown error occurred');
-        }
+    } catch (error) {
+        console.error('Error from OpenAI API:', error);
     }
     return [];
 }
@@ -515,13 +455,13 @@ export async function noteGenerator(transcription: string, icd10Codes: string, c
             console.error('Response data:', error.response.data);
             console.error('Status:', error.response.status);
             console.error('Headers:', error.response.headers);
-            throw new Error(`Failed to summarize text: ${error.response.status} `);
+            throw new Error(`Failed to generate clinical note: ${error.response.status} `);
         } else if (error instanceof Error) {
             console.error('Error:', error.message);
-            throw new Error(`Failed to summarize text: ${error.message}`);
+            throw new Error(`Failed to generate clinical note: ${error.message}`);
         } else {
             console.error('Unknown error:', error);
-            throw new Error('Failed to summarize text: Unknown error occurred');
+            throw new Error('Failed to generate clinical note: Unknown error occurred');
         }
     }
     return [];
