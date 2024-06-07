@@ -4,6 +4,7 @@ import formatDate from "../helpers/DataManipulation";
 import { useNavigate } from "react-router-dom";
 import FlexTable from "./FlexTable";
 import { Table } from "mdast";
+import { useUser } from "../context/UserContext";
 
 interface MetaData {
   FirstName: string;
@@ -103,11 +104,23 @@ const RecordingsFlexTable: React.FC = () => {
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(1);
   const fetchedIds = useRef( new Set<string>())
+  const { user } = useUser()
+  const [searchTerm, setSearchTerm] = useState('')
 
   const fetchRecordings = async () => {
-    console.log('Fetch Recordings')
+    console.log('id', user?.id)
+
+    if (!user) {
+      console.error('No user found');
+      return;
+    }
     try {
-      const response = await fetch(`http://localhost:8000/api/transcriptions?page=${page}&limit=10`);
+      const response = await fetch(`http://localhost:8000/api/transcriptions?page=${page}&limit=15&search=${searchTerm}&createdBy=${user.id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
@@ -119,7 +132,7 @@ const RecordingsFlexTable: React.FC = () => {
           const metaData = recording.patientData || { FirstName: 'Unknown', LastName: 'Unknown', DateOfBirth: 'Unknown' };
           fetchedIds.current.add(recording._id)
           return {
-            number: (page - 1) * 10 + index + 1,
+            number: (page - 1) * 15 + index + 1,
             firstName: metaData.FirstName,
             lastName: metaData.LastName,
             birthDate: metaData.DateOfBirth,
@@ -128,8 +141,6 @@ const RecordingsFlexTable: React.FC = () => {
             status: recording.status
           }
         })
-      ;
-
 
       console.log('Parsed Data', parsedData)
       const newData = parsedData.filter(
@@ -144,9 +155,23 @@ const RecordingsFlexTable: React.FC = () => {
     }
   };
 
+  
+
+
   useEffect(() => {
     const pollData = async () => {
-      const response = await fetch(`http://localhost:8000/api/transcriptions?page=1&limit=10`);
+      const response = await fetch(`http://localhost:8000/api/transcriptions?page=1&limit=15`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            createdBy: user?.id,
+            search: searchTerm,
+            page,
+            limit: 15
+        })
+    });
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
@@ -173,7 +198,7 @@ const RecordingsFlexTable: React.FC = () => {
 
   useEffect(() => {
     fetchRecordings();
-  }, [page]);
+  }, [page, searchTerm]);
 
   const loadMoreData = () => {
     setPage((prevPage) => prevPage + 1);
@@ -201,6 +226,7 @@ const RecordingsFlexTable: React.FC = () => {
         titles = {["Name", "DOB", "Status","Actions"]}
         hasMore = {hasMore}
         loadMore = {loadMoreData}
+        // onSearchChange={handle}
     >
         {data.map((item) => (
             <RecordingFlexItem

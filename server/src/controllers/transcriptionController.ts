@@ -4,16 +4,30 @@ import { ObjectId } from 'mongodb';
 import { Schema } from 'mongoose';
 
 export async function getTranscriptions(req: Request, res: Response) {
-    const {page = 1, limit = 10} = req.query
-    const pageNumber = parseInt(page as string, 10);
-    const limitNumber = parseInt(limit as string, 10);
+    const { page = '1', limit = '15', search = '', createdBy } = req.query;
+    const pageNumber = parseInt(page as string, 15);
+    const limitNumber = parseInt(limit as string, 15);
+    
+    if (createdBy === undefined || createdBy === '') {
+        return res.status(400).json({ message: 'CreatedBy is required' });
+      }
+
+    const query = {
+        CreatedBy: createdBy,
+        ...(search && {
+            $or: [
+                { FirstName: { $regex: RegExp(search as string, 'i') } },
+                { LastName: { $regex: RegExp(search as string, 'i') } }, 
+            ],
+        }),
+    };
 
     try {
         const skip = (pageNumber - 1) * limitNumber;
         const totalItems = await Transcription.countDocuments();
         const totalPages = Math.ceil(totalItems / limitNumber);
 
-        const transcriptions = await Transcription.find()
+        const transcriptions = await Transcription.find(query)
             .skip(skip)
             .limit(limitNumber);
 
@@ -21,7 +35,7 @@ export async function getTranscriptions(req: Request, res: Response) {
             transcriptions,
             totalItems,
             totalPages,
-            currentPage: page
+            currentPage: pageNumber,
         });
     } catch (error) {
         res.status(500).json({ message: "Failed to retrieve transcriptions", error });
