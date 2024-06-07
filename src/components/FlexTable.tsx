@@ -14,6 +14,7 @@ interface FlexTableProps {
     searchPlaceholder?: string;
     hasMore: boolean;
     loadMore: () => void;
+    onSearchChange: (searchTerm: string) => void;
 }
 
 const FlexTable: React.FC<FlexTableProps> = ({ 
@@ -21,16 +22,19 @@ const FlexTable: React.FC<FlexTableProps> = ({
     titles,
     searchPlaceholder,
     hasMore,
-    loadMore
+    loadMore,
+    onSearchChange
 
 }) => {
     const [patients, setPatients] = useState([]);
     const{ user } = useUser();
+    const [searchTerm, setSearchTerm] = useState('')
 
-    const fetchPatients = (searchTerm: string) => {
-        // Implement the search functionality here
-        console.log("Searching for:", searchTerm);
-      };
+    const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const term = e.target.value;
+        setSearchTerm(term)
+        onSearchChange(term)
+    }
 
     return (
         <div>
@@ -40,7 +44,8 @@ const FlexTable: React.FC<FlexTableProps> = ({
                         className="input custom-text-filter" 
                         placeholder="Search..." 
                         data-filter-target=".flex-table-item"
-                        onChange={(e) => fetchPatients(e.target.value)}
+                        onChange={handleSearchTermChange}
+                        value={searchTerm}
                     >
                     </input>
                     <div className="form-icon">
@@ -86,7 +91,7 @@ const FlexTable: React.FC<FlexTableProps> = ({
                                 next={loadMore}
                                 hasMore={hasMore}
                                 loader={<h4>Loading...</h4>}
-                                endMessage={<p>All data loaded</p>}
+                                endMessage={''}
                             >
                                 {children}
                             </InfiniteScroll>

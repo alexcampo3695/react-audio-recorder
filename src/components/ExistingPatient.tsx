@@ -7,6 +7,7 @@ import formatDate from "../helpers/DataManipulation";
 import { useUser } from "../context/UserContext";
 import FlexTable from "./FlexTable";
 import "../styles/flex-list.css";
+import { handle } from "mdast-util-to-markdown/lib/handle";
 
 interface Patient {
     _id: string;
@@ -88,11 +89,12 @@ const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, La
 
 
 
-const ExistingPatientsTable = ({ }) => {
+const ExistingPatientsTable: React.FC = () => {
     const [patients, setPatients] = useState<Patient[]>([]);
-    const{ user } = useUser();
-    const [page, setPage] = useState(1)
-    const [hasMore, setHasMore] = useState(true)
+    const { user } = useUser();
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const fetchPatients = async (searchTerm: string = '') => {
         if (!user) {
@@ -119,11 +121,13 @@ const ExistingPatientsTable = ({ }) => {
             }
 
             const data = await response.json();
-
-            console.log('DATA', data)
             setPatients((prevPatients) => {
-                const newPatients = data.patients.filter((newPatient: Patient) => !prevPatients.some(patient => patient._id === newPatient._id));
-                return [...prevPatients, ...newPatients];
+                if (page === 1) {
+                    return data.patients;
+                } else {
+                    const newPatients = data.patients.filter((newPatient: Patient) => !prevPatients.some(patient => patient._id === newPatient._id));
+                    return [...prevPatients, ...newPatients];
+                }
             });
             setHasMore(page < data.totalPages);
         } catch (error) {
@@ -132,30 +136,38 @@ const ExistingPatientsTable = ({ }) => {
     };
 
     useEffect(() => {
-        fetchPatients();
-    }, [page]);
+        fetchPatients(searchTerm);
+    }, [page, searchTerm]);
 
     const loadMoreData = () => {
-        setPage((prevPage) => prevPage + 1)
-    }
+        setPage((prevPage) => prevPage + 1);
+    };
+
+    const handleSearchTermChange = (term: string) => {
+        setSearchTerm(term);
+        setPage(1);
+        setPatients([]);
+    };
 
     return (
         <FlexTable
-            titles = {["Name", "DOB", "Actions"]}
-            hasMore = {hasMore}
-            loadMore = {loadMoreData}
+            titles={["Name", "DOB", "Actions"]}
+            hasMore={hasMore}
+            loadMore={loadMoreData}
+            searchPlaceholder="Search..."
+            onSearchChange={handleSearchTermChange}
         >
-            {patients.map((patient:any) => (
+            {patients.map((patient: any) => (
                 <ExistingPatientItem
                     key={patient._id}
-                    PatientId = {patient.PatientId}
-                    FirstName = {patient.FirstName}
-                    LastName = {patient.LastName}
-                    DateOfBirth = {patient.DateOfBirth}
+                    PatientId={patient.PatientId}
+                    FirstName={patient.FirstName}
+                    LastName={patient.LastName}
+                    DateOfBirth={patient.DateOfBirth}
                     UserId={patient.id}
                 />
             ))}
-        </FlexTable>     
+        </FlexTable>
     );
 };
 
