@@ -4,13 +4,12 @@ import { ObjectId } from 'mongodb';
 import { Schema } from 'mongoose';
 
 export async function getTranscriptions(req: Request, res: Response) {
-    const { page = 1, limit = 10 } = req.query; // Extracting pagination parameters from query
+    const {page = 1, limit = 10} = req.query
+    const pageNumber = parseInt(page as string, 10);
+    const limitNumber = parseInt(limit as string, 10);
 
     try {
-        const pageNumber = parseInt(page as string, 10);
-        const limitNumber = parseInt(limit as string, 10);
         const skip = (pageNumber - 1) * limitNumber;
-
         const totalItems = await Transcription.countDocuments();
         const totalPages = Math.ceil(totalItems / limitNumber);
 
@@ -22,7 +21,7 @@ export async function getTranscriptions(req: Request, res: Response) {
             transcriptions,
             totalItems,
             totalPages,
-            currentPage: pageNumber
+            currentPage: page
         });
     } catch (error) {
         res.status(500).json({ message: "Failed to retrieve transcriptions", error });

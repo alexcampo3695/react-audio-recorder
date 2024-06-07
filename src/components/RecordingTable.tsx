@@ -3,6 +3,7 @@ import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 import { useNavigate } from "react-router-dom";
 import FlexTable from "./FlexTable";
+import { Table } from "mdast";
 
 interface MetaData {
   FirstName: string;
@@ -101,14 +102,51 @@ const RecordingsFlexTable: React.FC = () => {
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(1);
-  const isFetching = useRef(false);
+  const fetchedIds = useRef( new Set<string>())
 
-  const fetchRecordings = async (page: number) => {
-    if (isFetching.current) return;
-    isFetching.current = true;
-
+  const fetchRecordings = async () => {
+    console.log('Fetch Recordings')
     try {
       const response = await fetch(`http://localhost:8000/api/transcriptions?page=${page}&limit=10`);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+      const result = await response.json();
+      const transcriptions = result.transcriptions;
+      const parsedData: TableRowData[] = transcriptions
+        .filter((recording: Transcription) => !fetchedIds.current.has(recording._id))
+        .map((recording: Transcription, index: number) => {
+          const metaData = recording.patientData || { FirstName: 'Unknown', LastName: 'Unknown', DateOfBirth: 'Unknown' };
+          fetchedIds.current.add(recording._id)
+          return {
+            number: (page - 1) * 10 + index + 1,
+            firstName: metaData.FirstName,
+            lastName: metaData.LastName,
+            birthDate: metaData.DateOfBirth,
+            gridID: recording._id,
+            eventDate: recording.createdAt,
+            status: recording.status
+          }
+        })
+      ;
+
+
+      console.log('Parsed Data', parsedData)
+      const newData = parsedData.filter(
+        (newItem) => !data.some((existingItem) => existingItem.gridID === newItem.gridID)
+      )
+      console.log('NewData', newData)
+
+      setData((prevData) => [...prevData, ...parsedData]);
+      setHasMore(result.currentPage < result.totalPages);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
+
+  useEffect(() => {
+    const pollData = async () => {
+      const response = await fetch(`http://localhost:8000/api/transcriptions?page=1&limit=10`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
@@ -126,70 +164,47 @@ const RecordingsFlexTable: React.FC = () => {
           status: recording.status
         };
       });
-      setData((prevData) => {
-        const newTranscriptions = parsedData.filter((newTranscription: TableRowData) => !prevData.some(transcription => transcription.gridID === newTranscription.gridID));
-        return [...prevData, ...parsedData]; //fix this
-      });
-      setHasMore(page < result.totalPages);
-      console.log("Data:", parsedData);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    } finally {
-      isFetching.current = false;
-    }
-  };
-
-
-
-  useEffect(() => {
-    fetchRecordings(page); // Call the function
-  }, [page]);
-
-  useEffect(() => {
-    const pollData = async () => {
-      await fetchRecordings(page);
+      setData(parsedData);
     };
 
-    pollData();
     const interval = setInterval(pollData, 5000);
-    setPollingInterval(interval);
-
-    return () => {
-      if (pollingInterval) {
-        clearInterval(pollingInterval);
-      }
-    }
+    return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    fetchRecordings();
+  }, [page]);
+
   const loadMoreData = () => {
-    if (hasMore && !isFetching.current) {
-      setPage((prevPage) => prevPage + 1);
-    }
+    setPage((prevPage) => prevPage + 1);
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || !hasMore) {
-        return;
+      const scrollableHeight = document.documentElement.scrollHeight;
+      const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
+      const buffer = 50; // Adjust buffer value as needed
+  
+      if (scrollPosition + buffer >= scrollableHeight && hasMore) {
+        loadMoreData();
       }
-      loadMoreData();
     };
-
+  
     window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [hasMore]);
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }, [hasMore]);
 
   return (
     <FlexTable
-        titles = {["Name", "DOB", "Actions"]}
+        titles = {["Name", "DOB", "Status","Actions"]}
         hasMore = {hasMore}
         loadMore = {loadMoreData}
     >
         {data.map((item) => (
             <RecordingFlexItem
-              key={item.gridID}
+              // key={item.gridID}
               number={item.number}
               firstName={item.firstName}
               lastName={item.lastName}
