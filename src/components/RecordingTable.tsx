@@ -205,6 +205,8 @@ const RecordingsFlexTable: React.FC = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
+  console.log('userId', user?.id)
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollableHeight = document.documentElement.scrollHeight;

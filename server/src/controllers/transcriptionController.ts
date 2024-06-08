@@ -13,7 +13,7 @@ export async function getTranscriptions(req: Request, res: Response) {
       }
 
     const query = {
-        UserId: createdBy,
+        UserId: createdBy, //this needs to fixed!
         ...(search && {
             $or: [
                 { 'patientData.FirstName': { $regex: RegExp(search as string, 'i') } },
@@ -21,6 +21,9 @@ export async function getTranscriptions(req: Request, res: Response) {
             ],
         }),
     };
+
+    console.log('query', query)
+    
 
     try {
         const skip = (pageNumber - 1) * limitNumber;
@@ -38,9 +41,13 @@ export async function getTranscriptions(req: Request, res: Response) {
             search,
             currentPage: pageNumber,
         });
+
+        console.log('transcriptions', transcriptions)
+        
     } catch (error) {
         res.status(500).json({ message: "Failed to retrieve transcriptions", error });
     }
+    
 }
 
 export async function getTranscriptionById(req: Request, res: Response) {

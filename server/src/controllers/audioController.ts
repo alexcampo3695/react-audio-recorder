@@ -99,69 +99,65 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
 
         downloadStream.on('end', async () => {
         try {
-            const transcription = await generateTranscription(inputPath, recording, fileId);
-            console.log('Transcription generated');
+                const transcription = await generateTranscription(inputPath, recording, fileId);
+                console.log('Transcription generated');
 
-            await generateSummary(transcription, fileId, patientId);
-            console.log('Summary generated');
+                const summaryPromise = generateSummary(transcription, fileId, patientId);
+                const diarizationPromise = generateDiarization(transcription, fileId, patientId);
+                const icd10CodesPromise = generateICD10Codes(transcription, fileId, patientId);
+                const medicationsPromise = generateMedications(transcription, fileId, patientId);
+                const cptCodesPromise = generateCPTCodes(transcription, fileId, patientId);
+                const userDetailsPromise = UserDetails.find({ userId: patientData.UserId });
 
-            await generateDiarization(transcription, fileId, patientId);
-            console.log('Diarization generated');
+                // Wait for all promises to resolve
+                const [summary, diarization, icd10Codes, medications, cptCodes, userDetails] = await Promise.all([
+                    summaryPromise,
+                    diarizationPromise,
+                    icd10CodesPromise,
+                    medicationsPromise,
+                    cptCodesPromise,
+                    userDetailsPromise
+                ]);
 
-            await generateICD10Codes(transcription, fileId, patientId);
-            console.log('ICD-10 codes generated');
+                // Convert to strings for clinical note generation
+                const icdCodesString = JSON.stringify(icd10Codes);
+                const cptCodesString = JSON.stringify(cptCodes);
+                const medicationsString = JSON.stringify(medications);
+                const userDetailsString = JSON.stringify(userDetails);
 
-            await generateMedications(transcription, fileId, patientId);
-            console.log('Medications generated');
-            console.log('fileid', fileId)
-            console.log('patientid', patientId)
+                console.log('medication string', medicationsString);
+                console.log('userDetails', userDetailsString);
 
-            await generateCPTCodes(transcription, fileId, patientId);
-            console.log('CPT codes generated');
+                await generateClinicalNote(
+                    transcription,
+                    icdCodesString,
+                    cptCodesString,
+                    medicationsString,
+                    fileId,
+                    patientData,
+                    patientId,
+                    userDetailsString
+                );
 
-            // query icd10, cppt and medications
-            const icd10Codes = await ICD10.find({ fileId: fileId });
-            const cptCodes = await CPT.find({ fileId: fileId });
-            const medications = await Medication.find({ fileId: fileId });
-            const userDetails = await UserDetails.find({ userId: patientData.UserId });
-            // conversionss
-            const icdCodesString = JSON.stringify(icd10Codes);
-            const cptCodesString = JSON.stringify(cptCodes);
-            const medicationsString = JSON.stringify(medications);
-            const userDetailsString = JSON.stringify(userDetails);
+                // Append metadata to audio/upload file
+                await updateMetaData(recording.filename, patientData);
 
-            console.log('medication string', medicationsString)
+                // Update the status to 'complete'
+                await Transcription.updateOne(
+                    { fileId: fileId },
+                    { $set: { status: 'complete' } }
+                );
 
-            console.log("userDetails",userDetailsString)
-            await generateClinicalNote(
-                transcription,
-                icdCodesString,
-                cptCodesString,
-                medicationsString,
-                fileId,
-                patientData,
-                patientId,
-                userDetailsString
-            );
-
-        
-            //apending metaData to audio/upload file
-            await updateMetaData(recording.filename, patientData);
-
-            await Transcription.updateOne(
-                { fileId: fileId },
-                { $set: { status: 'complete' } }
-            );
-
-        } catch (error) {
-            console.error('Error processing recording:', error);
-            await Transcription.updateOne(
-                { fileId: fileId },
-                { $set: { status: 'error' } }
-            );
-        } finally {
-            fs.unlinkSync(inputPath);
-        }
+                console.log('Transcription processing complete');
+            } catch (error) {
+                console.error('Error processing recording:', error);
+                await Transcription.updateOne(
+                    { fileId: fileId },
+                    { $set: { status: 'error' } }
+                );
+            } finally {
+                fs.unlinkSync(inputPath);
+            }
         });
     } catch (error) {
         console.error('Error processing recording:', error);
