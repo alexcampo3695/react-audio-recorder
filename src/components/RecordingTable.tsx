@@ -107,7 +107,7 @@ const RecordingsFlexTable: React.FC = () => {
   const { user } = useUser()
   const [searchTerm, setSearchTerm] = useState('')
 
-  const fetchRecordings = async () => {
+  const fetchRecordings = async (term: string) => {
     console.log('id', user?.id)
 
     if (!user) {
@@ -143,10 +143,9 @@ const RecordingsFlexTable: React.FC = () => {
         })
 
       console.log('Parsed Data', parsedData)
-      const newData = parsedData.filter(
-        (newItem) => !data.some((existingItem) => existingItem.gridID === newItem.gridID)
-      )
-      console.log('NewData', newData)
+      // const newData = parsedData.filter(
+      //   (newItem) => !data.some((existingItem) => existingItem.gridID === newItem.gridID)
+      // )
 
       setData((prevData) => [...prevData, ...parsedData]);
       setHasMore(result.currentPage < result.totalPages);
@@ -155,12 +154,14 @@ const RecordingsFlexTable: React.FC = () => {
     }
   };
 
-  
-
-
   useEffect(() => {
+    if (!user) {
+      console.error('No user found');
+      return;
+    }
+
     const pollData = async () => {
-      const response = await fetch(`http://localhost:8000/api/transcriptions?page=1&limit=15`, {
+      const response = await fetch(`http://localhost:8000/api/transcriptions?page=${page}&limit=15&search=${searchTerm}&createdBy=${user.id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -194,10 +195,10 @@ const RecordingsFlexTable: React.FC = () => {
 
     const interval = setInterval(pollData, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [searchTerm]);
 
   useEffect(() => {
-    fetchRecordings();
+    fetchRecordings(searchTerm);
   }, [page, searchTerm]);
 
   const loadMoreData = () => {
@@ -221,12 +222,19 @@ const RecordingsFlexTable: React.FC = () => {
       };
     }, [hasMore]);
 
+    const handleSearchTermChange = (term: string) => {
+      setSearchTerm(term);
+      setPage(1);
+      setData([]);
+      fetchedIds.current.clear();
+    };
+
   return (
     <FlexTable
         titles = {["Name", "DOB", "Status","Actions"]}
         hasMore = {hasMore}
         loadMore = {loadMoreData}
-        // onSearchChange={handle}
+        onSearchChange={handleSearchTermChange}
     >
         {data.map((item) => (
             <RecordingFlexItem

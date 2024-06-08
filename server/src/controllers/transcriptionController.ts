@@ -13,11 +13,11 @@ export async function getTranscriptions(req: Request, res: Response) {
       }
 
     const query = {
-        CreatedBy: createdBy,
+        UserId: createdBy,
         ...(search && {
             $or: [
-                { FirstName: { $regex: RegExp(search as string, 'i') } },
-                { LastName: { $regex: RegExp(search as string, 'i') } }, 
+                { 'patientData.FirstName': { $regex: RegExp(search as string, 'i') } },
+                { 'patientData.LastName': { $regex: RegExp(search as string, 'i') } }, 
             ],
         }),
     };
@@ -35,6 +35,7 @@ export async function getTranscriptions(req: Request, res: Response) {
             transcriptions,
             totalItems,
             totalPages,
+            search,
             currentPage: pageNumber,
         });
     } catch (error) {
