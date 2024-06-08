@@ -20,11 +20,19 @@ const patientSchema = new mongoose.Schema({
 
 const Patient = mongoose.model('Patient', patientSchema);
 
+const patientDataSchema = new mongoose.Schema({
+  PatientId: { type: String, required: true },
+  FirstName: { type: String, required: true },
+  LastName: { type: String, required: true },
+  DateOfBirth: { type: Date, required: true },
+  CreatedBy: { type: String, required: true },
+}, { _id: false }); // _id: false to prevent creating a subdocument _id
+
 // Define your Transcription schema and model
 const transcriptionSchema = new mongoose.Schema({
   filename: String,
   transcription: String,
-  patientData: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient' },
+  patientData: { type: patientDataSchema, required: true },
   fileId: String,
   status: String,
   createdAt: Date,
@@ -41,7 +49,7 @@ const generatePatients = (numPatients: number) => {
       FirstName: faker.name.firstName(),
       LastName: faker.name.lastName(),
       DateOfBirth: faker.date.past(50, new Date()),
-      CreatedBy: "666323d123790f5669909623",
+      CreatedBy: "6663d33b090ad1d704a7a696",
     });
   }
   return patients;
@@ -54,7 +62,13 @@ const generateTranscriptions = async (numTranscriptions: number, patients: any[]
     transcriptions.push({
       filename: faker.system.fileName(),
       transcription: faker.lorem.paragraphs(),
-      patientData: randomPatient._id,
+      patientData: {
+        PatientId: faker.datatype.uuid(),
+        FirstName: faker.name.firstName(),
+        LastName: faker.name.lastName(),
+        DateOfBirth: faker.date.past(50, new Date()),
+        CreatedBy: '6663d33b090ad1d704a7a696'
+      },
       fileId: faker.datatype.uuid(),
       status: faker.helpers.arrayElement(['complete', 'transcribing']),
       createdAt: faker.date.past(),
