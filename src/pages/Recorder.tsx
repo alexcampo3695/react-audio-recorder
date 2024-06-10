@@ -67,6 +67,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
         method: "POST",
         body: formData,
       });
+      console.log('formData', formData)
       if (response.ok) {
         const data = await response.json();
         onRecordingComplete(blob);

@@ -24,7 +24,7 @@ interface FlexItemProps {
     FirstName: string
     LastName: string
     DateOfBirth: string
-    UserId: string
+    CreatedBy: string
 }
 
 const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, LastName, DateOfBirth }) => {
@@ -38,7 +38,7 @@ const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, La
             FirstName: FirstName,
             LastName: LastName,
             DateOfBirth: DateOfBirth,
-            UserId: user?.id || ''
+            CreatedBy: user?.id || ''
         };
         navigate("/recorder", { state: { patientData } });
 
@@ -164,7 +164,7 @@ const ExistingPatientsTable: React.FC = () => {
                     FirstName={patient.FirstName}
                     LastName={patient.LastName}
                     DateOfBirth={patient.DateOfBirth}
-                    UserId={patient.id}
+                    CreatedBy={patient.id}
                 />
             ))}
         </FlexTable>
