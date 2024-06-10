@@ -100,37 +100,34 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
 
 const RecordingsFlexTable: React.FC = () => {
   const [data, setData] = useState<TableRowData[]>([]);
-  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
-  const [hasMore, setHasMore] = useState(true)
+  const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  const fetchedIds = useRef( new Set<string>())
-  const { user } = useUser()
-  const [searchTerm, setSearchTerm] = useState('')
+  const fetchedIds = useRef(new Set<string>());
+  const { user } = useUser();
+  const [searchTerm, setSearchTerm] = useState('');
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fetchRecordings = async (term: string) => {
-    console.log('id', user?.id)
-
+  const fetchRecordings = async (term: string, resetData: boolean = false) => {
     if (!user) {
       console.error('No user found');
       return;
     }
+
     try {
-      const response = await fetch(`http://localhost:8000/api/transcriptions?page=${page}&limit=15&search=${searchTerm}&createdBy=${user.id}`, {
+      const response = await fetch(`http://localhost:8000/api/transcriptions?page=${page}&limit=15&search=${term}&createdBy=${user.id}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-    });
+      });
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
       const result = await response.json();
       const transcriptions = result.transcriptions;
       const parsedData: TableRowData[] = transcriptions
-        .filter((recording: Transcription) => !fetchedIds.current.has(recording._id))
         .map((recording: Transcription, index: number) => {
           const metaData = recording.patientData || { FirstName: 'Unknown', LastName: 'Unknown', DateOfBirth: 'Unknown' };
-          fetchedIds.current.add(recording._id)
           return {
             number: (page - 1) * 15 + index + 1,
             firstName: metaData.FirstName,
@@ -138,16 +135,31 @@ const RecordingsFlexTable: React.FC = () => {
             birthDate: metaData.DateOfBirth,
             gridID: recording._id,
             eventDate: recording.createdAt,
-            status: recording.status
-          }
-        })
+            status: recording.status,
+          };
+        });
 
-      console.log('Parsed Data', parsedData)
-      // const newData = parsedData.filter(
-      //   (newItem) => !data.some((existingItem) => existingItem.gridID === newItem.gridID)
-      // )
+      console.log('Parsed Data', parsedData);
 
-      setData((prevData) => [...prevData, ...parsedData]);
+      if (resetData) {
+        setData(parsedData);
+        fetchedIds.current.clear();
+        parsedData.forEach(item => fetchedIds.current.add(item.gridID));
+      } else {
+        setData((prevData) => {
+          const newData = [...prevData];
+          parsedData.forEach(item => {
+            const existingIndex = newData.findIndex(d => d.gridID === item.gridID);
+            if (existingIndex !== -1) {
+              newData[existingIndex] = item; // Update existing record
+            } else {
+              newData.push(item); // Add new record
+              fetchedIds.current.add(item.gridID);
+            }
+          });
+          return newData;
+        });
+      }
       setHasMore(result.currentPage < result.totalPages);
     } catch (error) {
       console.error("Failed to fetch data:", error);
@@ -155,103 +167,76 @@ const RecordingsFlexTable: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!user) {
-      console.error('No user found');
-      return;
-    }
-
-    const pollData = async () => {
-      const response = await fetch(`http://localhost:8000/api/transcriptions?page=${page}&limit=15&search=${searchTerm}&createdBy=${user.id}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            createdBy: user?.id,
-            search: searchTerm,
-            page,
-            limit: 15
-        })
-    });
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} - ${response.statusText}`);
-      }
-      const result = await response.json();
-      const transcriptions = result.transcriptions;
-      const parsedData = transcriptions.map((recording: Transcription, index: number) => {
-        const metadata = recording.patientData || { FirstName: 'Unknown', LastName: 'Unknown', DateOfBirth: 'Unknown' };
-        return {
-          number: index + 1,
-          firstName: metadata.FirstName,
-          lastName: metadata.LastName,
-          birthDate: metadata.DateOfBirth,
-          gridID: recording._id,
-          eventDate: recording.createdAt,
-          status: recording.status
-        };
-      });
-      setData(parsedData);
-    };
-
-    const interval = setInterval(pollData, 5000);
-    return () => clearInterval(interval);
-  }, [searchTerm]);
+    fetchRecordings(searchTerm, true); // Initial fetch
+  }, []);
 
   useEffect(() => {
-    fetchRecordings(searchTerm);
+    const pollData = async () => {
+      await fetchRecordings(searchTerm, true); // Polling should update data
+    };
+
+    // pollData();
+    const interval = setInterval(pollData, 5000);
+    pollingIntervalRef.current = interval;
+
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchRecordings(searchTerm, true); // Reset data on page or searchTerm change
   }, [page, searchTerm]);
 
   const loadMoreData = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
-  console.log('userId', user?.id)
-  console.log('email', user?.email)
-
   useEffect(() => {
     const handleScroll = () => {
       const scrollableHeight = document.documentElement.scrollHeight;
       const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
-      const buffer = 50; // Adjust buffer value as needed
-  
+      const buffer = 50;
+
       if (scrollPosition + buffer >= scrollableHeight && hasMore) {
         loadMoreData();
       }
     };
-  
-    window.addEventListener('scroll', handleScroll);
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-      };
-    }, [hasMore]);
 
-    const handleSearchTermChange = (term: string) => {
-      setSearchTerm(term);
-      setPage(1);
-      setData([]);
-      fetchedIds.current.clear();
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
     };
+  }, [hasMore]);
+
+  const handleSearchTermChange = (term: string) => {
+    setSearchTerm(term);
+    setPage(1);
+    setData([]);
+    fetchedIds.current.clear();
+  };
 
   return (
     <FlexTable
-        titles = {["Name", "DOB", "Status","Actions"]}
-        hasMore = {hasMore}
-        loadMore = {loadMoreData}
-        onSearchChange={handleSearchTermChange}
+      titles={["Name", "DOB", "Status", "Actions"]}
+      hasMore={hasMore}
+      loadMore={loadMoreData}
+      onSearchChange={handleSearchTermChange}
     >
-        {data.map((item) => (
-            <RecordingFlexItem
-              // key={item.gridID}
-              number={item.number}
-              firstName={item.firstName}
-              lastName={item.lastName}
-              eventDate={formatDate(item.eventDate)}
-              gridID={item.gridID}
-              status={item.status}
-            />
-          ))}
+      {data.map((item) => (
+        <RecordingFlexItem
+          key={item.gridID}
+          number={item.number}
+          firstName={item.firstName}
+          lastName={item.lastName}
+          eventDate={formatDate(item.eventDate)}
+          gridID={item.gridID}
+          status={item.status}
+        />
+      ))}
     </FlexTable>
-              
   );
 };
 

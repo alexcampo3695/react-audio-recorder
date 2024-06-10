@@ -22,8 +22,6 @@ export async function getTranscriptions(req: Request, res: Response) {
         })
     };
 
-    console.log('query', query)
-
     try {
         const skip = (pageNumber - 1) * limitNumber;
         const totalItems = await Transcription.countDocuments();
@@ -40,8 +38,6 @@ export async function getTranscriptions(req: Request, res: Response) {
             search,
             currentPage: pageNumber,
         });
-
-        console.log('transcriptions', transcriptions)
         
     } catch (error) {
         res.status(500).json({ message: "Failed to retrieve transcriptions", error });
