@@ -37,7 +37,7 @@ const AppWrapper = ({ children, title}: AppWrapperProps) => {
 
     return (
         
-        <div className="view-wrapper" data-naver-offset="150" data-menu-item="#home-sidebar-menu" data-mobile-item="#home-sidebar-menu-mobile">
+        <div className="view-wrapper" data-naver-offset="150" data-menu-item="#home-sidebar-menu" data-mobile-item="#home-sidebar-menu-mobile" style={{paddingTop: "env(safe-area-inset-top)"}}>
             <MobileNav />
             <NavBar />
             <div className="page-content-wrapper">
