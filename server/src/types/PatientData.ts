@@ -1,5 +1,5 @@
 export interface PatientData {
-    _id: string
+    PatientId: string
     FirstName: string
     LastName: string
     DateOfBirth: string

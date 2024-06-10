@@ -191,13 +191,11 @@ app.post('/upload', upload, (req: Request, res: Response) => {
                     { _id: file._id },
                     { $set: { metadata: patientData } }
                 );
-                console.log("Metadata updated successfully in the database.");
-
 
 
                 if (transcription && patientData) {
                     const newTranscription = new TranscriptionModel({
-                        patientId: new mongoose.Types.ObjectId(patientData._id),
+                        patientId: new mongoose.Types.ObjectId(patientData.PatientId),
                         recordingId: file._id,
                         transcription: transcription
                     });

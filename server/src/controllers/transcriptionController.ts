@@ -13,17 +13,16 @@ export async function getTranscriptions(req: Request, res: Response) {
       }
 
     const query = {
-        UserId: createdBy, //this needs to fixed!
+        'patientData.CreatedBy': createdBy,
         ...(search && {
             $or: [
-                { 'patientData.FirstName': { $regex: RegExp(search as string, 'i') } },
-                { 'patientData.LastName': { $regex: RegExp(search as string, 'i') } }, 
-            ],
-        }),
+                { 'patientData.FirstName': { $regex: search as string, $options: 'i' } },
+                { 'patientData.LastName': { $regex: search as string, $options: 'i' } }
+            ]
+        })
     };
 
     console.log('query', query)
-    
 
     try {
         const skip = (pageNumber - 1) * limitNumber;

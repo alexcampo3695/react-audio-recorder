@@ -206,6 +206,7 @@ const RecordingsFlexTable: React.FC = () => {
   };
 
   console.log('userId', user?.id)
+  console.log('email', user?.email)
 
   useEffect(() => {
     const handleScroll = () => {
