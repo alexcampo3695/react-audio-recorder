@@ -2,10 +2,51 @@ import React, { useState, useEffect, ReactElement, Suspense } from "react";
 import { Props } from "./interfaces";
 import { format } from "path";
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
+import { useUser } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 
 const MobileNav = () => {
     const [navbarActive, setNavBarActive] = useState(false);
+    const { user } = useUser();
+    const navigate = useNavigate();
+    const [data, setData] = useState({
+        firstName: '',
+        lastName: '',
+        gender: '',
+        phoneNumber: '',
+        practiceAddress: '',
+        providerType: '',
+        specialty: '',
+        npiNumber: '',
+        stateLicenseNumber: '',
+        deaNumber: ''
+    });
+
+    useEffect(() => {
+        console.log('MobileNav user:', user);
+    }, [user]);
+    
+
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            if (user) {
+                try {
+                    const response = await fetch(`http://localhost:8000/api/user_details/${user.id}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch user details');
+                    }
+                    const data = await response.json();
+                    if (data) {
+                        setData(data);
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch user details:', error);
+                }
+            }
+        };
+        fetchUserDetails();
+    }, [user]);
 
     return (
         <>
@@ -13,14 +54,17 @@ const MobileNav = () => {
                 <div className="container">
                     <div className="navbar-brand">
                         <div className="brand-start">
-                            <div className="navbar-burger is-active">
+                            <div 
+                                className={`navbar-burger ${navbarActive ? 'is-active' : ''}`}
+                                onClick={() => setNavBarActive(!navbarActive)}
+                            >
                                 <span></span>
                                 <span></span>
                                 <span></span>
                             </div>
                         </div>
 
-                        <a className="navbar-item is-brand" href="index.html">
+                        <a className="navbar-item is-brand" href="/home">
                             <img className="light-image" src={antidoteEmblem} alt="Light Logo" />
                             <img className="dark-image" src={antidoteEmblem} alt="Dark Logo" />
                         </a>
@@ -186,7 +230,9 @@ const MobileNav = () => {
                     </div>
                 </div>
             </nav>
-            <div className="mobile-main-sidebar is-active">
+            <div 
+                className={`mobile-main-sidebar ${navbarActive ? 'is-active' : ''}`}
+            >
                 <div className="inner">
                     <ul className="icon-side-menu">
                         <li>

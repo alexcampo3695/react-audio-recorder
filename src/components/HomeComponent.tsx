@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import CreatePatientForm from './CreatePatientForm';
 import "../styles/CreatePatientForm.css";
 import ExistingPatientsTable from './ExistingPatient';
+import { useUser } from '../context/UserContext';
 
 const HomeComponent = ({}) => {
     const [activeTab, setActiveTab] = useState('create')
     const [patients, setPatients] = useState([]);
+    // const{ user } = useUser();
     
     const handleTabClick = (tab:string) => {
         setActiveTab(tab);
@@ -19,7 +21,7 @@ const HomeComponent = ({}) => {
         }
         fetchPatients();
     }, []);
-    console.log("HomeComponent.tsx")
+
     return (
         <div>
             <div className="tabs-inner switch">

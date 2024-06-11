@@ -3,7 +3,7 @@ import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 import { useNavigate } from "react-router-dom";
 import FlexTable from "./FlexTable";
-import { Table } from "mdast";
+// import { Table } from "mdast";
 import { useUser } from "../context/UserContext";
 
 interface MetaData {
@@ -167,8 +167,11 @@ const RecordingsFlexTable: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchRecordings(searchTerm, true); // Initial fetch
-  }, []);
+    if (user) {
+      console.log('Initial fetch recorings')
+      fetchRecordings(searchTerm, true); // Initial fetch
+    }
+  }, [user]);
 
   useEffect(() => {
     const pollData = async () => {
@@ -184,11 +187,11 @@ const RecordingsFlexTable: React.FC = () => {
         clearInterval(pollingIntervalRef.current);
       }
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     fetchRecordings(searchTerm, true); // Reset data on page or searchTerm change
-  }, [page, searchTerm]);
+  }, [page, searchTerm, user]);
 
   const loadMoreData = () => {
     setPage((prevPage) => prevPage + 1);
@@ -217,6 +220,8 @@ const RecordingsFlexTable: React.FC = () => {
     setData([]);
     fetchedIds.current.clear();
   };
+
+  console.log('userId', user?.id)
 
   return (
     <FlexTable

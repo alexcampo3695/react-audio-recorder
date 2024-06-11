@@ -25,14 +25,18 @@ router.patch('/update/:userId', upload.single('signature'), async (req, res) => 
             { email, ...updateData },
             { new: true }
         );
+        console.log('userDetails', userDetails)
 
         if (!userDetails) {
-            return res.status(404).json({ message: "User Details not found" });
+            return res.status(404).json({ message: `User Details not found, ${userId}` });
         }
         res.json(userDetails);
     } catch (error) {
         const err = error as Error;
         res.status(500).json({ error: err.message });
+
+        const { userId } = req.params;
+        console.log('userId', userId)
     }
 });
 

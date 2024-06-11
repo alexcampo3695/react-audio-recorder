@@ -55,11 +55,14 @@ export const getUserDetailsById = async (req: Request, res: Response) => {
       const userId = req.params.userId;
       const userDetails = await UserDetails.findOne({ userId }); // Directly pass userId
       if (!userDetails) {
-          return res.status(404).json({ message: "User Details not found" });
+          return res.status(404).json({ message: `User Details not found, ${userDetails}` });
       }
+      console.log('userId',userId)
       res.json(userDetails);
   } catch (error) {
       res.status(500).json({ message: "Failed to retrieve user details", error });
+      const userId = req.params.userId;
+      console.log('userId',userId)
   }
 }
 

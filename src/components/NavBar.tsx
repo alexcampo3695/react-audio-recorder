@@ -29,6 +29,10 @@ const NavBar = () => {
     }
 
     useEffect(() => {
+        console.log('NavBar user:', user);
+    }, [user]);
+
+    useEffect(() => {
         const fetchUserDetails = async () => {
             if (user) {
                 try {

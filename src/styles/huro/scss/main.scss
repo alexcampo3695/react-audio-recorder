@@ -111,5 +111,28 @@ SCSS Imports
 $slick-font-path: '/assets/fonts/';
 $slick-loader-path: '/assets/fonts/';
 
+body {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.view-wrapper {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+// Ensure other key containers also respect the safe-area insets
+.page-content-wrapper, .page-content, .page-content-inner {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
 //@import '../../../node_modules/slick-carousel/slick/slick.scss';
 //@import '../../../node_modules/slick-carousel/slick/slick-theme.scss';
