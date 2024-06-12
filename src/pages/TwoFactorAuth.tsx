@@ -68,7 +68,7 @@ const TwoFactorAuth = () => {
             <div className="auth-nav">
                 <div className="left"></div>
                 <div className="center">
-                    <a href="/" className="header-item">
+                    <a href="/" className="header-item" style= {{paddingTop: '60px'}}>
                         <img className="light-image" src={antidoteEmblem} alt="Logo" />
                         <img className="dark-image" src={antidoteEmblem} alt="Logo" />
                     </a>

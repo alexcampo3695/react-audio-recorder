@@ -7,6 +7,12 @@ import { home, person, settings } from 'ionicons/icons';
 import { Route, Routes } from 'react-router-dom';
 import Home from './Home';
 
+import '@ionic/react/css/normalize.css'
+
+// basic css
+import '@ionic/react/css/normalize.css'
+
+
 interface AppWrapperProps {
     children: ReactElement;
     title: string;
@@ -115,7 +121,7 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
                             <IonIcon icon={home} />
                             <IonLabel>Home</IonLabel>
                         </IonTabButton>
-                        <IonTabButton tab="profile" href="/profile">
+                        <IonTabButton tab="profile" href="/home">
                             <IonIcon icon={person} />
                             <IonLabel>Profile</IonLabel>
                         </IonTabButton>

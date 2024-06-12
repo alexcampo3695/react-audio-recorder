@@ -92,7 +92,7 @@ const Login = () => {
                     </div>
                 </div>
                 <div className="column is-4 is-relative">
-                    <a className="top-logo" href="/">
+                    <a className="top-logo" href="/" style = {{paddingTop: '20px'}}>
                         <img className="light-image" src={antidoteEmblem} alt="Logo" />
                         <img className="dark-image" src={antidoteEmblem} alt="Light Logo" />
                     </a>
