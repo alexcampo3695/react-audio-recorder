@@ -50,7 +50,10 @@ const MobileNav = () => {
 
     return (
         <>
-            <nav className="navbar mobile-navbar no-shadow is-hidden-desktop is-hidden-tablet" aria-label="main navigation">
+            <nav 
+                className="navbar mobile-navbar no-shadow is-hidden-desktop is-hidden-tablet" 
+                aria-label="main navigation"
+            >
                 <div className="container">
                     <div className="navbar-brand">
                         <div className="brand-start">

@@ -141,6 +141,7 @@
           border-radius: 10px;
           padding-left: 55px;
           transition: all 0.3s;
+          font-size: 16px; //i added
 
           &:focus {
             background: lighten($fade-grey, 6%);
@@ -1472,6 +1473,10 @@ body {
         width: 100%;
         margin: 0 auto;
       }
+
+      input {
+        font-size: 16px;
+      }
     }
   }
 
@@ -1641,6 +1646,9 @@ body {
 
         .h-button {
           margin-top: 10px;
+        }
+        input {
+          font-size: 16px
         }
       }
     }

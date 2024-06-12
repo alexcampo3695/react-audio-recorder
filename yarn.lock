@@ -393,6 +393,24 @@
     "debug" "^4.0.0"
     "tslib" "^2.0.1"
 
+"@ionic/core@8.2.1":
+  "integrity" "sha512-nIoCdjzogRmyCoD7UcKUV3LmzkiqDN+TxHhkCTRVeNPFQwC5zuTbYKb714caJ6ixKSDBlDiEaLRIb2zgr57ekw=="
+  "resolved" "https://registry.npmjs.org/@ionic/core/-/core-8.2.1.tgz"
+  "version" "8.2.1"
+  dependencies:
+    "@stencil/core" "^4.17.2"
+    "ionicons" "^7.2.2"
+    "tslib" "^2.1.0"
+
+"@ionic/react@^8.2.1":
+  "integrity" "sha512-2HE5ajIHdBJYR7GFphpNQjBpjGULztm/6sa1Xpk9K440I1v2ipUHdQoZlBMMcM2PQMuBeiMlRmwXgqTAi09/qQ=="
+  "resolved" "https://registry.npmjs.org/@ionic/react/-/react-8.2.1.tgz"
+  "version" "8.2.1"
+  dependencies:
+    "@ionic/core" "8.2.1"
+    "ionicons" "^7.0.0"
+    "tslib" "*"
+
 "@ionic/utils-array@2.1.5":
   "integrity" "sha512-HD72a71IQVBmQckDwmA8RxNVMTbxnaLbgFOl+dO5tbvW9CkkSFCv41h6fUuNsSEVgngfkn0i98HDuZC8mk+lTA=="
   "resolved" "https://registry.npmjs.org/@ionic/utils-array/-/utils-array-2.1.5.tgz"
@@ -875,6 +893,11 @@
   "integrity" "sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA=="
   "resolved" "https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.27.8.tgz"
   "version" "0.27.8"
+
+"@stencil/core@^4.0.3", "@stencil/core@^4.17.2":
+  "integrity" "sha512-8yoG5AFQYEPocVtuoc5kvRS0Hku0MoDWDUpADRaXPVHsOFLmxR16LJENj25ucCz5GEfeTGQ/tCE8JAypPmr/fQ=="
+  "resolved" "https://registry.npmjs.org/@stencil/core/-/core-4.18.3.tgz"
+  "version" "4.18.3"
 
 "@storybook/addon-actions@^8.1.6", "@storybook/addon-actions@8.1.6":
   "integrity" "sha512-EbiAdbtXN/UM4by3+qisbrQmElaIfahgNqffbst6GiCTmUCVE5if6geL1mzKd/u/rZOzx5g0EG76x8N9yDjOtg=="
@@ -4370,6 +4393,13 @@
   dependencies:
     "loose-envify" "^1.0.0"
 
+"ionicons@^7.0.0", "ionicons@^7.2.2", "ionicons@^7.4.0":
+  "integrity" "sha512-ZK94MMqgzMCPPMhmk8Ouu6goyVHFIlw/ACP6oe3FrikcI0N7CX0xcwVaEbUc0G/v3W0shI93vo+9ve/KpvcNhQ=="
+  "resolved" "https://registry.npmjs.org/ionicons/-/ionicons-7.4.0.tgz"
+  "version" "7.4.0"
+  dependencies:
+    "@stencil/core" "^4.0.3"
+
 "ipaddr.js@1.9.1":
   "integrity" "sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g=="
   "resolved" "https://registry.npmjs.org/ipaddr.js/-/ipaddr.js-1.9.1.tgz"
@@ -7152,7 +7182,7 @@
     "minimist" "^1.2.6"
     "strip-bom" "^3.0.0"
 
-"tslib@^1.13.0", "tslib@^1.8.1":
+"tslib@*", "tslib@^1.13.0", "tslib@^1.8.1":
   "integrity" "sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg=="
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   "version" "1.14.1"
