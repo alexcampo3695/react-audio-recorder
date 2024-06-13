@@ -45,5 +45,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We want to use your microphone to make a recording.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera for recording purposes.</string>
 </dict>
 </plist>

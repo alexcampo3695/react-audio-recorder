@@ -190,6 +190,13 @@
   dependencies:
     "regenerator-runtime" "^0.13.4"
 
+"@babel/runtime@7.11.2":
+  "integrity" "sha512-TeWkU52so0mPtDcaCTxNBI/IHiz0pZgr8VEFqXFtZWpYD08ZB6FaSwVAS8MKRQAP3bYKiVjwysOJgMFY28o6Tw=="
+  "resolved" "https://registry.npmjs.org/@babel/runtime/-/runtime-7.11.2.tgz"
+  "version" "7.11.2"
+  dependencies:
+    "regenerator-runtime" "^0.13.4"
+
 "@babel/template@^7.24.7":
   "integrity" "sha512-jYqfPrU9JTF0PmPy1tLYHW4Mp4KlgxJD9l2nP9fD6yT/ICi554DmrWBAEYpIelzjHf1msDP3PxJIRt/nFNfBig=="
   "resolved" "https://registry.npmjs.org/@babel/template/-/template-7.24.7.tgz"
@@ -234,10 +241,10 @@
   "resolved" "https://registry.npmjs.org/@capacitor/android/-/android-6.0.0.tgz"
   "version" "6.0.0"
 
-"@capacitor/cli@^6.0.0":
-  "integrity" "sha512-6z30P0mr53l0VXPwFjzDVuKIt1991bqUSSfShTT2efWN+rBSGSAH2bPID6qSZornH1n5R5Lh/UHq/aGuW523MQ=="
-  "resolved" "https://registry.npmjs.org/@capacitor/cli/-/cli-6.0.0.tgz"
-  "version" "6.0.0"
+"@capacitor/cli@^6.1.0":
+  "integrity" "sha512-HEKDh3+FuNZKFHmSDZ7nAnaX3bzhtznYk9GsZBMac1y4CTAxIykPX9wzZ3DzLeM/EbMBGFClUbefkIkimAyfYg=="
+  "resolved" "https://registry.npmjs.org/@capacitor/cli/-/cli-6.1.0.tgz"
+  "version" "6.1.0"
   dependencies:
     "@ionic/cli-framework-output" "^2.2.5"
     "@ionic/utils-fs" "^3.1.6"
@@ -258,17 +265,27 @@
     "tslib" "^2.4.0"
     "xml2js" "^0.5.0"
 
-"@capacitor/core@^6.0.0":
-  "integrity" "sha512-NvxIQsJcMiIV+Le1DilR2GGyQQbDInfXK1UywGROQ5mycdFlW5XoAPZ+MKnFGB123RoEgE3uhDGgwTXUmSlX9A=="
-  "resolved" "https://registry.npmjs.org/@capacitor/core/-/core-6.0.0.tgz"
-  "version" "6.0.0"
+"@capacitor/core@^6.1.0":
+  "integrity" "sha512-Kt4ONm0X9xxJXn9Q73oBaKdzep5B/VJw3VjXa2eGul4cD2k37mJwgjpXSMRnLH0Aju5bCiRL8J/hMAfTlokO6A=="
+  "resolved" "https://registry.npmjs.org/@capacitor/core/-/core-6.1.0.tgz"
+  "version" "6.1.0"
   dependencies:
     "tslib" "^2.1.0"
 
-"@capacitor/ios@^6.0.0":
-  "integrity" "sha512-7mAs3gjWiE5DPM4AGPduqFSDGXCPwwqQRMzbohVway7/cTWnHomHV8mIojMZE4GILeWO2fILbyu3C8q9pHg2vg=="
-  "resolved" "https://registry.npmjs.org/@capacitor/ios/-/ios-6.0.0.tgz"
+"@capacitor/filesystem@^6.0.0":
+  "integrity" "sha512-GnC4CBfky7fvG9zSV/aQnZaGs6ZJ90AaQorr53z81ArTCqcrSUeBMuCxWmvti9HrdXLhBavyA1UOjvRGObOFjg=="
+  "resolved" "https://registry.npmjs.org/@capacitor/filesystem/-/filesystem-6.0.0.tgz"
   "version" "6.0.0"
+
+"@capacitor/haptics@^6.0.0":
+  "integrity" "sha512-z2TmB+pTbd98Il2I1xpZGClCFwORxxP2m9f1a0rh70c2ubj2atVyZctgxrx1fuoExZTNGSxHaylWfrmjmtelVg=="
+  "resolved" "https://registry.npmjs.org/@capacitor/haptics/-/haptics-6.0.0.tgz"
+  "version" "6.0.0"
+
+"@capacitor/ios@^6.1.0":
+  "integrity" "sha512-ex2q0LAyDDgfJj4fKDQuSNUYSpic3939/8A/sIIIxslwuRBF5i5fuhAngu6BhCt/pQSfEETcHtg2j2vD+YEZ2w=="
+  "resolved" "https://registry.npmjs.org/@capacitor/ios/-/ios-6.1.0.tgz"
+  "version" "6.1.0"
 
 "@emotion/use-insertion-effect-with-fallbacks@^1.0.1":
   "integrity" "sha512-jT/qyKZ9rzLErtrjGgdkMBn2OP8wl0G3sQlBb3YPryvKHsjvINUhVaPFfP+fpBcOkmrVOVEEHQFJ7nbj2TH2gw=="
@@ -2594,6 +2611,13 @@
     "stackblur-canvas" "^2.0.0"
     "svg-pathdata" "^6.0.3"
 
+"capacitor-voice-recorder@^5.0.0":
+  "integrity" "sha512-rCZgbmdmj9eXlotziRnIXWoo+7/aGKM1dSeSrgaEmayu9aTs8xkwhpx9eeVe24VDC6sfMHTnwMl5311Ryr/yFA=="
+  "resolved" "https://registry.npmjs.org/capacitor-voice-recorder/-/capacitor-voice-recorder-5.0.0.tgz"
+  "version" "5.0.0"
+  dependencies:
+    "get-blob-duration" "^1.2.0"
+
 "ccount@^2.0.0":
   "integrity" "sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg=="
   "resolved" "https://registry.npmjs.org/ccount/-/ccount-2.0.1.tgz"
@@ -3973,6 +3997,13 @@
   "integrity" "sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg=="
   "resolved" "https://registry.npmjs.org/gensync/-/gensync-1.0.0-beta.2.tgz"
   "version" "1.0.0-beta.2"
+
+"get-blob-duration@^1.2.0":
+  "integrity" "sha512-2xNJa+oKznR21eC2ThMzw4a1931a3ogA8aHoY92xruZufc/02G7pl/P793GJZytkyI8xMJ2DepEQ7MWvg/tn/Q=="
+  "resolved" "https://registry.npmjs.org/get-blob-duration/-/get-blob-duration-1.2.0.tgz"
+  "version" "1.2.0"
+  dependencies:
+    "@babel/runtime" "7.11.2"
 
 "get-func-name@^2.0.1", "get-func-name@^2.0.2":
   "integrity" "sha512-8vXOvuE167CtIc3OyItco7N/dpRtBbYOsPsXCz7X/PMnlGjYjSGuZJgM1Y7mmew7BKf9BqvLX2tnOVy1BBUsxQ=="
@@ -6673,6 +6704,11 @@
     "ajv-formats" "^2.1.1"
     "ajv-keywords" "^5.1.0"
 
+"sdp@^3.2.0":
+  "integrity" "sha512-d7wDPgDV3DDiqulJjKiV2865wKsJ34YI+NDREbm+FySq6WuKOikwyNQcm+doLAZ1O6ltdO0SeKle2xMpN3Brgw=="
+  "resolved" "https://registry.npmjs.org/sdp/-/sdp-3.2.0.tgz"
+  "version" "3.2.0"
+
 "semver@^6.0.0", "semver@^6.3.1":
   "integrity" "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="
   "resolved" "https://registry.npmjs.org/semver/-/semver-6.3.1.tgz"
@@ -7730,6 +7766,13 @@
   "integrity" "sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ=="
   "resolved" "https://registry.npmjs.org/webpack-virtual-modules/-/webpack-virtual-modules-0.6.2.tgz"
   "version" "0.6.2"
+
+"webrtc-adapter@^9.0.1":
+  "integrity" "sha512-1AQO+d4ElfVSXyzNVTOewgGT/tAomwwztX/6e3totvyyzXPvXIIuUUjAmyZGbKBKbZOXauuJooZm3g6IuFuiNQ=="
+  "resolved" "https://registry.npmjs.org/webrtc-adapter/-/webrtc-adapter-9.0.1.tgz"
+  "version" "9.0.1"
+  dependencies:
+    "sdp" "^3.2.0"
 
 "whatwg-encoding@^3.1.1":
   "integrity" "sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ=="

@@ -5,6 +5,7 @@ import AppWrapper from "./AppWrapper";
 import "../styles/recorder-button.scss";
 import AudioUploader from "../components/AudioUploader";
 import { useUser } from "../context/UserContext";
+import IonicAudioRecorder from "../components/IonicAudioRecorder";
 
 interface RecorderPageProps {
   onRecordingComplete: (blob: Blob) => void;
@@ -128,7 +129,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
           </div>
           <div>
             {activeTab === 'record' ? (
-              memoizedAudioRecorder
+              <IonicAudioRecorder />
             ) : (
               <AudioUploader onFileUpload={onFileUpload} />
               

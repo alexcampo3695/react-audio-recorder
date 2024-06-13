@@ -91,3 +91,25 @@
     50%  {opacity: 0;}
     100% {opacity: 1;}
 }
+
+
+@media (max-width: 767px) {
+    .audio-recorder {
+        width: 30px; /* Adjust width for mobile */
+        padding: 8px; /* Adjust padding for mobile */
+    }
+
+    .audio-recorder-mic {
+        height: 12px; /* Adjust height for mobile */
+        padding: 8px; /* Adjust padding for mobile */
+    }
+
+    .recording {
+        width: 200px; /* Adjust width when recording for mobile */
+    }
+
+    .audio-recorder-timer, .audio-recorder-status {
+        font-size: 12px; /* Adjust font size for mobile */
+        margin-left: 5px; /* Adjust margin for mobile */
+    }
+}

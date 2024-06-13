@@ -3,6 +3,8 @@ import { Props } from "./interfaces";
 import useAudioRecorder from "../hooks/useAudioRecorder";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
+import 'webrtc-adapter';
+
 
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import "../styles/audio-recorder.css";
@@ -101,6 +103,20 @@ const AudioRecorder = React.memo((props: Props) => {
   // Function to toggle recording, and pause/resume
   const toggleRecording = () => {
     if (recordingState === "idle") {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        notyf.error("Your browser does not support audio recording.");
+        return;
+      }
+
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(() => {
+          startRecording();
+          setRecordingState("recording");
+        })
+        .catch((error) => {
+          console.error("Error accessing microphone:", error);
+          notyf.error("Error accessing microphone. Please check your browser settings.");
+        })
       startRecording();
       setRecordingState("recording");
     } else if (recordingState === "recording") {

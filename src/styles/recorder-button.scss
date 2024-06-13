@@ -199,3 +199,40 @@
   align-items: center;
   justify-content: center;
 }
+
+@media (max-width: 767px) {
+  .antidote-recorder-button {
+    width: 25rem;
+    height: 25rem;
+  }
+
+  .antidote-recorder-button img {
+    height: 7.5rem;
+    width: 7.5rem;
+  }
+
+  .deleted {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 1.5rem;
+  }
+
+  .complete {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 1.5rem;
+  }
+
+  .pause {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .timer-container {
+    margin-top: 1.5rem;
+  }
+
+  .audio-recorder-timer {
+    font-size: 1.5rem;
+  }
+}

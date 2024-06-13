@@ -8,7 +8,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
-    "@capacitor/cli": "^6.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
@@ -53,12 +52,16 @@
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
-    "@capacitor/core": "^6.0.0",
-    "@capacitor/ios": "^6.0.0",
+    "@capacitor/cli": "^6.1.0",
+    "@capacitor/core": "^6.1.0",
+    "@capacitor/filesystem": "^6.0.0",
+    "@capacitor/haptics": "^6.0.0",
+    "@capacitor/ios": "^6.1.0",
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ionic/react": "^5.9.4",
     "@ionic/react-router": "^5.9.4",
     "@types/react-infinite-scroll-component": "^5.0.0",
+    "capacitor-voice-recorder": "^5.0.0",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "feather-icons": "^4.29.2",
@@ -80,6 +83,7 @@
     "react-router-dom": "^5.3.4",
     "react-signature-canvas": "^1.0.6",
     "uuid": "^10.0.0",
+    "webrtc-adapter": "^9.0.1",
     "whisper-node": "^1.1.1"
   }
 }
