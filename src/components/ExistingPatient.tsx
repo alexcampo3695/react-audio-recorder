@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ReactElement, Suspense } from "react";
 import { Props } from "./interfaces";
 import { format } from "path";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
 import { useUser } from "../context/UserContext";
@@ -28,7 +28,7 @@ interface FlexItemProps {
 }
 
 const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, LastName, DateOfBirth }) => {
-    const navigate = useNavigate();
+    const history = useHistory();
     const{ user } = useUser();
     
 
@@ -40,7 +40,7 @@ const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, La
             DateOfBirth: DateOfBirth,
             CreatedBy: user?.id || ''
         };
-        navigate("/recorder", { state: { patientData } });
+        history.push("/recorder", { patientData } );
 
         console.log('PatientData:', patientData)
     }

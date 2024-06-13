@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import 'filepond/dist/filepond.min.css';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import { FilePond, registerPlugin, FilePondFile, FilePondErrorDescription } from 'react-filepond';
@@ -25,7 +25,7 @@ interface LocationState {
 }
 
 const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileUpload }) => {
-  const navigate = useNavigate();
+  const history = useHistory();
   const location = useLocation();
 
   const patientData = useMemo(() => {
@@ -47,7 +47,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileUpload }) => {
           }
           console.log('File processed:', file);
           onFileUpload(file.file);
-          navigate('/table');
+          history.push('/table');
         }}
         onupdatefiles={(fileItems: FilePondFile[]) => {
           if (fileItems.length === 0) {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import CreatePatientForm from './CreatePatientForm';
 import "../styles/CreatePatientForm.css";
 import ExistingPatientsTable from './ExistingPatient';

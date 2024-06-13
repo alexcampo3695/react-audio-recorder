@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
-import loginImage from "../styles/assets/login_img.png";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
@@ -9,7 +7,6 @@ import feather from 'feather-icons';
 const ForgotPassword = () => {
     const [email, setEmail] = React.useState('');
     const [error, setError] = React.useState('');
-    const navigate = useNavigate();
     const notyf = new Notyf();
 
     async function handleForgotPassword(e: React.FormEvent) {

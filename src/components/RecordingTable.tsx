@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import formatDate from "../helpers/DataManipulation";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import FlexTable from "./FlexTable";
 // import { Table } from "mdast";
 import { useUser } from "../context/UserContext";
@@ -29,6 +29,7 @@ interface TableRowData {
   lastName: string;
   eventDate: string;
   gridID: string;
+  fileId: string;
   status: string;
 }
 
@@ -39,14 +40,18 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
   lastName,
   eventDate,
   gridID,
+  fileId,
   status,
 }) => {
 
-  const navigate = useNavigate();
+  const history = useHistory();
   
   const handleItemClick = () => {
-    navigate(`/summary/${gridID}`);
+    history.push(`/summary/${gridID}`);
+    console.log('fileId', fileId)
   }
+
+  
   
   return (
     <div className="flex-table-item" onClick={handleItemClick} style ={{ cursor: 'pointer'}}>
@@ -135,6 +140,7 @@ const RecordingsFlexTable: React.FC = () => {
             birthDate: metaData.DateOfBirth,
             gridID: recording._id,
             eventDate: recording.createdAt,
+            fileId: recording.fileId,
             status: recording.status,
           };
         });
@@ -144,17 +150,17 @@ const RecordingsFlexTable: React.FC = () => {
       if (resetData) {
         setData(parsedData);
         fetchedIds.current.clear();
-        parsedData.forEach(item => fetchedIds.current.add(item.gridID));
+        parsedData.forEach(item => fetchedIds.current.add(item.fileId));
       } else {
         setData((prevData) => {
           const newData = [...prevData];
           parsedData.forEach(item => {
-            const existingIndex = newData.findIndex(d => d.gridID === item.gridID);
+            const existingIndex = newData.findIndex(d => d.fileId === item.fileId);
             if (existingIndex !== -1) {
               newData[existingIndex] = item; // Update existing record
             } else {
               newData.push(item); // Add new record
-              fetchedIds.current.add(item.gridID);
+              fetchedIds.current.add(item.fileId);
             }
           });
           return newData;
@@ -238,6 +244,7 @@ const RecordingsFlexTable: React.FC = () => {
           lastName={item.lastName}
           eventDate={formatDate(item.eventDate)}
           gridID={item.gridID}
+          fileId={item.fileId}
           status={item.status}
         />
       ))}

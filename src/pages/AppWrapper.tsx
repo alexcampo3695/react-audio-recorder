@@ -4,7 +4,7 @@ import MobileNav from '../components/MobileNav';
 import '../styles/huro/scss/main.scss';
 import { IonHeader, IonToolbar, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, isPlatform } from '@ionic/react';
 import { home, person, settings } from 'ionicons/icons';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Home from './Home';
 
 import '@ionic/react/css/normalize.css'
@@ -108,7 +108,7 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
                     </div>
                 </div>
             </div>
-            { isPlatform('ios') && (
+            {/* { isPlatform('ios') && (
                 <IonTabs>
                     <IonRouterOutlet>
                         <Routes>
@@ -127,7 +127,7 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
                         </IonTabButton>
                     </IonTabBar>
                 </IonTabs>
-            )}
+            )} */}
         </>
     );
 }

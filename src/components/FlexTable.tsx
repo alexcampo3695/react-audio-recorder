@@ -1,9 +1,4 @@
 import React, { useState, useEffect, ReactElement, Suspense } from "react";
-import { Props } from "./interfaces";
-import { format } from "path";
-import { useNavigate } from "react-router-dom";
-import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
-import formatDate from "../helpers/DataManipulation";
 import { useUser } from "../context/UserContext";
 import InfiniteScroll from "react-infinite-scroll-component";
 

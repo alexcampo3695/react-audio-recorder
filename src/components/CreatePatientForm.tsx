@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactElement, Suspense } from "react";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Props } from "./interfaces";
 import "../styles/CreatePatientForm.css";
 import { v4 as uuidv4 } from 'uuid';
@@ -11,7 +11,7 @@ const CreatePatientForm = ({}) => {
     const [lastName, setLastName] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [patientId, setPatientId] = useState(() => uuidv4());
-    const navigate = useNavigate();
+    const history = useHistory();
     const{ user } = useUser();
     const notyf = new Notyf();
 
@@ -36,7 +36,7 @@ const CreatePatientForm = ({}) => {
             'Content-Type': 'application/json'
           }
         });
-        navigate('/recorder', { state: { patientData } });
+        history.push('/recorder', { patientData } );
         setFirstName('');
         setLastName('');
         setDateOfBirth('');

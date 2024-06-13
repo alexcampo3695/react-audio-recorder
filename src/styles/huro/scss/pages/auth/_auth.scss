@@ -141,7 +141,7 @@
           border-radius: 10px;
           padding-left: 55px;
           transition: all 0.3s;
-          font-size: 16px; //i added
+          font-size: 16px !important; //i added
 
           &:focus {
             background: lighten($fade-grey, 6%);

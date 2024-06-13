@@ -2,7 +2,7 @@ import './styles/huro/scss/main.scss';
 import './styles/huro/vendor/css/icons.min.css'; // Adjust the path as needed
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { UserProvider } from './context/UserContext';
 
 
@@ -77,83 +77,65 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <Routes>
+      <Switch>
         <Route
           path="/"
-          element={
-            <Login/>
-          }
+          exact
+          component={Login}
         />
         <Route
           path="/authentication"
-          element={
-            <TwoFactorAuth/>
-          }
+          component={TwoFactorAuth}
         />
         <Route
           path="/register"
-          element={
-            <Register/>
-          }
+          component={Register}
         />
         <Route
           path="/reset_password/:token"
-          element={
-            <ResetPassword/>
-          }
+          component={ResetPassword}
         />
         <Route
           path="/forgot-password"
-          element={
-            <ForgotPassword/>
-          }
+          component={ForgotPassword}
         />
         <Route
           path="/home"
-          element={
-            <Home/>
-          }
+          component={Home}
         />
         <Route
           path="/profile_settings"
-          element={
-            <ProfileSettingsPage />
-          }
+          component={ProfileSettingsPage}
         />
         <Route
           path="/recorder"
-          element={
+          render={(props) => (
             <RecorderPage
+              {...props}
               onRecordingComplete={(blob) => addAudioElement('recording', blob)}
               onFileUpload={(file) => addAudioElement('upload', file)}
             />
-          }
+          )}
         />
         <Route
           path="/table"
-          element={<RecordingsTable audioDataList={audioDataList} onTranscriptionClick={handleTranscriptionClick} />}
-        />
-        <Route
-          path="/summary"
-          element={<AudioPlayer 
-            fileID={'6646823cd936ec8c005fa460'}  
-          />}
+          render={(props) => (
+            <RecordingsTable
+              {...props}
+              audioDataList={audioDataList}
+              onTranscriptionClick={handleTranscriptionClick}
+            />
+          )}
         />
         <Route
           path="/summary/:gridID"
-          element={<SummaryPage selectedTranscription={selectedTranscription} />}
-        />
-        <Route
-          path="/test"
-          element={
-            <ClinicalNoteComponent
-                fileId={'664ee481236061fe93da63c4' ?? ''}
+          render={(props) => (
+            <SummaryPage
             />
-          }
+          )}
         />
-      </Routes>
+      </Switch>
     </Router>
-
   );
 };
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface EncounterSummaryProps {
   fileId: string;
@@ -13,7 +12,6 @@ interface SummaryResponse {
 }
 
 const EncounterSummaryComponent: React.FC<EncounterSummaryProps> = ({ fileId }) => {
-  const navigate = useNavigate();
   const [summary, setSummary] = useState<string | null>(null);
 
   useEffect(() => {

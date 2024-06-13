@@ -1,7 +1,7 @@
 import React, { useEffect, useState, ReactElement, useContext } from 'react';
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import loginImage from "../styles/assets/login_img.png";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useUser } from "../context/UserContext"; 
 
 
@@ -15,7 +15,7 @@ const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate();
+    const history = useHistory();
     const { setUser } = useUser();
 
     async function handleLogin(e: React.FormEvent) {
@@ -55,12 +55,12 @@ const Login = () => {
                 setUser(userData);
                 console.log('User data:', userData);
 
-                navigate('/authentication', { state: { data } });
+                history.push('/authentication', { state: { data } });
             } else {
                 throw new Error('User data is missing from the response');
             }
 
-            navigate('/authentication', { state: { loginCredentials } });
+            history.push('/authentication', { state: { loginCredentials } });
         } catch (error) {
             console.error('Login error:', error);
             if (error instanceof Error) {

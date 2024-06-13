@@ -1,6 +1,4 @@
 import React, { useState, useEffect, ReactElement, Suspense } from "react";
-import { format } from "path";
-import { useNavigate } from "react-router-dom";
 
 enum AvatarSize {
     Small = "is-small",

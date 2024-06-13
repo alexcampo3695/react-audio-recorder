@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import loginImage from "../styles/assets/login_img.png";
 import { Notyf } from "notyf";
@@ -12,7 +12,7 @@ const Register = () => {
     const [password, setPassword] = React.useState('');
     const [repeatPassword, setRepeatPassword] = React.useState('');
     const [error, setError] = React.useState('');
-    const navigate = useNavigate();
+    const history = useHistory();
     const notyf = new Notyf();
     
 
@@ -56,7 +56,7 @@ const Register = () => {
             const data = await response.json();
             notyf.success('Registration successful!');
             console.log('Registration successful:', data);
-            navigate('/', { state: { userRegistration } });
+            history.push('/', { state: { userRegistration } });
         } catch (error) {
             console.error('Registration error:', error);
             if (error instanceof Error) {

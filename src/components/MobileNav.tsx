@@ -3,13 +3,13 @@ import { Props } from "./interfaces";
 import { format } from "path";
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { useUser } from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 
 const MobileNav = () => {
     const [navbarActive, setNavBarActive] = useState(false);
     const { user } = useUser();
-    const navigate = useNavigate();
+    const history = useHistory();
     const [data, setData] = useState({
         firstName: '',
         lastName: '',

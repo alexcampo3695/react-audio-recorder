@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { useUser } from '../context/UserContext';
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const NavBar = () => {
     const { user } = useUser();
-    const navigate = useNavigate();
+    const history = useHistory();
     const [menuTab, setActiveTab] = useState('home');
     const [data, setData] = useState({
         firstName: '',
@@ -25,7 +25,7 @@ const NavBar = () => {
     const handleTabClick = (tab: string, path: string, event: React.MouseEvent) => {
         event.preventDefault();
         setActiveTab(tab);
-        navigate(path);
+        history.push(path);
     }
 
     useEffect(() => {

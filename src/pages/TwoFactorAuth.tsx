@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
+import { useUser } from '../context/UserContext';
 
 
 interface LoginCredentials {
@@ -12,25 +13,27 @@ interface LoginCredentials {
 }
 
 interface LocationState {
-    loginCredentials?: LoginCredentials;
-  }
+    data?: {
+        email: string;
+    };
+}
   
 
 const TwoFactorAuth = () => {
-    const location = useLocation();
-    const state = useState();
+    const location = useLocation<LocationState>();
     const [ twoFactorCode, setTwoFactorCode ] = React.useState('');
     const [ error, setError ] = React.useState('');
-    const navigate = useNavigate();
+    const history = useHistory();
     const notyf = new Notyf();
+    const user = useUser();
 
-    const loginCredentials = useMemo(() => {
-        const state = location.state as LocationState;
-        console.log('Derived state:', state);
-        return state?.loginCredentials ?? null;  
-      }, [location.state]); 
+    // const loginCredentials = useMemo(() => {
+    //     const state = location.state as LocationState;
+    //     console.log('Derived state:', state);
+    //     return state?.loginCredentials ?? null;  
+    //   }, [location.state]); 
 
-    const email = loginCredentials?.email;
+    const email = user?.user?.email
 
     async function handleTwoFactorAuthetication(e: React.FormEvent) {
         e.preventDefault();
@@ -48,7 +51,7 @@ const TwoFactorAuth = () => {
             if (response.ok) {
                 notyf.success('Login successful');
                 localStorage.setItem('token', data.token);
-                navigate('/home');
+                history.push('/home');
             } else {
                 notyf.error(data.message);
             }

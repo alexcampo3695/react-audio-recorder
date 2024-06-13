@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
@@ -10,7 +10,7 @@ const ResetPassword = () => {
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [error, setError] = React.useState('');
-    const navigate = useNavigate();
+    const history = useHistory();
     const notyf = new Notyf();
 
     async function handleResetPassword(e: React.FormEvent) {
@@ -43,7 +43,7 @@ const ResetPassword = () => {
                 throw new Error('Invalid password');
             }
             notyf.success('Password reset successful!');
-            navigate('/');
+            history.push('/');
         } catch (error) {
             if (error instanceof Error) {
                 console.error('Error:', error.message);

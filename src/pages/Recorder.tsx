@@ -1,10 +1,7 @@
 import React, { useState, useMemo, useCallback } from "react"; 
 import AudioRecorder from "../components/AudioRecordingComponent";
-// import AudioUploader from "../components/AudioUploader";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import PatientDetails from "./PatientDetails";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import AppWrapper from "./AppWrapper";
-import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import "../styles/recorder-button.scss";
 import AudioUploader from "../components/AudioUploader";
 import { useUser } from "../context/UserContext";
@@ -29,14 +26,14 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
   onRecordingComplete,
   onFileUpload,
 }) => {
-  const navigate = useNavigate();
+  const history = useHistory();
   const location = useLocation();
 
-  // Properly memoize patientData
+
   const patientData = useMemo(() => {
     const state = location.state as LocationState;
     console.log('Derived state:', state);
-    return state?.patientData ?? null;  // Return null if patientData is undefined
+    return state?.patientData ?? null;
   }, [location.state]);  // Dependency on location.state
 
   const [isRecording, setIsRecording] = useState(false);
@@ -72,7 +69,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
         const data = await response.json();
         onRecordingComplete(blob);
         setIsRecording(false);
-        navigate('/table');
+        history.push('/table');
       } else {
         console.error("Error uploading recording: Server responded with status", response.status);
       }
