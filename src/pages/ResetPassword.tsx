@@ -5,8 +5,13 @@ import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
 
+
+interface ResetPasswordParams {
+    token: string;
+}
+
 const ResetPassword = () => {
-    const { token } = useParams(); // Get the token from the URL
+    const { token } = useParams<ResetPasswordParams>(); // Get the token from the URL
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [error, setError] = React.useState('');
