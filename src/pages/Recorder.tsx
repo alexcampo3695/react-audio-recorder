@@ -129,7 +129,11 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
           </div>
           <div>
             {activeTab === 'record' ? (
-              <IonicAudioRecorder />
+              <IonicAudioRecorder 
+                onRecordingComplete={handleRecordingComplete}
+                onRecordingStateChange={handleRecordingStateChange}
+                isRecording={isRecording}
+              />
             ) : (
               <AudioUploader onFileUpload={onFileUpload} />
               

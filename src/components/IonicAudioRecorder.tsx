@@ -6,10 +6,26 @@ import 'notyf/notyf.min.css';
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 // import { Permissions } from '@capacitor/core';
 
-const IonicAudioRecorder = () => {
+interface IonicAudioRecorderProps {
+  onRecordingComplete?: (blob: Blob) => void;
+  onRecordingStateChange?: (isRecording: boolean) => void;
+  isRecording: boolean;
+}
+
+const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
+  onRecordingComplete,
+  onRecordingStateChange,
+  isRecording,
+}) => {
   const [recordingState, setRecordingState] = useState<"idle" | "recording" | "paused">("idle");
   const { user } = useUser();
   const notyf = new Notyf();
+
+  useEffect(() => {
+    if (onRecordingStateChange) {
+      onRecordingStateChange(recordingState === "recording");
+    }
+  }, [recordingState, onRecordingStateChange]);
 
   function base64ToBlob(base64: string, mime: string): Blob {
     const byteCharacters = atob(base64);
@@ -33,8 +49,9 @@ const IonicAudioRecorder = () => {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   };
 
-  const startRecording = async () => {
+  console.log('state', recordingState)
 
+  const startRecording = async () => {
     try {
       VoiceRecorder.requestAudioRecordingPermission();
       await VoiceRecorder.startRecording();
@@ -46,18 +63,27 @@ const IonicAudioRecorder = () => {
   };
 
   const stopRecording = async (save: boolean = true) => {
+    if (recordingState !== "recording") {
+      notyf.error('Recording has not yet started.')
+    }
+
     try {
       const result = await VoiceRecorder.stopRecording();
       setRecordingState("idle");
-      if (result.value) {
-        const audioUrl = URL.createObjectURL(base64ToBlob(result.value.recordDataBase64, result.value.mimeType));
+      if (result.value && save) {
+        const audioBlob = base64ToBlob(result.value.recordDataBase64, result.value.mimeType);
+        if (onRecordingComplete) {
+          onRecordingComplete(audioBlob);
+        }
+        const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
-        audio.play();
+        setRecordingState('idle')
         notyf.success('Recording saved successfully');
       } else if (!save) {
         notyf.error('Recording Discarded');
       }
     } catch (error) {
+      console.error('Failed to stop recording:', error)
       notyf.error('Failed to stop recording');
     }
   }
@@ -92,7 +118,7 @@ const IonicAudioRecorder = () => {
               </svg>
             </i>
           </div>
-          <div className={"deleted"} onClick={() => stopRecording()} title="Discard Recording" data-testid="ar_cancel">
+          <div className={"deleted"} onClick={() => stopRecording(false)} title="Discard Recording" data-testid="ar_cancel">
             <i>
               <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -108,6 +134,4 @@ const IonicAudioRecorder = () => {
 
 export default IonicAudioRecorder;
 
-function requestMicrophonePermission() {
-  throw new Error("Function not implemented.");
-}
+
