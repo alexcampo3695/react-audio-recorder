@@ -1,0 +1,67 @@
+@import './huro/scss/abstracts/_variables.scss';
+
+.navbar-ios {
+  border-radius: 32px;
+  background-color: rgba(255, 255, 255, 0.95); /* Add some opacity */
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  width: 95%;
+  max-width: 400px;
+  box-shadow: 0 14px 28px #cdcdcd, 0 10px 10px #c6c6c6;
+  position: fixed; /* Fixed position */
+  bottom: 0; /* Stick to bottom */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000; /* Ensure it is above other content */
+  margin-bottom: 40px;
+}
+
+.list-item-ios {
+  list-style-type: none;
+  flex-basis: 100%;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: #555;
+  transform: translateY(0);
+  transition: transform 0.5s ease, opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.list-item-name-ios {
+  font-size: 13px;
+  font-weight: 500;
+  position: absolute;
+  transform: translate(0, 50px);
+  transition: transform 0.5s ease, opacity 0.2s ease;
+  opacity: 0;
+}
+
+.list-item-ios:hover {
+  color: $primary;
+  transform: translateY(-6px);
+}
+.list-item-ios:hover .list-item-name {
+  transform: translateY(20px);
+  opacity: 1;
+}
+
+@media (max-width: 350px) {
+  .navbar-ios {
+    flex-direction: column;
+    align-items: center;
+    max-width: 120px;
+    padding-bottom: 20px;
+  }
+
+  .list-item-ios {
+    flex-basis: auto;
+  }
+
+  .list-item-ios:hover .list-item-name-ios {
+    transform: translateY(25px);
+  }
+}

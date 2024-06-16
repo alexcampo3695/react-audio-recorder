@@ -63,48 +63,40 @@ const App: React.FC = () => {
     setSelectedTranscription(transcription);
   }
 
-  setupIonicReact();
+  // setupIonicReact();
 
   return (
-      // <Router>
-      //   <Switch>
-      //     {/* <IonicTabs /> */}
+      <Router>
+        <Switch>
+          {/* <IonicTabs /> */}
           
-      //     <Route path="/" exact component={Login} />
-      //     <Route path="/authentication" component={TwoFactorAuth} />
-      //     <Route path="/register" component={Register} />
-      //     <Route path="/reset_password/:token" component={ResetPassword} />
-      //     <Route path="/forgot-password" component={ForgotPassword} />
-      //     <Route path="/home" component={Home} />
-      //     <Route path="/profile_settings" component={ProfileSettingsPage} />
-      //     <Route path="/recorder" render={(props) => (
-      //       <RecorderPage
-      //         {...props}
-      //         onRecordingComplete={(blob) => addAudioElement('recording', blob)}
-      //         onFileUpload={(file) => addAudioElement('upload', file)}
-      //       />
-      //     )} />
-      //     <Route path="/table" render={(props) => (
-      //       <RecordingsTable
-      //         {...props}
-      //         audioDataList={audioDataList}
-      //         onTranscriptionClick={handleTranscriptionClick}
-      //       />
-      //     )} />
-      //     <Route path="/summary/:gridID" render={(props) => (
-      //       <SummaryPage />
-      //     )} />
-      //   </Switch>
-      // </Router>
-      <IonApp>
-        <IonReactRouter>
-          <IonRouterOutlet>
-            <Route exact path="/" component={Login} />
-            <Route path="/home" component={Home} />
-            <Route path="/authentication" component={TwoFactorAuth} />
-          </IonRouterOutlet>
-        </IonReactRouter>
-      </IonApp>
+          <Route path="/" exact component={Login} />
+          <Route path="/authentication" component={TwoFactorAuth} />
+          <Route path="/register" component={Register} />
+          <Route path="/reset_password/:token" component={ResetPassword} />
+          <Route path="/forgot-password" component={ForgotPassword} />
+          <Route path="/home" component={Home} />
+          <Route path="/profile_settings" component={ProfileSettingsPage} />
+          <Route path="/recorder" render={(props) => (
+            <RecorderPage
+              {...props}
+              onRecordingComplete={(blob) => addAudioElement('recording', blob)}
+              onFileUpload={(file) => addAudioElement('upload', file)}
+            />
+          )} />
+          <Route path="/table" render={(props) => (
+            <RecordingsTable
+              {...props}
+              audioDataList={audioDataList}
+              onTranscriptionClick={handleTranscriptionClick}
+            />
+          )} />
+          <Route path="/summary/:gridID" render={(props) => (
+            <SummaryPage />
+          )} />
+        </Switch>
+      </Router>
+      
   );
 };
 

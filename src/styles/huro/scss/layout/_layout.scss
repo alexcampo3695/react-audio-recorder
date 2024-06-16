@@ -83,6 +83,11 @@ body {
 2. View Wrapper
 ========================================================================== */
 
+.ios-padding {
+  margin-bottom: 110px; /* Adjust this value as needed to ensure content is not cut off */
+  // background-color: blue !important;
+}
+
 .view-wrapper {
   position: relative;
   height: 100%;
@@ -269,6 +274,7 @@ body {
     h1 {
       text-align: left;
       margin-bottom: 0;
+      padding-bottom: 20px; //this is a shim, it wasnt here
     }
 
     p {

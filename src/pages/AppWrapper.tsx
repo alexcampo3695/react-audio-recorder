@@ -22,6 +22,7 @@ import '@ionic/react/css/display.css';
 import { IonReactRouter } from '@ionic/react-router';
 import ProfileSettings from '../components/ProfileSettings';
 import IonicTabs from './IonicTabs';
+import TestTabs from './TestTabs';
 
 
 interface AppWrapperProps {
@@ -31,6 +32,7 @@ interface AppWrapperProps {
 
 const AppWrapper = ({ children, title }: AppWrapperProps) => {
     const [darkMode, setDarkMode] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     const toggleBodyClass = () => {
         const body = document.querySelector('body');
@@ -69,61 +71,62 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
         };
       }, []);
 
-    
+    console.log('Platform:', isPlatform('ios'))
       
 
     return (
         <>
-            <div 
-                className="view-wrapper" 
-                style={{ padding: 'env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)' }} 
-                data-naver-offset="150" 
-                data-menu-item="#home-sidebar-menu" 
+            <div
+                className={`view-wrapper ${isPlatform('ios') ? 'ios-padding-wrapper' : ''}`}
+                style={{ padding: 'env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)' }}
+                data-naver-offset="150"
+                data-menu-item="#home-sidebar-menu"
                 data-mobile-item="#home-sidebar-menu-mobile"
             >
-                
                 {!isPlatform('ios') && <MobileNav />}
                 <NavBar />
                 <div className="page-content-wrapper">
-                    <div className="page-content is-relative">
-                        <div className="page-title has-text-centered">
-                            <div className="huro-hamburger nav-trigger push-resize" data-sidebar="home-sidebar">
-                                <span className="menu-toggle has-chevron">
-                                    <span className="icon-box-toggle">
-                                        <span className="rotate">
-                                            <i className="icon-line-top"></i>
-                                            <i className="icon-line-center"></i>
-                                            <i className="icon-line-bottom"></i>
-                                        </span>
-                                    </span>
-                                </span>
-                            </div>
+                <div className={`page-content is-relative ${isPlatform('ios') ? 'ios-padding' : ''}`}>
+                    <div className="page-title has-text-centered">
+                    <div className="huro-hamburger nav-trigger push-resize" data-sidebar="home-sidebar">
+                        <span className="menu-toggle has-chevron">
+                        <span className="icon-box-toggle">
+                            <span className="rotate">
+                            <i className="icon-line-top"></i>
+                            <i className="icon-line-center"></i>
+                            <i className="icon-line-bottom"></i>
+                            </span>
+                        </span>
+                        </span>
+                    </div>
 
-                            <div className="title-wrap">
-                                <h1 className="title is-4">{title}</h1>
-                            </div>
-                            <div className="toolbar ml-auto">
-                                <div className="toolbar-link">
-                                    <label className="dark-mode ml-auto">
-                                        <input 
-                                            type="checkbox" 
-                                            checked={darkMode}
-                                            onChange={handleDarkModeToggle}
-                                        />
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="page-content-inner">
-                            {children}
+                    <div className="title-wrap">
+                        <h1 className="title is-4">{title}</h1>
+                    </div>
+                    <div className="toolbar ml-auto">
+                        <div className="toolbar-link">
+                        <label className="dark-mode ml-auto">
+                            <input
+                            type="checkbox"
+                            checked={darkMode}
+                            onChange={handleDarkModeToggle}
+                            />
+                            <span></span>
+                        </label>
                         </div>
                     </div>
+                    </div>
+
+                    <div className="page-content-inner">
+                    {children}
+                    </div>
                 </div>
+                </div>
+                {isPlatform('ios') && <TestTabs />}
             </div>
         </>
     );
 }
 
 export default AppWrapper;
+

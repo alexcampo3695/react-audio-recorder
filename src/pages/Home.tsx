@@ -9,27 +9,12 @@ import TestTabs from './TestTabs';
 const Home = ({}) => {
     console.log('Home.tsx')
     return (
-        // <AppWrapper
-        //     children={<HomeComponent />}
-        //     title='Home'
-        // />
-        <IonPage>
-            <IonHeader>
-            </IonHeader>
-            <IonContent className = "ios-padding">
-                <AppWrapper
-                    children={
-                        <HomeComponent />
-                        
-                    }
-                    title='Home'
-                />
-                <TestTabs />
-                
-            </IonContent>
-        </IonPage>
-        
-        // <TabsTest />
+        <AppWrapper
+            children={
+                <HomeComponent />
+            }
+            title='Home'
+        /> 
     ) 
 }
 
