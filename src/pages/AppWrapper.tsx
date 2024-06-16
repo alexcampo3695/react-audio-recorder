@@ -1,16 +1,27 @@
-import React, { useEffect, useState, ReactElement } from 'react';
+import React, { useEffect, useState, ReactElement, useMemo } from 'react';
 import NavBar from '../components/NavBar';
 import MobileNav from '../components/MobileNav';
 import '../styles/huro/scss/main.scss';
-import { IonHeader, IonToolbar, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, isPlatform } from '@ionic/react';
-import { home, person, settings } from 'ionicons/icons';
-import { Route, Switch } from 'react-router-dom';
+import { IonHeader, IonToolbar, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, isPlatform, IonPage } from '@ionic/react';
+import { apps, flash, home, library, person, playCircle, radio, search, settings } from 'ionicons/icons';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import Home from './Home';
 
 import '@ionic/react/css/normalize.css'
+import '@ionic/react/css/core.css';
+// import '@ionic/react/css/structure.css';
+import '@ionic/react/css/typography.css';
+import '@ionic/react/css/padding.css';
+import '@ionic/react/css/float-elements.css';
+import '@ionic/react/css/text-alignment.css';
+import '@ionic/react/css/text-transformation.css';
+import '@ionic/react/css/flex-utils.css';
+import '@ionic/react/css/display.css';
 
-// basic css
-import '@ionic/react/css/normalize.css'
+
+import { IonReactRouter } from '@ionic/react-router';
+import ProfileSettings from '../components/ProfileSettings';
+import IonicTabs from './IonicTabs';
 
 
 interface AppWrapperProps {
@@ -57,6 +68,8 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
           window.removeEventListener('resize', setViewportHeight);
         };
       }, []);
+
+    
       
 
     return (
@@ -68,6 +81,7 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
                 data-menu-item="#home-sidebar-menu" 
                 data-mobile-item="#home-sidebar-menu-mobile"
             >
+                
                 {!isPlatform('ios') && <MobileNav />}
                 <NavBar />
                 <div className="page-content-wrapper">
@@ -108,26 +122,6 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
                     </div>
                 </div>
             </div>
-            {/* { isPlatform('ios') && (
-                <IonTabs>
-                    <IonRouterOutlet>
-                        <Routes>
-                            <Route path="/home" element={<Home />} />
-                            <Route path="/profile" element={<Home />} />
-                        </Routes>
-                    </IonRouterOutlet>
-                    <IonTabBar slot="bottom">
-                        <IonTabButton tab="home" href="/home">
-                            <IonIcon icon={home} />
-                            <IonLabel>Home</IonLabel>
-                        </IonTabButton>
-                        <IonTabButton tab="profile" href="/home">
-                            <IonIcon icon={person} />
-                            <IonLabel>Profile</IonLabel>
-                        </IonTabButton>
-                    </IonTabBar>
-                </IonTabs>
-            )} */}
         </>
     );
 }
