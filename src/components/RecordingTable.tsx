@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import FlexTable from "./FlexTable";
 // import { Table } from "mdast";
 import { useUser } from "../context/UserContext";
+import NoData from "./NoData";
 
 interface MetaData {
   FirstName: string;
@@ -236,18 +237,27 @@ const RecordingsFlexTable: React.FC = () => {
       loadMore={loadMoreData}
       onSearchChange={handleSearchTermChange}
     >
-      {data.map((item) => (
-        <RecordingFlexItem
-          key={item.gridID}
-          number={item.number}
-          firstName={item.firstName}
-          lastName={item.lastName}
-          eventDate={formatDate(item.eventDate)}
-          gridID={item.gridID}
-          fileId={item.fileId}
-          status={item.status}
-        />
-      ))}
+      {
+        data.length > 0 ? (
+          data.map((item) => (
+            <RecordingFlexItem
+              key={item.gridID}
+              number={item.number}
+              firstName={item.firstName}
+              lastName={item.lastName}
+              eventDate={formatDate(item.eventDate)}
+              gridID={item.gridID}
+              fileId={item.fileId}
+              status={item.status}
+            />
+          ))
+        ) : (
+          <NoData
+              Title="No patients found"
+              Subtitle="Create a new patient to get started."
+          />
+        )
+      }
     </FlexTable>
   );
 };

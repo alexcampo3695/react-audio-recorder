@@ -164,7 +164,7 @@ const ExistingPatientsTable: React.FC = () => {
             searchPlaceholder="Search..."
             onSearchChange={handleSearchTermChange}
         >
-            {patients.length > 0 ? (
+            { patients.length > 0 ? (
                 patients.map((patient: any) => (
                     <ExistingPatientItem
                         key={patient._id}

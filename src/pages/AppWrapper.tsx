@@ -22,7 +22,7 @@ import '@ionic/react/css/display.css';
 import { IonReactRouter } from '@ionic/react-router';
 import ProfileSettings from '../components/ProfileSettings';
 import IonicTabs from './IonicTabs';
-import TestTabs from './TestTabs';
+import TestTabs from './TabMenu';
 
 
 interface AppWrapperProps {
