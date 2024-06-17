@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.transcribe.app',
-  appName: 'transcribe',
+  appId: 'com.carevoice.app',
+  appName: 'CareVoice',
   webDir: 'dist',
   server: {
     url: 'http://localhost:4173/',
