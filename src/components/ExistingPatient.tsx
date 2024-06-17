@@ -8,6 +8,7 @@ import { useUser } from "../context/UserContext";
 import FlexTable from "./FlexTable";
 import "../styles/flex-list.css";
 import { handle } from "mdast-util-to-markdown/lib/handle";
+import NoData from "./NoData";
 
 interface Patient {
     _id: string;
@@ -121,6 +122,12 @@ const ExistingPatientsTable: React.FC = () => {
             }
 
             const data = await response.json();
+
+            console.log('existing patients:', data.patients)
+            if (!Array.isArray(data.patients)) {
+                throw new Error('Expected patients to be an array');
+            }
+
             setPatients((prevPatients) => {
                 if (page === 1) {
                     return data.patients;
@@ -157,16 +164,23 @@ const ExistingPatientsTable: React.FC = () => {
             searchPlaceholder="Search..."
             onSearchChange={handleSearchTermChange}
         >
-            {patients.map((patient: any) => (
-                <ExistingPatientItem
-                    key={patient._id}
-                    PatientId={patient.PatientId}
-                    FirstName={patient.FirstName}
-                    LastName={patient.LastName}
-                    DateOfBirth={patient.DateOfBirth}
-                    CreatedBy={patient.id}
+            {patients.length > 0 ? (
+                patients.map((patient: any) => (
+                    <ExistingPatientItem
+                        key={patient._id}
+                        PatientId={patient.PatientId}
+                        FirstName={patient.FirstName}
+                        LastName={patient.LastName}
+                        DateOfBirth={patient.DateOfBirth}
+                        CreatedBy={patient.id}
+                    />
+                ))
+            ) : (
+                <NoData
+                    Title="No patients found"
+                    Subtitle="Create a new patient to get started."
                 />
-            ))}
+            )}
         </FlexTable>
     );
 };
