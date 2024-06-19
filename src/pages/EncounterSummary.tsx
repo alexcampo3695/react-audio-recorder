@@ -141,10 +141,10 @@ const SummaryPage: React.FC = () => {
                         <h3 className="title is-4 is-narrow is-thin">
                             {data?.patientData?.FirstName} {data?.patientData?.LastName}
                         </h3>
-                        <p className="light-text">
+                        {/* <p className="light-text">
                             Hey everyone, I am a product manager from New York and I am looking
                             for new opportunities in the software business.
-                        </p>
+                        </p> */}
                         <div className="profile-stats">
                             <div className="socials">
                                 <button className="button is-circle is-elevated"

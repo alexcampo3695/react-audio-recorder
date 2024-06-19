@@ -97,7 +97,7 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
                             <i className="icon-line-bottom"></i>
                             </span>
                         </span>
-                        </span>
+                      </span>
                     </div>
 
                     <div className="title-wrap">

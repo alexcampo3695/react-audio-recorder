@@ -11,7 +11,6 @@ const TabsTest: React.FunctionComponent = () => (
         <div className="icon">
             <i className="lnil lnil-home"></i>
         </div>
-        {/* <span className="list-item-name-ios">Home</span> */}
       </Link>
     </li>
     <li className="list-item-ios">
@@ -19,7 +18,6 @@ const TabsTest: React.FunctionComponent = () => (
       <div className="icon">
             <i className="lnil lnil-list"></i>
         </div>
-        {/* <span className="list-item-name-ios">Recordings</span> */}
       </Link>
     </li>
     <li className="list-item-ios">
@@ -27,7 +25,6 @@ const TabsTest: React.FunctionComponent = () => (
         <div className="icon">
             <i className="lnil lnil-user"></i>
         </div>
-        {/* <span className="list-item-name-ios">Settings</span> */}
       </Link>
     </li>
   </div>
