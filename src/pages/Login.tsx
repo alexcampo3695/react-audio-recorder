@@ -104,6 +104,7 @@ const Login = () => {
                         <div className="hero-body">
                             <div className="form-text">
                                 <h2>Sign In</h2>
+                                <span>your deployment is working!</span>
                                 <p>Welcome back to your account.</p>
                             </div>
                             {error && <div className="notification is-danger">{error}</div>}
