@@ -17,7 +17,7 @@ services:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - "8001:8000"
+      - "8002:8001"
     environment:
       - PORT=8000
       - MONGO_URL=${MONGO_URL}
