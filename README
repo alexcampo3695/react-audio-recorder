@@ -1,0 +1,7 @@
+Deploy docker frontend:
+
+ docker buildx build --platform linux/arm64 --load -t alexcampo3695/react-audio-recorder-frontend:latest -f src/dockerfile .
+
+ Deploy docker backend:
+
+ docker buildx build --platform linux/arm64 --load -t alexcampo3695/react-audio-recorder-backend:latest -f server/dockerfile .

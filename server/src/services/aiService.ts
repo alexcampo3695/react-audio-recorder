@@ -14,6 +14,7 @@ function isAxiosError(error: any): error is { response: { data: any; status: num
 
 export async function summarizeTranscription(text: string): Promise<string> {
     const apiKey = process.env.VITE_OPENAI_API_KEY;
+    console.log('API Key:', apiKey)
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
     }

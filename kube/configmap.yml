@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: frontend-config
 data:
-  VITE_BACKEND_URL: "http://server-service.default.svc.cluster.local:8001"
+  VITE_BACKEND_URL: "http://server-service:8002"

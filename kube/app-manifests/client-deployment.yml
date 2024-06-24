@@ -19,3 +19,9 @@ spec:
         image: alexcampo3695/react-audio-recorder-frontend:latest
         ports:
         - containerPort: 80
+        env: 
+        - name: VITE_BACKEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-config
+              key: VITE_BACKEND_URL
