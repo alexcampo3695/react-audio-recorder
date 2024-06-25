@@ -74,6 +74,7 @@ const Login = () => {
     }
 
     console.log('PROD url', import.meta.env.VITE_PROD_BACKEND_URL)
+    console.log('PROD url', import.meta.env.VITE_PROD_BACKEND_URL)
 
 
     return (
@@ -86,6 +87,7 @@ const Login = () => {
                             <div className="container">
                                 <div className="columns">
                                     <div className="column">
+                                        <span>hello</span>
                                         <img className="hero-image" src={loginImage} alt="Station Illustration" />
                                     </div>
                                 </div>
