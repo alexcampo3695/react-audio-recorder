@@ -18,7 +18,8 @@ const Login = () => {
     const history = useHistory();
     const { setUser } = useUser();
 
-    const backendUrl = import.meta.env.VITE_PROD_BACKEND_URL || 'http://server.default.svc.cluster.local:8002';
+    const backendUrlProd = import.meta.env.VITE_PROD_BACKEND_URL || 'http://server.default.svc.cluster.local:8002';
+    const backendURLLocal = import.meta.env.VITE_BACKEND_URL
 
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
@@ -29,7 +30,7 @@ const Login = () => {
         };
 
         try {
-            const response = await fetch(`${backendUrl}/api/user/login`, {
+            const response = await fetch(`${backendURLLocal}/api/user/login`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -73,7 +74,6 @@ const Login = () => {
         }
     }
 
-    console.log('PROD url', import.meta.env.VITE_PROD_BACKEND_URL)
     console.log('PROD url', import.meta.env.VITE_PROD_BACKEND_URL)
 
 
