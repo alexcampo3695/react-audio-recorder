@@ -1,5 +1,4 @@
 version: 2.1
-
 jobs:
   # Job to build and push the frontend Docker image
   build-frontend:
@@ -61,14 +60,6 @@ jobs:
           command: |
             curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
             chmod u+x ./kubectl
-      - run:
-          name: Setup Kubernetes credentials
-          command: |
-            echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
-            ./kubectl config set-cluster default-cluster --server=$KUBERNETES_SERVER --certificate-authority=cert.crt
-            ./kubectl config set-credentials default-admin --token=$KUBERNETES_TOKEN
-            ./kubectl config set-context default-context --cluster=default-cluster --user=default-admin
-            ./kubectl config use-context default-context
       - run:
           name: Deploy Code
           command: ./scripts/ci-deploy.sh
