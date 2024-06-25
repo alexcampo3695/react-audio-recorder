@@ -14,10 +14,10 @@ RUN npm install --legacy-peer-deps
 COPY server .
 
 # Set environment variables
-ENV PORT=8001
+# ENV PORT=8001
 
-# Expose the port the app runs on
-EXPOSE 8001
+# # Expose the port the app runs on
+# EXPOSE 8001
 
 # Start the server
 CMD ["npm", "run", "dev"]

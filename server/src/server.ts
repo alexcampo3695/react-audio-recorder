@@ -6,7 +6,7 @@ console.log('MONGO_URL:', process.env.MONGO_URL);  // Add this line to check if 
 import mongoose from 'mongoose';
 import app from './app';
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PROD_BACKEND_URL || 8000;
 
 mongoose.connect(process.env.MONGO_URL!)
     .then(() => {

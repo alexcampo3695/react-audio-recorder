@@ -36,7 +36,7 @@ import userDetailsRoutes from './routes/userDetailsRoutes';
 import emailRoutes from './routes/emailRoutes';
 
 const app = express();
-const PORT = process.env.PORT || 8002; // Changed to 8002
+const PORT = process.env.PROD_BACKEND_URL || 8002; // Changed to 8002
 
 app.use(cors());
 app.use(express.json());
