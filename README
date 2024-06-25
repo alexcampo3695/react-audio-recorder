@@ -5,3 +5,28 @@ Deploy docker frontend:
  Deploy docker backend:
 
  docker buildx build --platform linux/arm64 --load -t alexcampo3695/react-audio-recorder-backend:latest -f server/dockerfile .
+
+
+deploy docker frontend:
+
+ docker buildx build --platform linux/arm64 --load --no-cache \
+  -t alexcampo3695/react-audio-recorder-frontend:latest \
+  -f src/dockerfile .
+
+deploy docker backend:
+
+ docker buildx build --platform linux/arm64 --load --no-cache \
+  -t alexcampo3695/react-audio-recorder-backend:latest \
+  -f server/dockerfile .
+
+docker push alexcampo3695/react-audio-recorder-backend:latest
+
+docker push alexcampo3695/react-audio-recorder-frontend:latest
+
+kubectl apply -f kube/frontend-nginx-configmap.yml
+
+kubectl apply -f kube/app-manifests/client-deployment.yml
+
+kubectl apply -f kube/app-manifests/server-service.yml
+
+kubectl apply -f kube/app-manifests/server-deployment.yml

@@ -2,29 +2,28 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: server-deployment
-  namespace: default
   labels:
     app: server
+    tier: backend
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: server
+      tier: backend
   template:
     metadata:
       labels:
         app: server
+        tier: backend
     spec:
       containers:
-      - name: server
-        image: alexcampo3695/react-audio-recorder-backend:latest
-        ports:
-        - containerPort: 8001
-        env:
-        - name: PORT
-          value: "8001"
-        - name: OPENAI_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: openai-secret
-              key: OPENAI_API_KEY
+        - name: server
+          image: alexcampo3695/react-audio-recorder-backend:latest
+          ports:
+            - containerPort: 8002
+          env:
+            - name: PORT
+              value: "8002"
+            - name: MONGO_URL
+              value: "mongodb+srv://antidoteTranscribe:CAf4SS7bH48fbh0e@cluster0.f7fkxds.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0"

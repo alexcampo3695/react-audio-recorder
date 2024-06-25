@@ -18,7 +18,7 @@ const Login = () => {
     const history = useHistory();
     const { setUser } = useUser();
 
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8002';
+    const backendUrl = import.meta.env.VITE_PROD_BACKEND_URL || 'http://localhost:8000';
 
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
@@ -73,7 +73,7 @@ const Login = () => {
         }
     }
 
-    console.log('backend url', import.meta.env.VITE_BACKEND_URL)
+    console.log('PROD url', import.meta.env.VITE_BACKEND_URL)
 
 
     return (

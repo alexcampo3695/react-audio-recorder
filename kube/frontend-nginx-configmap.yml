@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  frontend-nginx.conf: |
+    upstream backend {
+        server server.default.svc.cluster.local:8002;
+    }
+    server {
+        listen 80;
+        location /api {
+            proxy_pass http://backend;
+        }
+    }

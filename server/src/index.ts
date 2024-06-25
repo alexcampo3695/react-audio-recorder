@@ -100,7 +100,10 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hello World');
 });
 
-  
+app.get('/api', (req: Request, res: Response) => {
+    res.json({ message: 'API endpoint' });
+});
+
 
 app.get("/uploads", async (req: Request, res: Response) => {
     try {
