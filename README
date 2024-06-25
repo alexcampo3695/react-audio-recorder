@@ -30,3 +30,12 @@ kubectl apply -f kube/app-manifests/client-deployment.yml
 kubectl apply -f kube/app-manifests/server-service.yml
 
 kubectl apply -f kube/app-manifests/server-deployment.yml
+
+
+
+DELETES:
+
+kubectl delete deployment client-deployment
+kubectl delete deployment server-deployment
+kubectl delete service client-service
+kubectl delete service server
