@@ -30,7 +30,7 @@ const Login = () => {
         };
 
         try {
-            const response = await fetch(`${backendURLLocal}/api/user/login`, {
+            const response = await fetch(`${backendUrlProd}/api/user/login`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -109,6 +109,8 @@ const Login = () => {
                             <div className="form-text">
                                 <h2>Sign In</h2>
                                 <p>Welcome back to your account.</p>
+                                <p>Your service is working!</p>
+
                             </div>
                             {error && <div className="notification is-danger">{error}</div>}
                             <form id="login-form" className="login-wrapper" onSubmit={handleLogin}>

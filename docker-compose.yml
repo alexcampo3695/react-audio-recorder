@@ -19,6 +19,5 @@ services:
     ports:
       - "8002:8001"
     environment:
-      - PORT=8000
+      # - PORT=8000
       - MONGO_URL=${MONGO_URL}
-      

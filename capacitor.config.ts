@@ -5,6 +5,7 @@ const config: CapacitorConfig = {
   appName: 'CareVoice',
   webDir: 'dist',
   server: {
+    // does prod url got here?
     url: 'http://localhost:4173/',
     cleartext: true
   }

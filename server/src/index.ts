@@ -37,7 +37,7 @@ import emailRoutes from './routes/emailRoutes';
 
 const app = express();
 // const PORT = process.env.VITE_BACKEND_URL || 8002; // Changed to 8002
-const PORT = 8000
+const PORT = process.env.PORT || 8002;
 
 app.use(cors());
 app.use(express.json());
