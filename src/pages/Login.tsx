@@ -18,7 +18,7 @@ const Login = () => {
     const history = useHistory();
     const { setUser } = useUser();
 
-    const backendUrlProd = import.meta.env.VITE_PROD_BACKEND_URL || 'http://server.default.svc.cluster.local:8002';
+    const backendUrlProd = import.meta.env.VITE_PROD_BACKEND_URL;
     const backendURLLocal = import.meta.env.VITE_BACKEND_URL
 
     async function handleLogin(e: React.FormEvent) {
@@ -30,7 +30,7 @@ const Login = () => {
         };
 
         try {
-            const response = await fetch(`${backendUrlProd}/api/user/login`, {
+            const response = await fetch(`/api/user/login`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -87,7 +87,6 @@ const Login = () => {
                             <div className="container">
                                 <div className="columns">
                                     <div className="column">
-                                        <span>hello</span>
                                         <img className="hero-image" src={loginImage} alt="Station Illustration" />
                                     </div>
                                 </div>
@@ -109,7 +108,6 @@ const Login = () => {
                             <div className="form-text">
                                 <h2>Sign In</h2>
                                 <p>Welcome back to your account.</p>
-                                <p>Your service is working!</p>
 
                             </div>
                             {error && <div className="notification is-danger">{error}</div>}

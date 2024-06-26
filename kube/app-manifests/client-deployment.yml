@@ -19,9 +19,10 @@ spec:
       containers:
         - name: nginx
           image: alexcampo3695/react-audio-recorder-frontend:latest
+          imagePullPolicy: Always
           env:
             - name: VITE_PROD_BACKEND_URL
-              value: "http://server.default.svc.cluster.local:8002"
+              value: "http://server:8002"
           volumeMounts:
             - name: nginx-config-volume
               mountPath: /etc/nginx/conf.d/frontend-nginx.conf

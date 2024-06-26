@@ -3,11 +3,9 @@ kind: Service
 metadata:
   name: server
 spec:
+  type: ClusterIP
   selector:
     app: server
-    tier: backend
   ports:
-    - protocol: TCP
-      port: 8002
+    - port: 8002
       targetPort: 8002
-  type: LoadBalancer
