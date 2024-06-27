@@ -58,21 +58,30 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
     }
   
     try {
-      VoiceRecorder.requestAudioRecordingPermission();
+      await VoiceRecorder.requestAudioRecordingPermission();
+      const hasPermission = await VoiceRecorder.hasAudioRecordingPermission();
+      if (!hasPermission.value) {
+        notyf.error('Audio recording permission not granted.')
+        return
+      }
       await VoiceRecorder.startRecording();
       setRecordingState("recording");
     } catch (error) {
       console.error('Failed to start recording:', error);
       notyf.error('Failed to start recording');
+      setRecordingState("idle");
     }
   };
 
   const stopRecording = async (save: boolean = true) => {
-    if (recordingState !== "recording") {
-      notyf.error('Recording has not yet started.')
-    }
-
     try {
+      const status = await VoiceRecorder.getCurrentStatus();
+      if (status.status !== 'RECORDING') {
+        notyf.error('Recording has not yet started.')
+        setRecordingState("idle");
+        return
+      }
+
       const result = await VoiceRecorder.stopRecording();
       setRecordingState("idle");
       if (result.value && save) {
@@ -82,7 +91,7 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
         }
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
-        setRecordingState('idle')
+        // setRecordingState('idle')
         notyf.success('Recording saved successfully');
       } else if (!save) {
         notyf.error('Recording Discarded');
@@ -90,6 +99,7 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
     } catch (error) {
       console.error('Failed to stop recording:', error)
       notyf.error('Failed to stop recording');
+      setRecordingState("idle");
     }
   }
 
