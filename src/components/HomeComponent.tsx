@@ -16,7 +16,11 @@ const HomeComponent = ({}) => {
 
     useEffect(() => {
         async function fetchPatients() {
+<<<<<<< HEAD
             const patients = await fetch(`${API_BASE_URL}/api/get_patients`);
+=======
+            const patients = await fetch('api/get_patients');
+>>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
             setPatients(await patients.json());
         }
         fetchPatients();

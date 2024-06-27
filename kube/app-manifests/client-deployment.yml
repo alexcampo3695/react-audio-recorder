@@ -24,11 +24,14 @@ spec:
           env:
             - name: VITE_PROD_BACKEND_URL
               value: "http://server:8002"
+<<<<<<< HEAD
             - name: VITE_OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: openai-secret
                   key: OPENAI_API_KEY
+=======
+>>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
           volumeMounts:
             - name: nginx-config-volume
               mountPath: /etc/nginx/conf.d/frontend-nginx.conf

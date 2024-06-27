@@ -23,7 +23,11 @@ const DiarizedComponent: React.FC<DiarizedComponentProps> = ({ fileId }) => {
   useEffect(() => {
     const fetchDiarization = async () => {
       try {
+<<<<<<< HEAD
         const response = await fetch(`${API_BASE_URL}/api/diarization/file/${fileId}`);
+=======
+        const response = await fetch(`/api/diarization/file/${fileId}`);
+>>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
         if (!response.ok) {
           throw new Error(`Failed to fetch summary: ${response.status}`);
         }

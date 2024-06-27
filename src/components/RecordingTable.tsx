@@ -121,7 +121,11 @@ const RecordingsFlexTable: React.FC = () => {
     }
 
     try {
+<<<<<<< HEAD
       const response = await fetch(`${API_BASE_URL}/api/transcriptions?page=${page}&limit=15&search=${term}&createdBy=${user.id}`, {
+=======
+      const response = await fetch(`/api/transcriptions?page=${page}&limit=15&search=${term}&createdBy=${user.id}`, {
+>>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

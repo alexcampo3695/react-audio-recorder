@@ -75,7 +75,11 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
   useEffect(() => {
     const fetchIcd10Codes = async () => {
       try {
+<<<<<<< HEAD
         const response = await fetch(`${API_BASE_URL}/api/icd10/file/${fileId}`);
+=======
+        const response = await fetch(`api/icd10/file/${fileId}`);
+>>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
         if (!response.ok) {
           throw new Error(`Failed to fetch icd10 codes: ${response.status}`);
         }
@@ -91,7 +95,11 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
+<<<<<<< HEAD
       await fetch(`${API_BASE_URL}/api/icd10/update/${id}`, {
+=======
+      await fetch(`/api/icd10/update/${id}`, {
+>>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus }),
         headers: {

@@ -23,4 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 .env
+<<<<<<< HEAD
 deploy.shdeploy.sh
+=======
+deploy.sh
+>>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc

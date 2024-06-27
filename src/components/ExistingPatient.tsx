@@ -105,7 +105,11 @@ const ExistingPatientsTable: React.FC = () => {
         }
 
         try {
+<<<<<<< HEAD
             const response = await fetch(`${API_BASE_URL}/api/patients/by_creatorId`, {
+=======
+            const response = await fetch(`/api/patients/by_creatorId`, {
+>>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

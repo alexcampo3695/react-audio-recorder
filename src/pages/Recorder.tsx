@@ -62,7 +62,11 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
     }
   
     try {
+<<<<<<< HEAD
       const response = await fetch(`${API_BASE_URL}/api/audio/upload`, {
+=======
+      const response = await fetch("/api/audio/upload", {
+>>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
         method: "POST",
         body: formData,
       });

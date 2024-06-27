@@ -36,7 +36,11 @@ const ResetPassword = () => {
             return;
         }
         try {
+<<<<<<< HEAD
             const response = await fetch(`${API_BASE_URL}/api/user/reset_password/${token}`, {
+=======
+            const response = await fetch(`/api/user/reset_password/${token}`, {
+>>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
