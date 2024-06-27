@@ -52,6 +52,11 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
   console.log('state', recordingState)
 
   const startRecording = async () => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      notyf.error('getUserMedia API is not supported in this browser.');
+      return;
+    }
+  
     try {
       VoiceRecorder.requestAudioRecordingPermission();
       await VoiceRecorder.startRecording();

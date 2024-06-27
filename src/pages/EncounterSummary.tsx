@@ -17,6 +17,7 @@ import { handlePDF, handlePDFtoEmail} from '../helpers/PDF';
 import { useUser } from '../context/UserContext';
 import { format } from 'date-fns';
 import { Notyf } from "notyf";
+import { API_BASE_URL } from '../config';
 
 
 interface MetaData {
@@ -50,7 +51,7 @@ const SummaryPage: React.FC = () => {
     useEffect(() => {
         const fetchTranscription = async () => {
             try {
-                const response = await fetch(`/api/transcriptions/${validGridId}`);
+                const response = await fetch(`${API_BASE_URL}/api/transcriptions/${validGridId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch transcription: ${response.status}`);
                 }
@@ -77,7 +78,7 @@ const SummaryPage: React.FC = () => {
             if (fileId === null) return;  // Ensure fileId is not null
 
             try {
-                const response = await fetch(`/api/audio/${fileId}`);
+                const response = await fetch(`${API_BASE_URL}/api/audio/${fileId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch audio blob: ${response.status}`);
                 }
@@ -112,7 +113,7 @@ const SummaryPage: React.FC = () => {
             formData.append('patientName', `${data?.patientData?.FirstName} ${data?.patientData?.LastName}`);
             formData.append('visitDate', data?.createdAt || '');
 
-            const response = await fetch('/api/email/send_pdf_email', {
+            const response = await fetch(`${API_BASE_URL}/api/email/send_pdf_email`, {
                 method: 'POST',
                 body: formData,
             });

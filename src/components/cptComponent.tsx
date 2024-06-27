@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import NoData from "./NoData";
+import { API_BASE_URL } from "../config";
 
 
 interface CPT10RowData {
@@ -75,7 +76,7 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
   useEffect(() => {
     const fetchCPTCodes = async () => {
       try {
-        const response = await fetch(`/api/cpt/file/${fileId}`);
+        const response = await fetch(`${API_BASE_URL}/api/cpt/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch cpt codes: ${response.status}`);
         }
@@ -91,7 +92,7 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
-      await fetch(`/api/cpt/update/${id}`, {
+      await fetch(`${API_BASE_URL}/api/cpt/update/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus }),
         headers: {

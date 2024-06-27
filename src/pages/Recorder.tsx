@@ -6,6 +6,7 @@ import "../styles/recorder-button.scss";
 import AudioUploader from "../components/AudioUploader";
 import { useUser } from "../context/UserContext";
 import IonicAudioRecorder from "../components/IonicAudioRecorder";
+import { API_BASE_URL } from "../config";
 
 interface RecorderPageProps {
   onRecordingComplete: (blob: Blob) => void;
@@ -61,7 +62,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
     }
   
     try {
-      const response = await fetch("/api/audio/upload", {
+      const response = await fetch(`${API_BASE_URL}/api/audio/upload`, {
         method: "POST",
         body: formData,
       });

@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: client-deployment
+  labels:
+    app: client
+    tier: frontend
 spec:
   selector:
     matchLabels:

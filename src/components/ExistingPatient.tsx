@@ -9,6 +9,7 @@ import FlexTable from "./FlexTable";
 import "../styles/flex-list.css";
 import { handle } from "mdast-util-to-markdown/lib/handle";
 import NoData from "./NoData";
+import { API_BASE_URL } from "../config";
 
 interface Patient {
     _id: string;
@@ -104,7 +105,7 @@ const ExistingPatientsTable: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`/api/patients/by_creatorId`, {
+            const response = await fetch(`${API_BASE_URL}/api/patients/by_creatorId`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -5,6 +5,7 @@ import "../styles/CreatePatientForm.css";
 import { v4 as uuidv4 } from 'uuid';
 import { Notyf } from "notyf";
 import { useUser } from "../context/UserContext";
+import { API_BASE_URL } from "../config";
 
 const CreatePatientForm = ({}) => {
     const [firstName, setFirstName] = useState('');
@@ -29,7 +30,7 @@ const CreatePatientForm = ({}) => {
           DateOfBirth: dateOfBirth,
           CreatedBy: user.id
         };
-        await fetch('/api/patients/create', {
+        await fetch(`${API_BASE_URL}/api/patients/create`, {
           method: 'POST',
           body: JSON.stringify(patientData),
           headers: {

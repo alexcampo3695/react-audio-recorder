@@ -3,6 +3,7 @@ import CreatePatientForm from './CreatePatientForm';
 import "../styles/CreatePatientForm.css";
 import ExistingPatientsTable from './ExistingPatient';
 import { useUser } from '../context/UserContext';
+import { API_BASE_URL } from '../config';
 
 const HomeComponent = ({}) => {
     const [activeTab, setActiveTab] = useState('create')
@@ -15,7 +16,7 @@ const HomeComponent = ({}) => {
 
     useEffect(() => {
         async function fetchPatients() {
-            const patients = await fetch('api/get_patients');
+            const patients = await fetch(`${API_BASE_URL}/api/get_patients`);
             setPatients(await patients.json());
         }
         fetchPatients();

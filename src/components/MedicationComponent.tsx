@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NoData from "./NoData";
+import { API_BASE_URL } from "../config";
 
 
 interface Icd10RowData {
@@ -80,7 +81,7 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
   useEffect(() => {
     const fetchMedications = async () => {
       try {
-        const response = await fetch(`/api/medications/file/${fileId}`);
+        const response = await fetch(`${API_BASE_URL}/api/medications/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch medications codes: ${response.status}`);
         }

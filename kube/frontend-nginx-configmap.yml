@@ -5,7 +5,7 @@ metadata:
 data:
   frontend-nginx.conf: |
     upstream backend {
-        server server.default.svc.cluster.local:8002;
+        server server.carevoice-prod.svc.cluster.local:8002;
     }
     server {
         listen 80;

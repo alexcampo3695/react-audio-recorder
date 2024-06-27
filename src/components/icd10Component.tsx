@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NoData from "./NoData";
+import { API_BASE_URL } from "../config";
 
 
 interface Icd10RowData {
@@ -74,7 +75,7 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
   useEffect(() => {
     const fetchIcd10Codes = async () => {
       try {
-        const response = await fetch(`api/icd10/file/${fileId}`);
+        const response = await fetch(`${API_BASE_URL}/api/icd10/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch icd10 codes: ${response.status}`);
         }
@@ -90,7 +91,7 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId }) => {
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
-      await fetch(`/api/icd10/update/${id}`, {
+      await fetch(`${API_BASE_URL}/api/icd10/update/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus }),
         headers: {

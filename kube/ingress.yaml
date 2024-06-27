@@ -5,7 +5,13 @@ metadata:
   namespace: carevoice-prod
   annotations:
     kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    # nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  tls:
+  - hosts:
+    - carevoice.antidote-ai.com
+    secretName: carevoice-tls # Secret where the certificate will be stored
   rules:
   - host: carevoice.antidote-ai.com
     http:

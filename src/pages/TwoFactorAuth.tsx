@@ -5,6 +5,7 @@ import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
 import { useUser } from '../context/UserContext';
+import { API_BASE_URL } from '../config';
 
 
 interface LoginCredentials {
@@ -38,7 +39,7 @@ const TwoFactorAuth = () => {
     async function handleTwoFactorAuthetication(e: React.FormEvent) {
         e.preventDefault();
         try {
-            const response = await fetch(`/api/user/verify_2fa/`, {
+            const response = await fetch(`${API_BASE_URL}/api/user/verify_2fa/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

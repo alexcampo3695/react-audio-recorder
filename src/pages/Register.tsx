@@ -5,6 +5,7 @@ import loginImage from "../styles/assets/login_img.png";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
+import { API_BASE_URL } from '../config';
 
 const Register = () => {
     const [role, setRole] = React.useState('');
@@ -39,7 +40,7 @@ const Register = () => {
         };
 
         try {
-            const response = await fetch('/api/user', {
+            const response = await fetch(`${API_BASE_URL}/api/user`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

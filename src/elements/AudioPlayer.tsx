@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../config';
 
 
 interface AudioPlayerProps {
@@ -11,7 +12,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ fileID }) => {
   useEffect(() => {
     const fetchAudio = async () => {
       try {
-        const respone = await fetch(`/api/audio/${fileID}`);
+        const respone = await fetch(`${API_BASE_URL}/api/audio/${fileID}`);
         if (!respone.ok) {
           throw new Error(`Failed to fetch audio: ${respone.status}`);
         }

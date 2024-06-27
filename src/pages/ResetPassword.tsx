@@ -4,6 +4,7 @@ import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
+import { API_BASE_URL } from '../config';
 
 
 interface ResetPasswordParams {
@@ -35,7 +36,7 @@ const ResetPassword = () => {
             return;
         }
         try {
-            const response = await fetch(`/api/user/reset_password/${token}`, {
+            const response = await fetch(`${API_BASE_URL}/api/user/reset_password/${token}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

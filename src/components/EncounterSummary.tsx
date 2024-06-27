@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 
 interface EncounterSummaryProps {
   fileId: string;
@@ -17,7 +18,7 @@ const EncounterSummaryComponent: React.FC<EncounterSummaryProps> = ({ fileId }) 
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const response = await fetch(`/api/encounter_summary/file/${fileId}`);
+        const response = await fetch(`${API_BASE_URL}/api/encounter_summary/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch summary: ${response.status}`);
         }

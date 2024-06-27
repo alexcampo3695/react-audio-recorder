@@ -6,6 +6,7 @@ import FlexTable from "./FlexTable";
 // import { Table } from "mdast";
 import { useUser } from "../context/UserContext";
 import NoData from "./NoData";
+import { API_BASE_URL } from "../config";
 
 interface MetaData {
   FirstName: string;
@@ -120,7 +121,7 @@ const RecordingsFlexTable: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`/api/transcriptions?page=${page}&limit=15&search=${term}&createdBy=${user.id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/transcriptions?page=${page}&limit=15&search=${term}&createdBy=${user.id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

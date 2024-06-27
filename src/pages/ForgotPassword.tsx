@@ -3,6 +3,7 @@ import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
+import { API_BASE_URL } from '../config';
 
 const ForgotPassword = () => {
     const [email, setEmail] = React.useState('');
@@ -12,7 +13,7 @@ const ForgotPassword = () => {
     async function handleForgotPassword(e: React.FormEvent) {
         e.preventDefault();
         try {
-            const response = await fetch('/api/user/forgot_password', {
+            const response = await fetch(`${API_BASE_URL}/api/user/forgot_password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
