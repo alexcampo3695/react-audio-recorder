@@ -2,9 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: client-deployment
-  labels:
-    app: client
-    tier: frontend
+  namespace: carevoice-prod
 spec:
   selector:
     matchLabels:
@@ -26,6 +24,11 @@ spec:
           env:
             - name: VITE_PROD_BACKEND_URL
               value: "http://server:8002"
+            - name: VITE_OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openai-secret
+                  key: OPENAI_API_KEY
           volumeMounts:
             - name: nginx-config-volume
               mountPath: /etc/nginx/conf.d/frontend-nginx.conf

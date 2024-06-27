@@ -6,8 +6,8 @@ import RecordingsFlexTable from '../components/RecordingTable';
 interface AudioData {
     source: 'recording' | 'upload';
     blob: Blob;
-    transcription: string;
-    summary: string;
+    // transcription: string;
+    // summary: string;
   }
 
 interface TablePageProps {

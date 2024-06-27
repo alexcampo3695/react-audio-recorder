@@ -13,11 +13,12 @@ RUN npm install --legacy-peer-deps
 # Copy the rest of the application source code to the working directory
 COPY . .
 
+
 # Build the application
-ARG VITE_PROD_BACKEND_URL
 ARG VITE_OPENAI_API_KEY
-ENV VITE_PROD_BACKEND_URL=$VITE_PROD_BACKEND_URL
+ARG VITE_BACKEND_URL
 ENV VITE_OPENAI_API_KEY=$VITE_OPENAI_API_KEY
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
 RUN npm run build
 
 

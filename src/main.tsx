@@ -5,7 +5,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { UserProvider } from './context/UserContext';
 
-import { transcribeAudio } from "./helpers/transcribe";
+
 import RecorderPage from './pages/Recorder';
 import RecordingsTable from './pages/RecordingsTablePage';
 import SummaryPage from './pages/EncounterSummary';
@@ -19,13 +19,14 @@ import ProfileSettingsPage from './pages/ProfileSettings';
 import IonicTabs from './pages/IonicTabs';
 import { IonApp, IonContent, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+// import { transcribeAudio } from './helpers/transcribe';
 
 
 interface AudioData {
   source: 'recording' | 'upload';
   blob: Blob;
-  transcription: string;
-  summary: string;
+  // transcription: string;
+  // summary: string;
 }
 
 const App: React.FC = () => {
@@ -34,30 +35,30 @@ const App: React.FC = () => {
 
   const addAudioElement = async (source: 'recording' | 'upload', blob: Blob) => {
     try {
-      const response = await transcribeAudio(blob);
-      const transcription = response.text;
+      // const response = await transcribeAudio(blob);
+      // const transcription = response.text;
       setAudioDataList((prevList) => [
         ...prevList,
-        { source, blob, transcription, summary: "" }
+        { source, blob }
       ]);
     } catch (error) {
       console.error("Error transcribing audio:", error);
     }
   };
 
-  const handleSummarySubmit = (transcription: string, summary: string) => {
-    setAudioDataList((prevList) => {
-      const updatedList = [...prevList];
-      const index = updatedList.findIndex((audioData => audioData.transcription === transcription))
-      if (index !== -1) {
-        updatedList[index] = {
-          ...updatedList[index],
-          summary,
-        };
-      }
-      return updatedList;
-    });
-  };
+  // const handleSummarySubmit = (transcription: string, summary: string) => {
+  //   setAudioDataList((prevList) => {
+  //     const updatedList = [...prevList];
+  //     const index = updatedList.findIndex((audioData => audioData.transcription === transcription))
+  //     if (index !== -1) {
+  //       updatedList[index] = {
+  //         ...updatedList[index],
+  //         summary,
+  //       };
+  //     }
+  //     return updatedList;
+  //   });
+  // };
 
   const handleTranscriptionClick = (transcription: string) => {
     setSelectedTranscription(transcription);
