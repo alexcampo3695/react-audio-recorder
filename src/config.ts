@@ -1,3 +1,3 @@
-// src/config.ts
-const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://server-service:8002';
-export default backendUrl;
+const isDevelopment = import.meta.env.DEV;
+
+export const API_BASE_URL = isDevelopment ? 'http://localhost:8002' : '';

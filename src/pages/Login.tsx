@@ -3,6 +3,7 @@ import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import loginImage from "../styles/assets/login_img.png";
 import { useHistory } from "react-router-dom";
 import { useUser } from "../context/UserContext"; 
+import { API_BASE_URL } from '../config';
 
 
 
@@ -22,6 +23,7 @@ const Login = () => {
 
     const backendUrlProd = import.meta.env.VITE_PROD_BACKEND_URL;
     const backendURLLocal = import.meta.env.VITE_BACKEND_URL
+    
 
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
@@ -32,7 +34,7 @@ const Login = () => {
         };
 
         try {
-            const response = await fetch(`/api/user/login`, {
+            const response = await fetch(`${API_BASE_URL}/api/user/login`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -110,7 +112,6 @@ const Login = () => {
                             <div className="form-text">
                                 <h2>Sign In</h2>
                                 <p>Welcome back to your account.</p>
-                                <div>Version: {VERSION}</div>
                             </div>
                             {error && <div className="notification is-danger">{error}</div>}
                             <form id="login-form" className="login-wrapper" onSubmit={handleLogin}>

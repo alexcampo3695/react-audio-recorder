@@ -25,7 +25,13 @@ export default defineConfig({
     }
   },
   server: {
-    port: 4173
+    port: 4173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8002',
+        changeOrigin: true,
+      }
+    }
   },
   define: {
     'process.env.VITE_BACKEND_URL': JSON.stringify(process.env.VITE_BACKEND_URL),
