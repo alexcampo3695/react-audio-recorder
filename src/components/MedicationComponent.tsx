@@ -81,11 +81,7 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
   useEffect(() => {
     const fetchMedications = async () => {
       try {
-<<<<<<< HEAD
         const response = await fetch(`${API_BASE_URL}/api/medications/file/${fileId}`);
-=======
-        const response = await fetch(`/api/medications/file/${fileId}`);
->>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
         if (!response.ok) {
           throw new Error(`Failed to fetch medications codes: ${response.status}`);
         }

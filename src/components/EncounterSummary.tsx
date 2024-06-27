@@ -18,11 +18,7 @@ const EncounterSummaryComponent: React.FC<EncounterSummaryProps> = ({ fileId }) 
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-<<<<<<< HEAD
         const response = await fetch(`${API_BASE_URL}/api/encounter_summary/file/${fileId}`);
-=======
-        const response = await fetch(`/api/encounter_summary/file/${fileId}`);
->>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
         if (!response.ok) {
           throw new Error(`Failed to fetch summary: ${response.status}`);
         }

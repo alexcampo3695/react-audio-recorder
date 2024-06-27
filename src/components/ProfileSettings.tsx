@@ -325,11 +325,7 @@ const ProfileSettings = () => {
         }
 
         try {
-<<<<<<< HEAD
             const response = await fetch(`${API_BASE_URL}/api/user/status`, {
-=======
-            const response = await fetch('/api/user/status', {
->>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -366,11 +362,7 @@ const ProfileSettings = () => {
             }
         
             try {
-<<<<<<< HEAD
                 const response = await fetch(`${API_BASE_URL}/api/user_details/${isNew ? 'create' : `update/${user.id}`}`, {
-=======
-                const response = await fetch(`/api/user_details/${isNew ? 'create' : `update/${user.id}`}`, {
->>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
                     method: isNew ? 'POST' : 'PATCH',
                     body: data,
                 });
@@ -397,11 +389,7 @@ const ProfileSettings = () => {
             if (user) {
                 console.log('Fetching user details...');
                 try {
-<<<<<<< HEAD
                     const response = await fetch(`${API_BASE_URL}/api/user_details/${user.id}`);
-=======
-                    const response = await fetch(`/api/user_details/${user.id}`);
->>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
                     if (!response.ok) {
                         throw new Error('Failed to fetch user details');
                     }
@@ -413,11 +401,7 @@ const ProfileSettings = () => {
                     }
 
                     if (data.signature) {
-<<<<<<< HEAD
                         const signatureResponse = await fetch(`${API_BASE_URL}/api/user_details/signature/${data.signature}`);
-=======
-                        const signatureResponse = await fetch(`/api/user_details/signature/${data.signature}`);
->>>>>>> 9012301133c1efa5e3e08e5b483030ef462be5fc
                         if (signatureResponse.ok) {
                             const signatureBlob = await signatureResponse.blob();
                             const file = new File([signatureBlob], 'signature.png', { type: 'image/png' });
