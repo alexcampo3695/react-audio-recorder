@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 import { useUser } from "../context/UserContext"; 
 
 
+
+
 type LoginCredentials = {
     email: string;
     password: string
@@ -108,7 +110,7 @@ const Login = () => {
                             <div className="form-text">
                                 <h2>Sign In</h2>
                                 <p>Welcome back to your account.</p>
-
+                                <div>Version: {VERSION}</div>
                             </div>
                             {error && <div className="notification is-danger">{error}</div>}
                             <form id="login-form" className="login-wrapper" onSubmit={handleLogin}>

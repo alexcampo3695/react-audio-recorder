@@ -50,7 +50,7 @@ const SummaryPage: React.FC = () => {
     useEffect(() => {
         const fetchTranscription = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/api/transcriptions/${validGridId}`);
+                const response = await fetch(`/api/transcriptions/${validGridId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch transcription: ${response.status}`);
                 }
@@ -77,7 +77,7 @@ const SummaryPage: React.FC = () => {
             if (fileId === null) return;  // Ensure fileId is not null
 
             try {
-                const response = await fetch(`http://localhost:8000/api/audio/${fileId}`);
+                const response = await fetch(`/api/audio/${fileId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch audio blob: ${response.status}`);
                 }
@@ -112,7 +112,7 @@ const SummaryPage: React.FC = () => {
             formData.append('patientName', `${data?.patientData?.FirstName} ${data?.patientData?.LastName}`);
             formData.append('visitDate', data?.createdAt || '');
 
-            const response = await fetch('http://localhost:8000/api/email/send_pdf_email', {
+            const response = await fetch('/api/email/send_pdf_email', {
                 method: 'POST',
                 body: formData,
             });

@@ -75,7 +75,7 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
   useEffect(() => {
     const fetchCPTCodes = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/cpt/file/${fileId}`);
+        const response = await fetch(`/api/cpt/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch cpt codes: ${response.status}`);
         }
@@ -91,7 +91,7 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
-      await fetch(`http://localhost:8000/api/cpt/update/${id}`, {
+      await fetch(`/api/cpt/update/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus }),
         headers: {

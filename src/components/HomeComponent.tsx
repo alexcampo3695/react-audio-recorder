@@ -15,7 +15,7 @@ const HomeComponent = ({}) => {
 
     useEffect(() => {
         async function fetchPatients() {
-            const patients = await fetch('http://localhost:8000/get_patients');
+            const patients = await fetch('api/get_patients');
             setPatients(await patients.json());
         }
         fetchPatients();

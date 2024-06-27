@@ -324,7 +324,7 @@ const ProfileSettings = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/api/user/status', {
+            const response = await fetch('/api/user/status', {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -361,7 +361,7 @@ const ProfileSettings = () => {
             }
         
             try {
-                const response = await fetch(`http://localhost:8000/api/user_details/${isNew ? 'create' : `update/${user.id}`}`, {
+                const response = await fetch(`/api/user_details/${isNew ? 'create' : `update/${user.id}`}`, {
                     method: isNew ? 'POST' : 'PATCH',
                     body: data,
                 });
@@ -388,7 +388,7 @@ const ProfileSettings = () => {
             if (user) {
                 console.log('Fetching user details...');
                 try {
-                    const response = await fetch(`http://localhost:8000/api/user_details/${user.id}`);
+                    const response = await fetch(`/api/user_details/${user.id}`);
                     if (!response.ok) {
                         throw new Error('Failed to fetch user details');
                     }
@@ -400,7 +400,7 @@ const ProfileSettings = () => {
                     }
 
                     if (data.signature) {
-                        const signatureResponse = await fetch(`http://localhost:8000/api/user_details/signature/${data.signature}`);
+                        const signatureResponse = await fetch(`/api/user_details/signature/${data.signature}`);
                         if (signatureResponse.ok) {
                             const signatureBlob = await signatureResponse.blob();
                             const file = new File([signatureBlob], 'signature.png', { type: 'image/png' });

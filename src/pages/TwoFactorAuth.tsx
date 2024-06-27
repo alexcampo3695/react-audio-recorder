@@ -38,7 +38,7 @@ const TwoFactorAuth = () => {
     async function handleTwoFactorAuthetication(e: React.FormEvent) {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:8000/api/user/verify_2fa/`, {
+            const response = await fetch(`/api/user/verify_2fa/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

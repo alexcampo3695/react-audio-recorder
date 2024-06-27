@@ -61,7 +61,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
     }
   
     try {
-      const response = await fetch("http://localhost:8000/api/audio/upload", {
+      const response = await fetch("/api/audio/upload", {
         method: "POST",
         body: formData,
       });

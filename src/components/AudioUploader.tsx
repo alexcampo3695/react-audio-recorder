@@ -81,7 +81,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onFileUpload }) => {
             }
 
             const request = new XMLHttpRequest();
-            request.open('POST', 'http://localhost:8000/api/audio/upload');
+            request.open('POST', '/api/audio/upload');
 
             request.upload.onprogress = (e) => {
               progress(e.lengthComputable, e.loaded, e.total);

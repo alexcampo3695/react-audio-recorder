@@ -11,7 +11,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ fileID }) => {
   useEffect(() => {
     const fetchAudio = async () => {
       try {
-        const respone = await fetch(`http://localhost:8000/api/audio/${fileID}`);
+        const respone = await fetch(`/api/audio/${fileID}`);
         if (!respone.ok) {
           throw new Error(`Failed to fetch audio: ${respone.status}`);
         }

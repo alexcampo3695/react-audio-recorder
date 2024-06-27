@@ -2,11 +2,13 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: myapp-ingress
+  namespace: carevoice-prod
   annotations:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-  - http:
+  - host: carevoice.antidote-ai.com
+    http:
       paths:
       - path: /api
         pathType: Prefix

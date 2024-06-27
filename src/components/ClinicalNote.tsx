@@ -30,7 +30,7 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
   useEffect(() => {
     const fetchClinicalNote = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/clinical_note/file/${fileId}`);
+        const response = await fetch(`/api/clinical_note/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch clinical note: ${response.status}`);
         }
@@ -46,7 +46,7 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
       if (!user?.id) return;
       // get userdata
       try {
-        const response = await fetch(`http://localhost:8000/api/user_details/${user.id}`);
+        const response = await fetch(`/api/user_details/${user.id}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch user: ${response.status}`);
         }
@@ -55,7 +55,7 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
 
         //get sig
         if (userData.signature) {
-          const signatureResponse = await fetch(`http://localhost:8000/api/user_details/signature/${userData.signature}`);
+          const signatureResponse = await fetch(`api/user_details/signature/${userData.signature}`);
           if (signatureResponse.ok) {
             const signatureBlob = await signatureResponse.blob();
             const reader = new FileReader();
@@ -91,7 +91,7 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/clinical_note/update/${noteId}`, { // Use the note's ID here
+      const response = await fetch(`/api/clinical_note/update/${noteId}`, { // Use the note's ID here
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

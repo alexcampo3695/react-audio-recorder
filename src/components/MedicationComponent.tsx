@@ -80,7 +80,7 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
   useEffect(() => {
     const fetchMedications = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/medications/file/${fileId}`);
+        const response = await fetch(`/api/medications/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch medications codes: ${response.status}`);
         }
@@ -96,7 +96,7 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => 
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
-      await fetch(`http://localhost:8000/api/medications/update/${id}`, {
+      await fetch(`/api/medications/update/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus }),
         headers: {
