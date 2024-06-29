@@ -42,7 +42,7 @@ export async function splitAudioFile(file: { path: string, filename: string }, s
 }
 
 export async function transcribeAudio(blob: Buffer): Promise<any> {
-    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
     }

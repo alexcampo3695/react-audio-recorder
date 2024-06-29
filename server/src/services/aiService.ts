@@ -13,7 +13,7 @@ function isAxiosError(error: any): error is { response: { data: any; status: num
 }
 
 export async function summarizeTranscription(text: string): Promise<string> {
-    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     console.log('API Key:', apiKey)
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
@@ -63,7 +63,7 @@ export async function summarizeTranscription(text: string): Promise<string> {
 
 
 export async function diariazeTranscription(text: string): Promise<string> {
-    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
     }
@@ -124,7 +124,7 @@ export async function diariazeTranscription(text: string): Promise<string> {
 
 
 export async function icd10Generator(text: string): Promise<ICD10[]> {
-    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
     }
@@ -240,7 +240,7 @@ export async function icd10Generator(text: string): Promise<ICD10[]> {
 }
 
 export async function medicationGenerator(text: string): Promise<Medication[]> {
-    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
     }
@@ -339,7 +339,7 @@ export async function medicationGenerator(text: string): Promise<Medication[]> {
 }
 
 export async function cptGenerator(text: string): Promise<CPT[]> {
-    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
     }
@@ -449,7 +449,7 @@ interface NoteProps {
 }
 
 export async function noteGenerator(transcription: string, icd10Codes: string, cptCode: string, medications: string, patientData: string, userDetails: string): Promise<NoteProps[]> {
-    const apiKey = process.env.VITE_OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
         throw new Error("OpenAI API key is not set in environment variables");
     }

@@ -35,7 +35,7 @@ export default defineConfig({
   },
   define: {
     'process.env.VITE_BACKEND_URL': JSON.stringify(process.env.VITE_BACKEND_URL),
-    'process.env.VITE_OPENAI_API_KEY': JSON.stringify(process.env.VITE_OPENAI_API_KEY),
+    'process.env.OPENAI_API_KEY': JSON.stringify(process.env.OPENAI_API_KEY),
     'process.env': process.env
   }
 });

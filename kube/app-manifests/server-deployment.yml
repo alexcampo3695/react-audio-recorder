@@ -27,7 +27,11 @@ spec:
           env:
             - name: VITE_PROD_BACKEND_URL
               value: "http://server:8002" 
-          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openai-secret
+                  key: OPENAI_API_KEY
             - name: PORT
               value: "8002"
             - name: MONGO_URL
