@@ -112,16 +112,15 @@ const RecordingsFlexTable: React.FC = () => {
   const fetchedIds = useRef(new Set<string>());
   const { user } = useUser();
   const [searchTerm, setSearchTerm] = useState('');
-  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchRecordings = async (term: string, resetData: boolean = false) => {
-    if (!user) {
-      console.error('No user found');
-      return;
-    }
 
+
+  const fetchRecordings = async (pageNum: number, shouldReset: boolean = false) => {
+    if (!user || isLoading) return;
+    setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/transcriptions?page=${page}&limit=15&search=${term}&createdBy=${user.id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/transcriptions?page=${pageNum}&limit=15&search=${searchTerm}&createdBy=${user.id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -149,61 +148,70 @@ const RecordingsFlexTable: React.FC = () => {
 
       console.log('Parsed Data', parsedData);
 
-      if (resetData) {
-        setData(parsedData);
-        fetchedIds.current.clear();
-        parsedData.forEach(item => fetchedIds.current.add(item.fileId));
-      } else {
-        setData((prevData) => {
-          const newData = [...prevData];
-          parsedData.forEach(item => {
-            const existingIndex = newData.findIndex(d => d.fileId === item.fileId);
-            if (existingIndex !== -1) {
-              newData[existingIndex] = item; // Update existing record
-            } else {
-              newData.push(item); // Add new record
-              fetchedIds.current.add(item.fileId);
-            }
-          });
-          return newData;
-        });
-      }
+      setData(prevData => shouldReset ? parsedData : [...prevData, ...parsedData]);
+      
       setHasMore(result.currentPage < result.totalPages);
     } catch (error) {
       console.error("Failed to fetch data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  
+  };
+
+  const handleSearchTermChange = (term: string) => {
+    setSearchTerm(term);
+    setPage(1);
+    fetchRecordings(1, true);
+  };
+
+  const loadMoreData = () => {
+    if(!isLoading && hasMore) {
+      setPage(prevPage => {
+        fetchRecordings(prevPage + 1);
+        return prevPage + 1;
+      })
     }
   };
+
 
   useEffect(() => {
     if (user) {
-      console.log('Initial fetch recorings')
-      fetchRecordings(searchTerm, true); // Initial fetch
+      fetchRecordings(1, true); // Initial fetch
     }
   }, [user]);
+
+  
 
   useEffect(() => {
     const pollData = async () => {
-      await fetchRecordings(searchTerm, true); // Polling should update data
+      const response = await fetch(`${API_BASE_URL}/api/transcriptions?page=1&limit=15&search=${searchTerm}&createdBy=${user?.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const result = await response.json();
+      const transcriptions = result.transcriptions;
+  
+      setData((prevData) => {
+        const newData = [...prevData];
+        transcriptions.forEach((recording: Transcription) => {
+          const index = newData.findIndex(item => item.fileId === recording.fileId);
+          if (index !== -1) {
+            newData[index] = {
+              ...newData[index],
+              status: recording.status,
+            };
+          }
+        });
+        return newData;
+      });
     };
-
-    // pollData();
+  
     const interval = setInterval(pollData, 5000);
-    pollingIntervalRef.current = interval;
-
-    return () => {
-      if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
-      }
-    }
-  }, [user]);
-
-  useEffect(() => {
-    fetchRecordings(searchTerm, true); // Reset data on page or searchTerm change
-  }, [page, searchTerm, user]);
-
-  const loadMoreData = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
+    return () => clearInterval(interval);
+  }, [searchTerm, user]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -211,7 +219,7 @@ const RecordingsFlexTable: React.FC = () => {
       const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
       const buffer = 50;
 
-      if (scrollPosition + buffer >= scrollableHeight && hasMore) {
+      if (scrollPosition + buffer >= scrollableHeight && hasMore && !isLoading) {
         loadMoreData();
       }
     };
@@ -220,16 +228,9 @@ const RecordingsFlexTable: React.FC = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [hasMore]);
+  }, [hasMore, isLoading]);
 
-  const handleSearchTermChange = (term: string) => {
-    setSearchTerm(term);
-    setPage(1);
-    setData([]);
-    fetchedIds.current.clear();
-  };
-
-  console.log('userId', user?.id)
+  
 
   return (
     <FlexTable
@@ -238,27 +239,18 @@ const RecordingsFlexTable: React.FC = () => {
       loadMore={loadMoreData}
       onSearchChange={handleSearchTermChange}
     >
-      {
-        data.length > 0 ? (
-          data.map((item) => (
-            <RecordingFlexItem
-              key={item.gridID}
-              number={item.number}
-              firstName={item.firstName}
-              lastName={item.lastName}
-              eventDate={formatDate(item.eventDate)}
-              gridID={item.gridID}
-              fileId={item.fileId}
-              status={item.status}
-            />
-          ))
-        ) : (
-          <NoData
-              Title="No patients found"
-              Subtitle="Create a new patient to get started."
+        { data.map((item) => (
+          <RecordingFlexItem
+            key={item.gridID}
+            number={item.number}
+            firstName={item.firstName}
+            lastName={item.lastName}
+            eventDate={formatDate(item.eventDate)}
+            gridID={item.gridID}
+            fileId={item.fileId}
+            status={item.status}
           />
-        )
-      }
+        ))}
     </FlexTable>
   );
 };

@@ -7,7 +7,16 @@ dotenv.config();
 const url = process.env.MONGO_URL!;
 const dbName = process.env.DB_NAME!;
 
-mongoose.connect(url);
+mongoose.connect(url, {
+  connectTimeoutMS: 30000, // 30 seconds
+  socketTimeoutMS: 45000, // 45 seconds
+  dbName: dbName,
+}).then(() => {
+  console.log('Connected to MongoDB');
+  seedDatabase();
+}).catch((error) => {
+  console.error('Error connecting to MongoDB:', error);
+});
 
 // Define your Patient schema and model
 const patientSchema = new mongoose.Schema({
@@ -49,7 +58,7 @@ const generatePatients = (numPatients: number) => {
       FirstName: faker.name.firstName(),
       LastName: faker.name.lastName(),
       DateOfBirth: faker.date.past(50, new Date()),
-      CreatedBy: "6663d33b090ad1d704a7a696",
+      CreatedBy: "66801da92b377c6d385bb2df",
     });
   }
   return patients;
@@ -78,15 +87,23 @@ const generateTranscriptions = async (numTranscriptions: number, patients: any[]
   return transcriptions;
 };
 
+console.log(url);
+
 const seedDatabase = async () => {
   try {
+    await mongoose.connect(url, {
+      dbName: dbName,
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
+    });
+    console.log('Connected to MongoDB');
     await Patient.deleteMany({});
     await Transcription.deleteMany({});
 
-    const patients = generatePatients(1000);
+    const patients = generatePatients(100);
     const savedPatients = await Patient.insertMany(patients);
 
-    const transcriptions = await generateTranscriptions(1000, savedPatients);
+    const transcriptions = await generateTranscriptions(100, savedPatients);
     await Transcription.insertMany(transcriptions);
 
     console.log('Database seeded successfully');
@@ -97,4 +114,5 @@ const seedDatabase = async () => {
   }
 };
 
+mongoose.set('strictQuery', false);
 seedDatabase();

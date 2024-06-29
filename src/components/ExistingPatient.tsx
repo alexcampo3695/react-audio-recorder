@@ -104,6 +104,8 @@ const ExistingPatientsTable: React.FC = () => {
             return;
         }
 
+        console.log('api base url:', API_BASE_URL);
+
         try {
             const response = await fetch(`${API_BASE_URL}/api/patients/by_creatorId`, {
                 method: 'POST',
@@ -165,8 +167,8 @@ const ExistingPatientsTable: React.FC = () => {
             searchPlaceholder="Search..."
             onSearchChange={handleSearchTermChange}
         >
-            { patients.length > 0 ? (
-                patients.map((patient: any) => (
+
+            { patients.map((patient: any) => (
                     <ExistingPatientItem
                         key={patient._id}
                         PatientId={patient.PatientId}
@@ -176,12 +178,7 @@ const ExistingPatientsTable: React.FC = () => {
                         CreatedBy={patient.id}
                     />
                 ))
-            ) : (
-                <NoData
-                    Title="No patients found"
-                    Subtitle="Create a new patient to get started."
-                />
-            )}
+            }
         </FlexTable>
     );
 };

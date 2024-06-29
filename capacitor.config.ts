@@ -1,11 +1,10 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.carevoice.app',
-  appName: 'CareVoice',
+  appId: 'com.transcribe.app',
+  appName: 'transcribe',
   webDir: 'dist',
   server: {
-    // does prod url got here?
     url: 'http://localhost:4173/',
     cleartext: true
   }
