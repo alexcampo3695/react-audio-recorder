@@ -415,29 +415,30 @@
     "debug" "^4.0.0"
     "tslib" "^2.0.1"
 
-"@ionic/core@5.9.4":
-  "integrity" "sha512-Ngz9yVT6fIiGdSxxBer8uJxP4w6PasvohYpLxhtMgYiWnyIu0vZra2ui3HrYukCzUo5/SbNPiUr1l7cj1E+7qw=="
-  "resolved" "https://registry.npmjs.org/@ionic/core/-/core-5.9.4.tgz"
-  "version" "5.9.4"
+"@ionic/core@7.8.6":
+  "integrity" "sha512-HAYZdEmeJgOdo2kDlZkcCGHb+zs/vjU6iv4skbVBL7y+OnSv/oC2u83Yee8S3/aY0YAxkyBgu7hLTYH13Zc2Aw=="
+  "resolved" "https://registry.npmjs.org/@ionic/core/-/core-7.8.6.tgz"
+  "version" "7.8.6"
   dependencies:
-    "@stencil/core" "^2.4.0"
-    "ionicons" "^5.5.3"
+    "@stencil/core" "^4.12.2"
+    "ionicons" "^7.2.2"
     "tslib" "^2.1.0"
 
-"@ionic/react-router@^5.9.4":
-  "integrity" "sha512-+s1jMtuL4z17B5Ubyi4PtOLsnVMiPh6zbfk1OUvCbgOXw05CTgFT6N0ORtW0oI5irGmxr/nXha7OMno1Hdc9rw=="
-  "resolved" "https://registry.npmjs.org/@ionic/react-router/-/react-router-5.9.4.tgz"
-  "version" "5.9.4"
+"@ionic/react-router@^7.8.6":
+  "integrity" "sha512-iCF66ULg37snl+LDB7HAk6HL+RZ419DBbobVUj6bLZ8R6yf7lG+Vf9e/fvu3GZEqyaGHfD7MxYyOSZbH1+qN5Q=="
+  "resolved" "https://registry.npmjs.org/@ionic/react-router/-/react-router-7.8.6.tgz"
+  "version" "7.8.6"
   dependencies:
+    "@ionic/react" "7.8.6"
     "tslib" "*"
 
-"@ionic/react@^5.9.4":
-  "integrity" "sha512-bchcrYuVwzPMZpQZygPI06iHPCdSfkqN1Dj+RJk3XcIVI6VyUq6xG+dFBPAOxHHsWcu21D8/hg1NjSQwrMJwsQ=="
-  "resolved" "https://registry.npmjs.org/@ionic/react/-/react-5.9.4.tgz"
-  "version" "5.9.4"
+"@ionic/react@^7.8.6", "@ionic/react@7.8.6":
+  "integrity" "sha512-IIlcdOW2OmcrjC3nqGqQCcJdHDnEbGIfyzpKR0FDaRQ6M/a7Mz6IlIG/cgdGP0RBBadECykBFDfa6XgRAGwWoA=="
+  "resolved" "https://registry.npmjs.org/@ionic/react/-/react-7.8.6.tgz"
+  "version" "7.8.6"
   dependencies:
-    "@ionic/core" "5.9.4"
-    "ionicons" "^5.1.2"
+    "@ionic/core" "7.8.6"
+    "ionicons" "^7.0.0"
     "tslib" "*"
 
 "@ionic/utils-array@2.1.5":
@@ -918,20 +919,10 @@
   "resolved" "https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.27.8.tgz"
   "version" "0.27.8"
 
-"@stencil/core@^2.4.0":
-  "integrity" "sha512-kmVA0M/HojwsfkeHsifvHVIYe4l5tin7J5+DLgtl8h6WWfiMClND5K3ifCXXI2ETDNKiEk21p6jql3Fx9o2rng=="
-  "resolved" "https://registry.npmjs.org/@stencil/core/-/core-2.22.3.tgz"
-  "version" "2.22.3"
-
-"@stencil/core@^4.0.3":
+"@stencil/core@^4.0.3", "@stencil/core@^4.12.2":
   "integrity" "sha512-8yoG5AFQYEPocVtuoc5kvRS0Hku0MoDWDUpADRaXPVHsOFLmxR16LJENj25ucCz5GEfeTGQ/tCE8JAypPmr/fQ=="
   "resolved" "https://registry.npmjs.org/@stencil/core/-/core-4.18.3.tgz"
   "version" "4.18.3"
-
-"@stencil/core@~2.10.0":
-  "integrity" "sha512-15rWMTPQ/sp0lSV82HVCXkIya3QLN+uBl7pqK4JnTrp4HiLrzLmNbWjbvgCs55gw0lULbCIGbRIEsFz+Pe/Q+A=="
-  "resolved" "https://registry.npmjs.org/@stencil/core/-/core-2.10.0.tgz"
-  "version" "2.10.0"
 
 "@storybook/addon-actions@^8.1.6", "@storybook/addon-actions@8.1.6":
   "integrity" "sha512-EbiAdbtXN/UM4by3+qisbrQmElaIfahgNqffbst6GiCTmUCVE5if6geL1mzKd/u/rZOzx5g0EG76x8N9yDjOtg=="
@@ -4592,21 +4583,7 @@
   dependencies:
     "loose-envify" "^1.0.0"
 
-"ionicons@^5.1.2":
-  "integrity" "sha512-3ph8X9my3inhabWEZ7N0XRA0MnnNQ1v9a602mLNgWsIXnxE9G5BybIZ/pws/OZZ/hoNlvSjk801N03yL9/FNgQ=="
-  "resolved" "https://registry.npmjs.org/ionicons/-/ionicons-5.5.4.tgz"
-  "version" "5.5.4"
-  dependencies:
-    "@stencil/core" "~2.10.0"
-
-"ionicons@^5.5.3":
-  "integrity" "sha512-3ph8X9my3inhabWEZ7N0XRA0MnnNQ1v9a602mLNgWsIXnxE9G5BybIZ/pws/OZZ/hoNlvSjk801N03yL9/FNgQ=="
-  "resolved" "https://registry.npmjs.org/ionicons/-/ionicons-5.5.4.tgz"
-  "version" "5.5.4"
-  dependencies:
-    "@stencil/core" "~2.10.0"
-
-"ionicons@^7.4.0":
+"ionicons@^7.0.0", "ionicons@^7.2.2", "ionicons@^7.4.0":
   "integrity" "sha512-ZK94MMqgzMCPPMhmk8Ouu6goyVHFIlw/ACP6oe3FrikcI0N7CX0xcwVaEbUc0G/v3W0shI93vo+9ve/KpvcNhQ=="
   "resolved" "https://registry.npmjs.org/ionicons/-/ionicons-7.4.0.tgz"
   "version" "7.4.0"
