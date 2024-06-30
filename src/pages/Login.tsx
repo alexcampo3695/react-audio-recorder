@@ -80,7 +80,6 @@ const Login = () => {
 
     console.log('PROD url', import.meta.env.VITE_PROD_BACKEND_URL)
 
-
     return (
         <div className="modern-login">
             <div className="underlay h-hidden-mobile h-hidden-tablet-p"></div>
@@ -111,8 +110,8 @@ const Login = () => {
                         <div className="hero-body">
                             <div className="form-text">
                                 <h2>Sign In</h2>
-                                <p>Welcome back to your account.</p>
-                                <p>V5</p>
+                                <p>Welcome back to your account.123</p>
+                                <p>V105</p>
                             </div>
                             {error && <div className="notification is-danger">{error}</div>}
                             <form id="login-form" className="login-wrapper" onSubmit={handleLogin}>
