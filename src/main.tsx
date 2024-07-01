@@ -1,5 +1,6 @@
 import './styles/huro/scss/main.scss';
 import './styles/huro/vendor/css/icons.min.css'; // Adjust the path as needed
+import './styles/safe-area.css';
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -67,10 +68,10 @@ const App: React.FC = () => {
   // setupIonicReact();
 
   return (
+    <div className="safe-area-top">
       <Router>
         <Switch>
           {/* <IonicTabs /> */}
-          
           <Route path="/" exact component={Login} />
           <Route path="/authentication" component={TwoFactorAuth} />
           <Route path="/register" component={Register} />
@@ -97,7 +98,7 @@ const App: React.FC = () => {
           )} />
         </Switch>
       </Router>
-      
+    </div>
   );
 };
 
