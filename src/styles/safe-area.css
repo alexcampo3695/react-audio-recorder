@@ -1,9 +1,8 @@
-/* styles/ios-padding.css */
+/* 
 .ios-padding-wrapper {
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  }
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
   
-  .ios-padding {
-    padding-top: env(safe-area-inset-top);
-  }
-  
+.ios-padding {
+  padding-top: env(safe-area-inset-top);
+} */

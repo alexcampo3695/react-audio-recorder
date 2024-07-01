@@ -67,28 +67,79 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
         };
       }, []);
 
-    console.log('Platform:', isPlatform('ios'))
+    const getTitle = (pathName: string) => {
+        switch (pathName) {
+            case '/home':
+                return 'Home';
+            case '/profile':
+                return 'Profile';
+            case '/settings':
+                return 'Settings';
+        }
+    }
+
+    const pathTitle = getTitle(window.location.pathname);
+
+    console.log('title:',pathTitle)
       
 
     return (
         <>
-            <MobileHeader />
+            {isPlatform('ios') ? <MobileHeader title={title}/> : <></>}
             <div
                 className={`view-wrapper ${isPlatform('ios') ? 'ios-padding-wrapper' : ''}`}
                 data-naver-offset="150"
                 data-menu-item="#home-sidebar-menu"
                 data-mobile-item="#home-sidebar-menu-mobile"
             >
-                {!isPlatform('ios') && <MobileNav />}
+                {/* {!isPlatform('ios') && <MobileNav />} */}
                 <NavBar />
-                <div className="page-content-wrapper">
+                <div className="page-content-wrapper"
+                    style={{paddingTop: isPlatform('ios') ? '5px' : '0'}}
+                >
                     <div className={`page-content is-relative ${isPlatform('ios') ? 'ios-padding' : ''}`}>
-                        <div className="page-content-inner">
-                        {children}
+                        {isPlatform('ios') ? <></> : 
+                            <div className="page-title has-text-centered">
+                            <div className="huro-hamburger nav-trigger push-resize" data-sidebar="home-sidebar">
+                                <span className="menu-toggle has-chevron">
+                                    <span className="icon-box-toggle">
+                                        <span className="rotate">
+                                        <i className="icon-line-top"></i>
+                                        <i className="icon-line-center"></i>
+                                        <i className="icon-line-bottom"></i>
+                                        </span>
+                                    </span>
+                                </span>
+                            </div>
+
+                            <div className="title-wrap">
+                                <h1 className="title is-4">{title}</h1>
+                            </div>
+                            <div className="toolbar ml-auto">
+                                <div className="toolbar-link">
+                                <label className="dark-mode ml-auto">
+                                    <input
+                                    type="checkbox"
+                                    checked={darkMode}
+                                    onChange={handleDarkModeToggle}
+                                    />
+                                    <span></span>
+                                </label>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                        
+
+                        <div 
+                            className="page-content-inner"
+                            style= {isPlatform('ios') ? {marginTop: '60px'} : {}}
+                        >
+                            {children}
                         </div>
                     </div>
                 </div>
-                {isPlatform('ios') && <NativeMenuTabs />}
+                {isPlatform('ios') ? <NativeMenuTabs /> : <></>}
             </div>
         </>
     );
