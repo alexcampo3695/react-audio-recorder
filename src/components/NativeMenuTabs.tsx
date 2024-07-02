@@ -16,7 +16,7 @@ const NativeMenuTabs: React.FunctionComponent = () => {
           <div className="icon">
             <i
               className="fas fa-home"
-              style={{ color: isActive('/home') ? '#26619B' : '#ededed'}}
+              style={{ color: isActive('/home') ? '#26619B' : '#cecece'}}
             ></i>
           </div>
         </NavLink>
@@ -26,7 +26,7 @@ const NativeMenuTabs: React.FunctionComponent = () => {
           <div className="icon">
             <i
               className="fas fa-clipboard-list"
-              style={isActive('/table') ? { color: '#26619B' } : { color: '#ededed' }}
+              style={isActive('/table') ? { color: '#26619B' } : { color: '#cecece' }}
             ></i>
           </div>
         </NavLink>
@@ -36,7 +36,7 @@ const NativeMenuTabs: React.FunctionComponent = () => {
           <div className="icon">
             <i
               className="fas fa-cog"
-              style={isActive('/profile_settings') ? { color: '#26619B' } : { color: '#ededed' }}
+              style={isActive('/profile_settings') ? { color: '#26619B' } : { color: '#cecece' }}
             ></i>
           </div>
         </NavLink>
