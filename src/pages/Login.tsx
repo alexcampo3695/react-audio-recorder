@@ -4,6 +4,7 @@ import loginImage from "../styles/assets/login_img.png";
 import { useHistory } from "react-router-dom";
 import { useUser } from "../context/UserContext"; 
 import { API_BASE_URL } from '../config';
+import { isPlatform } from '@ionic/react';
 
 
 
@@ -90,7 +91,10 @@ const Login = () => {
                             <div className="container">
                                 <div className="columns">
                                     <div className="column">
-                                        <img className="hero-image" src={loginImage} alt="Station Illustration" />
+                                        <img 
+                                            className="hero-image" src={loginImage} alt="Station Illustration"
+                                            
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -98,7 +102,7 @@ const Login = () => {
                     </div>
                 </div>
                 <div className="column is-4 is-relative">
-                    <a className="top-logo" href="/" style = {{paddingTop: '20px'}}>
+                    <a className="top-logo" href="/" style = {isPlatform('ios') ? {paddingTop: '40px'} : {}}>
                         <img className="light-image" src={antidoteEmblem} alt="Logo" />
                         <img className="dark-image" src={antidoteEmblem} alt="Light Logo" />
                     </a>
@@ -110,8 +114,8 @@ const Login = () => {
                         <div className="hero-body">
                             <div className="form-text">
                                 <h2>Sign In</h2>
-                                <p>Welcome back to your account.123</p>
-                                <p>V105</p>
+                                <p>Welcome back to your account.</p>
+                                <p>V6</p>
                             </div>
                             {error && <div className="notification is-danger">{error}</div>}
                             <form id="login-form" className="login-wrapper" onSubmit={handleLogin}>

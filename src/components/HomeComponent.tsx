@@ -4,6 +4,7 @@ import "../styles/CreatePatientForm.css";
 import ExistingPatientsTable from './ExistingPatient';
 import { useUser } from '../context/UserContext';
 import { API_BASE_URL } from '../config';
+import { isPlatform } from '@ionic/react';
 
 const HomeComponent = ({}) => {
     const [activeTab, setActiveTab] = useState('create')
@@ -23,7 +24,9 @@ const HomeComponent = ({}) => {
     }, []);
 
     return (
-        <div>
+        <div
+            style = {isPlatform('ios') ? {overflow: 'hidden'} : {}}
+        >
             <div className="tabs-inner switch">
                 <div className="tabs">
                     <ul>

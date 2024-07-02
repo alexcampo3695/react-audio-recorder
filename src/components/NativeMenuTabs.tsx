@@ -1,33 +1,48 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import '../styles/mobile-nav.scss';
-import feather from "feather-icons";
 
+const NativeMenuTabs: React.FunctionComponent = () => {
+  const location = useLocation();
 
-const NativeMenuTabs: React.FunctionComponent = () => (
-  <div className="navbar-ios">
-    <li className="list-item-ios">
-      <Link to="/home">
-        <div className="icon">
-            <i className="lnil lnil-home"></i>
-        </div>
-      </Link>
-    </li>
-    <li className="list-item-ios">
-      <Link to="/table">
-      <div className="icon">
-            <i className="lnil lnil-list"></i>
-        </div>
-      </Link>
-    </li>
-    <li className="list-item-ios">
-      <Link to="/profile_settings">
-        <div className="icon">
-            <i className="lnil lnil-user"></i>
-        </div>
-      </Link>
-    </li>
-  </div>
-);
+  const isActive = (path: string) => {
+    return location.pathname.startsWith(path);
+  };
+
+  return (
+    <div className="navbar-ios">
+      <li className="list-item-ios">
+        <NavLink to="/home" className={isActive('/home') ? 'active' : ''}>
+          <div className="icon">
+            <i
+              className="fas fa-home"
+              style={{ color: isActive('/home') ? '#26619B' : '#ededed'}}
+            ></i>
+          </div>
+        </NavLink>
+      </li>
+      <li className="list-item-ios">
+        <NavLink to="/table" className={isActive('/table') ? 'active' : ''}>
+          <div className="icon">
+            <i
+              className="fas fa-clipboard-list"
+              style={isActive('/table') ? { color: '#26619B' } : { color: '#ededed' }}
+            ></i>
+          </div>
+        </NavLink>
+      </li>
+      <li className="list-item-ios">
+        <NavLink to="/profile_settings" className={isActive('/profile_settings') ? 'active' : ''}>
+          <div className="icon">
+            <i
+              className="fas fa-cog"
+              style={isActive('/profile_settings') ? { color: '#26619B' } : { color: '#ededed' }}
+            ></i>
+          </div>
+        </NavLink>
+      </li>
+    </div>
+  );
+};
 
 export default NativeMenuTabs;

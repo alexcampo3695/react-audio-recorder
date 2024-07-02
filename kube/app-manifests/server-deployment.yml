@@ -35,4 +35,4 @@ spec:
             - name: PORT
               value: "8002"
             - name: MONGO_URL
-              value: "mongodb+srv://antidoteTranscribe:CAf4SS7bH48fbh0e@cluster0.f7fkxds.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0"
+              value: "mongodb+srv://antidoteTranscribe:CAf4SS7bH48fbh0e@cluster0.f7fkxds.mongodb.net/Production?retryWrites=true&w=majority&appName=Cluster0"

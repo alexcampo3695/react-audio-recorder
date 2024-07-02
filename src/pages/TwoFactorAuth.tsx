@@ -6,6 +6,7 @@ import 'notyf/notyf.min.css';
 import feather from 'feather-icons';
 import { useUser } from '../context/UserContext';
 import { API_BASE_URL } from '../config';
+import { isPlatform } from '@ionic/react';
 
 
 interface LoginCredentials {
@@ -72,7 +73,10 @@ const TwoFactorAuth = () => {
             <div className="auth-nav">
                 <div className="left"></div>
                 <div className="center">
-                    <a href="/" className="header-item" style= {{paddingTop: '60px'}}>
+                    <a href="/" 
+                        className="header-item" 
+                        style = {isPlatform('ios') ? {paddingTop: '120px'} : {}}
+                    >
                         <img className="light-image" src={antidoteEmblem} alt="Logo" />
                         <img className="dark-image" src={antidoteEmblem} alt="Logo" />
                     </a>
