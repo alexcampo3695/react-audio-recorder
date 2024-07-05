@@ -22,6 +22,7 @@ import { generateMedications } from '../services/medicationService';
 import { generateCPTCodes } from '../services/cptService';
 import { generateClinicalNote } from '../services/clinicalNoteService';
 import UserDetails from '../models/UserDetails';
+import { generateTasks } from '../services/taskService';
 
 
 
@@ -107,15 +108,17 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
                 const icd10CodesPromise = generateICD10Codes(transcription, fileId, patientId);
                 const medicationsPromise = generateMedications(transcription, fileId, patientId);
                 const cptCodesPromise = generateCPTCodes(transcription, fileId, patientId);
+                const tasksPromise = generateTasks(transcription, fileId, patientId);
                 const userDetailsPromise = UserDetails.find({ userId: patientData.UserId });
 
                 // Wait for all promises to resolve
-                const [summary, diarization, icd10Codes, medications, cptCodes, userDetails] = await Promise.all([
+                const [summary, diarization, icd10Codes, medications, cptCodes, tasks, userDetails] = await Promise.all([
                     summaryPromise,
                     diarizationPromise,
                     icd10CodesPromise,
                     medicationsPromise,
                     cptCodesPromise,
+                    tasksPromise,
                     userDetailsPromise
                 ]);
 
@@ -123,10 +126,12 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
                 const icdCodesString = JSON.stringify(icd10Codes);
                 const cptCodesString = JSON.stringify(cptCodes);
                 const medicationsString = JSON.stringify(medications);
+                const tasksString = JSON.stringify(tasks);
                 const userDetailsString = JSON.stringify(userDetails);
 
                 console.log('medication string', medicationsString);
                 console.log('userDetails', userDetailsString);
+                console.log('tasks:', tasksString);
 
                 const clinicalNote = await generateClinicalNote(
                     transcription,

@@ -7,17 +7,18 @@ import TasksModel from '../models/Tasks';
 export async function generateTasks(transcription: string, fileId: any, patientId: any) {
     let tasks: Tasks[] = [];
     for (let i = 0; i < 3; i++) {
-        tasks = await taskGenerator(transcription);
-        if (tasks !== null) {
+        const tasksJson = await taskGenerator(transcription);
+        if (tasksJson !== null && tasksJson.length > 0) {
+            tasks = tasksJson;
             break;
         }
-        console.log('ICD10 Codes',tasks)
     }
     
     const taskPromises = tasks.map(async(task) => {
-        const existingTask = await TasksModel.findOne({code: task.task})
+        const existingTask = await TasksModel.findOne({task: task.task})
         if (existingTask) {
-            return ICD10Model.updateOne(
+            console.log(`Updating existing task: ${task.task}`);
+            return TasksModel.updateOne(
                 { task: task.task},
                 {
                     reasoning: task.reasoning,
@@ -28,6 +29,8 @@ export async function generateTasks(transcription: string, fileId: any, patientI
                 }
             );
         } else {
+
+            console.log(`Creating new task: ${task.task}`)
             const newTask = new TasksModel({
                 fileId: fileId,
                 task: task.task,
@@ -43,6 +46,8 @@ export async function generateTasks(transcription: string, fileId: any, patientI
     await Promise.all(taskPromises);
 
     const savedTasks = await TasksModel.find({ file: fileId })
+
+    console.log('Saved Tasks:', savedTasks)
 
     return savedTasks
 }

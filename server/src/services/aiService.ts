@@ -5,6 +5,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 import { Medication } from '../types/Medication';
 import { ICD10 } from '../types/ICD10'
 import { CPT } from '../types/CPT'
+import { Tasks } from '../types/Tasks';
 
 dotenv.config();
 
@@ -235,6 +236,109 @@ export async function icd10Generator(text: string): Promise<ICD10[]> {
         } else {
             console.error('Unknown error:', error);
             throw new Error('Failed to generate ICD-10 codes: Unknown error occurred');
+        }
+    }
+}
+
+export async function taskGenerator(text: string): Promise<Tasks[]> {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+        throw new Error("OpenAI API key is not set in environment variables");
+    }
+
+    const requestBody = {
+        model: "gpt-4o",
+        messages: [
+            {
+                role: "system",
+                content: "You are a helpful assistant designed to output valid recommended tasks in JSON format without periods."
+            },
+            {
+                role: "user",
+                content: `You are receiving a conversation between a provider and a patient.
+                        Your task is to strictly provide recommended clinical taks based on the conversation in JSON format without periods.
+                        Please ensure the following format for the JSON:
+                        
+                        [
+                            {
+                                "task": "Monitor patient's response to Adderall",
+                                "reasoning": "Evaluate the effectiveness of Adderall 10 mg in managing ADHD symptoms and any side effects",
+                                "status": true
+                            },
+                            {
+                                "task": "Reassess patient's depression symptoms",
+                                "reasoning": "Determine if additional treatment for depression is needed after initial trial of Adderall",
+                                "status": true
+                            },
+                            {
+                                "task": "Schedule follow-up appointment",
+                                "reasoning": "Ensure patient returns for follow-up to monitor progress and adjust treatment if necessary",
+                                "status": true
+                            },
+                            {
+                                "task": "Update medication list",
+                                "reasoning": "Add newly prescribed Adderall to the patient's record for accurate tracking",
+                                "status": true
+                            }
+                        ]
+
+                        Please set every 'status' boolean to true.
+
+                        If you have no recommendations for tasks, please provide an empty array.
+
+                        Provide me only JSON and no superfluous information, text, characters, or comments.
+
+                        Here is the transcription:\n\n${text}`
+            }
+        ],
+        max_tokens: 4096,
+        temperature: 0.0,
+    };
+
+    try {
+        const response = await axios.post("https://api.openai.com/v1/chat/completions", requestBody, {
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const responseData = response.data.choices[0].message.content.trim();
+        console.log('Raw Tasks response data:', responseData);
+        
+        // Remove backticks and other potential anomalies
+        const sanitizedResponseData = responseData.replace(/[`´‘’]/g, '"');
+        console.log('Sanitized response data:', sanitizedResponseData);
+
+        // Ensure the response data is valid JSON
+        let tasks: Tasks[];
+        try {
+            tasks = JSON.parse(sanitizedResponseData);
+        } catch (jsonError) {
+            console.error('Failed to parse JSON:', sanitizedResponseData);
+            throw new Error('Failed to generate tasks: Invalid JSON format');
+        }
+
+        // tasks = tasks.map(task => ({
+        //     ...task,
+        //     dueDate: new Date(task.dueDate),
+        //     createdAt: new Date(task.createdAt),
+        //     updatedAt: new Date(task.updatedAt)
+        // }));
+
+        return tasks;
+        
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            console.error('Response data:', error.response?.data);
+            console.error('Status:', error.response?.status);
+            console.error('Headers:', error.response?.headers);
+            throw new Error(`Failed to generate tasks: ${error.response?.status} `);
+        } else if (error instanceof Error) {
+            console.error('Error:', error.message);
+            throw new Error(`Failed to generate tasks: ${error.message}`);
+        } else {
+            console.error('Unknown error:', error);
+            throw new Error('Failed to generate tasks: Unknown error occurred');
         }
     }
 }
