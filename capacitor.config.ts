@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.transcribe.app',
-  appName: 'transcribe',
+  appName: 'Care Voice',
   webDir: 'dist',
   server: {
     // url: 'https://carevoice.antidote-ai.com',

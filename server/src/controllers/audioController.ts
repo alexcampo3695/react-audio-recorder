@@ -147,7 +147,7 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
                     { fileId: fileId },
                     { $set: { status: 'complete' } }
                 );
-
+                
                 console.log('Transcription processing complete');
             } catch (error) {
                 console.error('Error processing recording:', error);

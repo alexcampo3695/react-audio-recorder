@@ -2,7 +2,11 @@
 FROM --platform=linux/amd64 node:18-alpine
 
 # Install ffmpeg
-RUN apk update && apk add ffmpeg
+RUN apk update && apk add --no-cache ffmpeg
+
+# Verify ffmpeg installation
+RUN ffmpeg -version
+
 # Set the working directory inside the container
 WORKDIR /app
 

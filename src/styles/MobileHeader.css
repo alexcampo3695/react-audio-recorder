@@ -1,0 +1,38 @@
+.mobile-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-top: env(safe-area-inset-top);
+  z-index: 1000; /* Ensure the header is above other elements */
+  display: flex;
+  justify-content: center;
+  background-color: white; /* Ensure it has a background color */
+  padding: 15px 0; /* Add padding for better spacing */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow for separation */
+}
+
+.mobile-header h4 {
+  margin-top: 40px;
+  margin-bottom: 0px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .mobile-header {
+    padding: 5px 0;
+  }
+
+  .mobile-header h4 {
+    margin-top: 0px;
+  }
+}
+
+@media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) {
+  .mobile-header {
+    padding: 5px 0;
+  }
+
+  .mobile-header h4 {
+    margin-top: 0px;
+  }
+}
