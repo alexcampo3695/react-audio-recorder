@@ -115,7 +115,6 @@ const Login = () => {
                             <div className="form-text">
                                 <h2>Sign In</h2>
                                 <p>Welcome back to your account.</p>
-                                <p>V6</p>
                             </div>
                             {error && <div className="notification is-danger">{error}</div>}
                             <form id="login-form" className="login-wrapper" onSubmit={handleLogin}>

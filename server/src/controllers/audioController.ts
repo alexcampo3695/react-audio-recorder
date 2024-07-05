@@ -128,7 +128,7 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
                 console.log('medication string', medicationsString);
                 console.log('userDetails', userDetailsString);
 
-                await generateClinicalNote(
+                const clinicalNote = await generateClinicalNote(
                     transcription,
                     icdCodesString,
                     cptCodesString,
@@ -138,6 +138,8 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
                     patientId,
                     userDetailsString
                 );
+
+                console.log('Clinical note generated', clinicalNote);
 
                 // Append metadata to audio/upload file
                 await updateMetaData(recording.filename, patientData);

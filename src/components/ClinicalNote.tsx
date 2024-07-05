@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactMarkdown from 'react-markdown';
 import "../styles/Markdown.css";
 import { useUser } from "../context/UserContext";
+import { API_BASE_URL } from "../config";
 
 interface ClinicalNoteProps {
   fileId: string;
@@ -30,7 +31,7 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
   useEffect(() => {
     const fetchClinicalNote = async () => {
       try {
-        const response = await fetch(`/api/clinical_note/file/${fileId}`);
+        const response = await fetch(`${API_BASE_URL}/api/clinical_note/file/${fileId}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch clinical note: ${response.status}`);
         }
@@ -55,7 +56,7 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
 
         //get sig
         if (userData.signature) {
-          const signatureResponse = await fetch(`api/user_details/signature/${userData.signature}`);
+          const signatureResponse = await fetch(`${API_BASE_URL}/api/user_details/signature/${userData.signature}`);
           if (signatureResponse.ok) {
             const signatureBlob = await signatureResponse.blob();
             const reader = new FileReader();
