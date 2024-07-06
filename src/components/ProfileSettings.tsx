@@ -299,7 +299,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
 
 const ProfileSettings = () => {
     const { user } = useUser();
-    const [general, setGeneral] = useState<boolean>(true);
+    const [page, setPage] = useState<string>('general');
     const [settings, setSettings] = useState<boolean>(false);
     const [formData, setFormData] = useState<any>({
         firstName: '',
@@ -445,11 +445,25 @@ const ProfileSettings = () => {
 
                         <div className="account-menu">
                             <a
-                                className={`account-menu-item ${general ? 'is-active' : ''}`}
-                                // onClick={() => { setGeneral(true); setSettings(false); }}
+                                className={`account-menu-item ${'general' ? 'is-active' : ''}`}
+                                onClick={() => { setPage('general');  }}
                             >
                                 <i className="lnil lnil-user-alt"></i>
                                 <span>General</span>
+                                <span className="end">
+                                    <i aria-hidden="true" className="fas fa-arrow-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <div className="account-menu">
+                            <a
+                                className="account-menu-item"
+                                href="https://www.antidote-ai.com/contact-us"
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                            >
+                                <i className="lnil lnil-support"></i>
+                                <span>Support</span>
                                 <span className="end">
                                     <i aria-hidden="true" className="fas fa-arrow-right"></i>
                                 </span>
