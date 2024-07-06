@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { getCPTs, getCPTsByFile, updateCPTsStatus } from '../controllers/cptController';
 import { getTasks, getTasksByFile, updateTaskStatus } from '../controllers/taskController';
 
 const router = Router();

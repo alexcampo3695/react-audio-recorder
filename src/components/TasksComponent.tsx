@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import NoData from "./NoData";
 import { API_BASE_URL } from "../config";
-
+import formatDate from "../helpers/DataManipulation";
 
 interface TaskRowData {
   id: string;
@@ -13,7 +13,7 @@ interface TaskRowData {
   onStatusChange: (id: string, newStatus: boolean) => void;
 }
 
-const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, onStatusChange }) => {
+const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, dueDate, onStatusChange }) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const handleCPTStatusChange = () => {
@@ -42,7 +42,7 @@ const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, onStatusC
         </div>
         <div className="flex-meta is-light">
             <a href="#">{task}</a>
-            {/* <span>{code}</span> */}
+            <span>{"Due Date: "}{formatDate(dueDate)}</span>
         </div>
         <div className="flex-end">
             {/* hardcoded need to take care of! */}
