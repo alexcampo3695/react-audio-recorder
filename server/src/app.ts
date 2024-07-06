@@ -22,6 +22,7 @@ import clincalNotesRoutes from './routes/clinicalNotesRoutes';
 import userRoutes from './routes/userRoutes';
 import userDetailsRoutes from './routes/userDetailsRoutes';
 import emailRoutes from './routes/emailRoutes';
+import taskRoutes from './routes/taskRoutes';
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use('/api/diarization', diarizationRoutes);
 app.use('/api/icd10', icd10Routes);
 app.use('/api/medications', medicationsRoutes);
 app.use('/api/cpt', cptRoutes);
+app.use('/api/tasks', taskRoutes);
 app.use('/api/clinical_note', clincalNotesRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/user_details', userDetailsRoutes);

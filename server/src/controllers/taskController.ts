@@ -7,7 +7,7 @@ export async function getTasks(req: Request, res: Response) {
         const tasks = await Tasks.find();
         res.json(tasks);
     } catch (error) {
-        res.status(500).json({ message: "Failed to retrieve icd10s", error });
+        res.status(500).json({ message: "Failed to retrieve tasks", error });
     }
 }
 

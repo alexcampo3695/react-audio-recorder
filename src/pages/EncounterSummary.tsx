@@ -7,7 +7,8 @@ import EncounterSummaryComponent from '../components/EncounterSummary';
 import DiarizedComponent from '../components/DiarizedTranscription';
 import Icd10Component from '../components/icd10Component';
 import MedicationComponent from '../components/MedicationComponent';
-import CPTComponent from '../components/cptComponent';
+import CPTComponent from '../components/CptComponent';
+import TaskComponent from '../components/TasksComponent';
 import ClinicalNoteComponent from '../components/ClinicalNote';
 import feather from "feather-icons";
 
@@ -188,6 +189,9 @@ const SummaryPage: React.FC = () => {
                                     fileId = {fileId ?? ''}
                                 />
                                 <CPTComponent
+                                    fileId={fileId ?? ''}
+                                />
+                                <TaskComponent
                                     fileId={fileId ?? ''}
                                 />
                             </div>
