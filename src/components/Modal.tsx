@@ -5,8 +5,11 @@ interface ModalProps {
     Header: string;
     Subtext: string;
     Image?: string;
+    hasButtons: boolean;
     PrimaryButtonText: string;
     SecondaryButtonText: string;
+    HasChildren: boolean;
+    Children?: React.ReactNode;
     onSubmit: () => void;
     onClose: () => void;
 }
@@ -14,8 +17,11 @@ const Modal: React.FC<ModalProps>= ({
     ModalTitle,
     Header,
     Subtext,
+    hasButtons,
     PrimaryButtonText,
     SecondaryButtonText,
+    HasChildren,
+    Children,
     onSubmit,
     onClose
 }) => {
@@ -43,10 +49,19 @@ const Modal: React.FC<ModalProps>= ({
                             </div>
                         </div>
                     </div>
-                    <div className="modal-card-foot is-centered">
-                        <a className="button h-button is-rounded h-modal-close">{SecondaryButtonText}</a>
-                        <a className="button h-button is-primary is-raised is-rounded" onClick={onSubmit}>{PrimaryButtonText}</a>
-                    </div>
+                    {hasButtons && (
+                        <div className="modal-card-foot is-centered">
+                            <a className="button h-button is-rounded h-modal-close">{SecondaryButtonText}</a>
+                            <a className="button h-button is-primary is-raised is-rounded" onClick={onSubmit}>{PrimaryButtonText}</a>
+                        </div>
+                    )}
+                    {HasChildren && (
+                        <>
+                            {Children}
+                        </>
+                    )}
+
+                    
                 </div>
             </div>
         </div>

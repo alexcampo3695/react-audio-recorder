@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import NoData from "./NoData";
 import { API_BASE_URL } from "../config";
 import formatDate from "../helpers/DataManipulation";
+import Modal from "./Modal";
+import feather from "feather-icons";
 
 interface TaskRowData {
   id: string;
@@ -15,12 +17,18 @@ interface TaskRowData {
 
 const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, dueDate, onStatusChange }) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleCPTStatusChange = () => {
     const newStatus = !isChecked;
     setIsChecked(newStatus);
     onStatusChange(id, newStatus);
   }
+
+  useEffect(() => {
+      feather.replace();
+  }, []);
+
   return (
     <div className="inner-list-item media-flex-center">
         <div 
@@ -41,7 +49,12 @@ const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, dueDate, 
             </div>
         </div>
         <div className="flex-meta is-light">
-            <a href="#">{task}</a>
+            <a 
+              onClick={() => setIsModalOpen(true)}
+              href="#"
+            >
+              {task}
+            </a>
             <span>{"Due Date: "}{formatDate(dueDate)}</span>
         </div>
         <div className="flex-end">
@@ -52,6 +65,38 @@ const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, dueDate, 
                 {status === true ? 'Active' : 'Inactive'}
             </span> 
         </div>
+        { isModalOpen && (
+            <Modal
+                ModalTitle="Task Recommendation"
+                Header="Reasoning:"
+                Subtext={reasoning}
+                hasButtons={false}
+                PrimaryButtonText=""
+                SecondaryButtonText=""
+                onSubmit={() => {}}
+                onClose={() => setIsModalOpen(false)}
+                HasChildren={false}
+                Children={
+                  <div
+                    style = {{backgroundColor: 'white', display:'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}
+                  >
+                    <button 
+                      className="button is-succes  is-light is-circle is-elevated"
+                      style={{}}
+                    >
+                      <span className="icon is-small">
+                        <i data-feather = "thumbs-up"></i>
+                      </span>
+                    </button>
+                    <button className="button is-primary is-circle is-elevated">
+                      <span className="icon">
+                          <i data-feather = "user-x"></i>
+                      </span>
+                    </button>
+                  </div>
+                }
+            />
+        )}
     </div>
   );
 };
