@@ -257,30 +257,35 @@ export async function taskGenerator(text: string): Promise<Tasks[]> {
                 role: "user",
                 content: `You are receiving a conversation between a provider and a patient.
                         Your task is to strictly provide recommended clinical taks based on the conversation in JSON format without periods.
-                        Please ensure the following format for the JSON:
+                        Here is a sample of how the output should be structured. Please ensure the following format for the JSON:
                         
                         [
                             {
                                 "task": "Monitor patient's response to Adderall",
                                 "reasoning": "Evaluate the effectiveness of Adderall 10 mg in managing ADHD symptoms and any side effects",
-                                "status": true
+                                "status": true,
+                                "dueDate": "2024-07-14T00:00:00.000Z"
                             },
                             {
                                 "task": "Reassess patient's depression symptoms",
                                 "reasoning": "Determine if additional treatment for depression is needed after initial trial of Adderall",
-                                "status": true
+                                "status": true,
+                                "dueDate": "2024-07-21T00:00:00.000Z"
                             },
                             {
                                 "task": "Schedule follow-up appointment",
                                 "reasoning": "Ensure patient returns for follow-up to monitor progress and adjust treatment if necessary",
-                                "status": true
+                                "status": true,
+                                "dueDate": "2024-07-28T00:00:00.000Z"
                             },
                             {
                                 "task": "Update medication list",
                                 "reasoning": "Add newly prescribed Adderall to the patient's record for accurate tracking",
-                                "status": true
+                                "status": true,
+                                "dueDate": "2024-07-07T00:00:00.000Z"
                             }
                         ]
+
 
                         Please set every 'status' boolean to true.
 
