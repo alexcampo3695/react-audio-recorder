@@ -7,5 +7,6 @@ export interface Tasks {
     patientId: string;
     createdAt: Date;
     updatedAt: Date;
+    createdBy: string
 }
 

@@ -12,8 +12,14 @@ export async function generateICD10Codes(transcription: string, fileId: any, pat
         console.log('ICD10 Codes',icd10Codes)
     }
     
-    const icd10Promises = icd10Codes.map(async(code) => {
-        const existingCode =await ICD10Model.findOne({code: code.code})
+    const uniqueICD10s = Array.from(new Set(icd10Codes.map(code => code.code)))
+        .map(code => {
+            return icd10Codes.find(item => item.code === code)
+        })
+        .filter(code => code !== undefined) as ICD10[];
+
+    const icd10Promises = uniqueICD10s.map(async(code) => {
+        const existingCode = await ICD10Model.findOne({code: code.code})
         if (existingCode) {
             return ICD10Model.updateOne(
                 { code: code.code},

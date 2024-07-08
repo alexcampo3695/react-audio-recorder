@@ -4,7 +4,7 @@ import { ICD10 } from '../types/ICD10'
 import { Tasks } from '../types/Tasks';
 import TasksModel from '../models/Tasks';
 
-export async function generateTasks(transcription: string, fileId: any, patientId: any) {
+export async function generateTasks(transcription: string, fileId: any, patientId: any, createdBy: any) {
     let tasks: Tasks[] = [];
     for (let i = 0; i < 3; i++) {
         const tasksJson = await taskGenerator(transcription);
@@ -25,7 +25,8 @@ export async function generateTasks(transcription: string, fileId: any, patientI
                     status: task.status,
                     dueDate: task.dueDate,
                     patientId: patientId,
-                    fileId: fileId
+                    fileId: fileId,
+                    createdBy: createdBy
                 }
             );
         } else {
@@ -37,7 +38,8 @@ export async function generateTasks(transcription: string, fileId: any, patientI
                 reasoning: task.reasoning,
                 dueDate: task.dueDate,
                 status: task.status,
-                patientId: patientId
+                patientId: patientId,
+                createdBy: createdBy
             });
             return newTask.save()
         }

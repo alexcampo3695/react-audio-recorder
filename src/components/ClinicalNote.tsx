@@ -92,7 +92,7 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`/api/clinical_note/update/${noteId}`, { // Use the note's ID here
+      const response = await fetch(`${API_BASE_URL}/api/clinical_note/update/${noteId}`, { // Use the note's ID here
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

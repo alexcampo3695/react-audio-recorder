@@ -34,7 +34,7 @@ export async function uploadRecording(req: Request, res: Response) {
 
     const patientData = req.body.patientData ? JSON.parse(req.body.patientData) : null;
     const patientId = patientData ? patientData.PatientId : null;
-    const userId = patientData ? patientData.UserId : null;
+    const userId = patientData ? patientData.CreatedBy : null;
 
     console.log('userId:', userId);
 
@@ -108,7 +108,7 @@ async function processRecording(fileId: any, patientId: any,patientData: any, us
                 const icd10CodesPromise = generateICD10Codes(transcription, fileId, patientId);
                 const medicationsPromise = generateMedications(transcription, fileId, patientId);
                 const cptCodesPromise = generateCPTCodes(transcription, fileId, patientId);
-                const tasksPromise = generateTasks(transcription, fileId, patientId);
+                const tasksPromise = generateTasks(transcription, fileId, patientId, userId);
                 const userDetailsPromise = UserDetails.find({ userId: patientData.UserId });
 
                 // Wait for all promises to resolve

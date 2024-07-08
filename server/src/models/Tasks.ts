@@ -12,7 +12,8 @@ const TaskSchema = new Schema<TasksDocument>({
     dueDate: { type: Date, required: true  },
     patientId: { type: String, required: true, ref: 'Patient' },
     createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
+    updatedAt: { type: Date, default: Date.now },
+    createdBy: { type: String, required: true }
 });
 
 const TasksModel = model<TasksDocument>('Tasks', TaskSchema);

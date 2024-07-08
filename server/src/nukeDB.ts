@@ -14,7 +14,7 @@ async function nukeDB() {
 
         // List collections before dropping
         const initialCollections = await db.collections();
-       console.log('Initial collections:', initialCollections.map((c:Collection) => c.collectionName));
+        console.log('Initial collections:', initialCollections.map((c:Collection) => c.collectionName));
 
         for (let collection of initialCollections) {
             await collection.drop();

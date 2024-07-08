@@ -78,12 +78,12 @@ export async function diariazeTranscription(text: string): Promise<string> {
             },
             {
                 role: "user",
-                content: `You are receiving a conversation between a provider and a patient.
+                content: `You are receiving a conversation between a registered nurse and a patient in a jail setting for a sick call.
               Your task is to strictly diarize the conversation in markdown format. 
               Please ensure the following:
               - Only include events and information that are explicitly mentioned in the transcript.
               - Fix any grammatical errors conservatively.
-              - Label and distinguish between "Provider" and "Patient".
+              - Label and distinguish between "Registered Nurse" and "Patient".
               - Do not add any events or information that did not occur in the provided text.
               - Format the conversation in markdown.
               - FORMAT in compilable MARKDOWN Format. NO extra characters please.
@@ -142,7 +142,7 @@ export async function icd10Generator(text: string): Promise<ICD10[]> {
                 content: `You are receiving a conversation between a provider and a patient.
                         Your task is to strictly provide valid ICD-10 codes for the conversation in JSON format without periods.
                         Please ensure the following:
-                        INCLUDE ALL ICD10S THAT YOU WOULD FIND RELEVANT FOR THE VISIT!
+                        INCLUDE 0-20 ICD10 CODES THAT YOU WOULD FIND RELEVANT FOR THE VISIT!
                         - Each ICD-10 code must be valid JSON and without periods or special characters.
                         - The JSON format should follow these examples:
                         [
@@ -246,6 +246,9 @@ export async function taskGenerator(text: string): Promise<Tasks[]> {
         throw new Error("OpenAI API key is not set in environment variables");
     }
 
+    const todaysDate = new Date().toLocaleDateString();
+    console.log('Todays date:', todaysDate)
+
     const requestBody = {
         model: "gpt-4o",
         messages: [
@@ -293,7 +296,7 @@ export async function taskGenerator(text: string): Promise<Tasks[]> {
 
                         Provide me only JSON and no superfluous information, text, characters, or comments.
 
-                        Here is the transcription:\n\n${text}`
+                        Today's date is: \n\n${todaysDate}. Please make sure you do not assign tasks in the past. Here is the transcription:\n\n${text}`
             }
         ],
         max_tokens: 4096,
