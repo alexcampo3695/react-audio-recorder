@@ -34,7 +34,7 @@ const Register = () => {
         }
 
         const userRegistration = {
-            email: email,
+            email: email.toLowerCase(),
             password: password,
             role: role
         };

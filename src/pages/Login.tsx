@@ -30,7 +30,7 @@ const Login = () => {
         e.preventDefault();
 
         const loginCredentials: LoginCredentials = {
-            email: email,
+            email: email.toLowerCase(),
             password: password
         };
 

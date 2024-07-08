@@ -144,7 +144,8 @@ const RecordingsFlexTable: React.FC = () => {
             fileId: recording.fileId,
             status: recording.status,
           };
-        });
+        })
+        .sort ((a: TableRowData, b: TableRowData) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime())
 
       console.log('Parsed Data', parsedData);
 
@@ -163,6 +164,7 @@ const RecordingsFlexTable: React.FC = () => {
     setSearchTerm(term);
     setPage(1);
     fetchRecordings(1, true);
+    console.log('searchTerm', term)
   };
 
   const loadMoreData = () => {

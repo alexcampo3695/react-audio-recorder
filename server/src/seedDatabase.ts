@@ -7,16 +7,16 @@ dotenv.config();
 const url = process.env.MONGO_URL!;
 const dbName = process.env.DB_NAME!;
 
-mongoose.connect(url, {
-  connectTimeoutMS: 30000, // 30 seconds
-  socketTimeoutMS: 45000, // 45 seconds
-  dbName: dbName,
-}).then(() => {
-  console.log('Connected to MongoDB');
-  seedDatabase();
-}).catch((error) => {
-  console.error('Error connecting to MongoDB:', error);
-});
+// mongoose.connect(url, {
+//   connectTimeoutMS: 30000, // 30 seconds
+//   socketTimeoutMS: 45000, // 45 seconds
+//   dbName: dbName,
+// }).then(() => {
+//   console.log('Connected to MongoDB');
+//   seedDatabase();
+// }).catch((error) => {
+//   console.error('Error connecting to MongoDB:', error);
+// });
 
 // Define your Patient schema and model
 const patientSchema = new mongoose.Schema({
@@ -54,11 +54,11 @@ const generatePatients = (numPatients: number) => {
   const patients = [];
   for (let i = 0; i < numPatients; i++) {
     patients.push({
-      PatientId: faker.datatype.uuid(),
-      FirstName: faker.name.firstName(),
-      LastName: faker.name.lastName(),
-      DateOfBirth: faker.date.past(50, new Date()),
-      CreatedBy: "66801da92b377c6d385bb2df",
+      PatientId: faker.string.uuid(),
+      FirstName: faker.person.firstName(),
+      LastName: faker.person.lastName(),
+      DateOfBirth: faker.date.past(),
+      CreatedBy: "668c7861b258cd7e3af846a1",
     });
   }
   return patients;
@@ -67,18 +67,18 @@ const generatePatients = (numPatients: number) => {
 const generateTranscriptions = async (numTranscriptions: number, patients: any[]) => {
   const transcriptions = [];
   for (let i = 0; i < numTranscriptions; i++) {
-    const randomPatient = patients[faker.datatype.number({ min: 0, max: patients.length - 1 })];
+    const randomPatient = patients[faker.number.int({ min: 0, max: patients.length - 1 })];
     transcriptions.push({
       filename: faker.system.fileName(),
       transcription: faker.lorem.paragraphs(),
       patientData: {
-        PatientId: faker.datatype.uuid(),
-        FirstName: faker.name.firstName(),
-        LastName: faker.name.lastName(),
-        DateOfBirth: faker.date.past(50, new Date()),
-        CreatedBy: '6663d33b090ad1d704a7a696'
+        PatientId: faker.string.uuid(),
+        FirstName: faker.person.firstName(),
+        LastName: faker.person.lastName(),
+        DateOfBirth: faker.date.past(),
+        CreatedBy: '668c7861b258cd7e3af846a1'
       },
-      fileId: faker.datatype.uuid(),
+      fileId: faker.string.uuid(),
       status: faker.helpers.arrayElement(['complete', 'transcribing']),
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
@@ -100,7 +100,7 @@ const seedDatabase = async () => {
     await Patient.deleteMany({});
     await Transcription.deleteMany({});
 
-    const patients = generatePatients(100);
+    const patients = generatePatients(35);
     const savedPatients = await Patient.insertMany(patients);
 
     const transcriptions = await generateTranscriptions(100, savedPatients);
