@@ -209,7 +209,7 @@ const RecordingsFlexTable: React.FC = () => {
       });
     };
   
-    const interval = setInterval(pollData, 5000);
+    const interval = setInterval(pollData, 20000);
     return () => clearInterval(interval);
   }, [searchTerm, user]);
 
