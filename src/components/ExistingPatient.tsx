@@ -49,7 +49,7 @@ const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, La
 
     return (
         <div className="flex-table-item flex-table-item-animation" onClick={handleItemClick}>
-            <div className="flex-table-cell is-media is-grow">
+            <div className="flex-table-cell is-media">
                 <FakeAvatar
                     FirstName={FirstName}
                     LastName={LastName}

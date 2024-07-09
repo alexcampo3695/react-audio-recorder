@@ -57,7 +57,7 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
   
   return (
     <div className="flex-table-item" onClick={handleItemClick} style ={{ cursor: 'pointer'}}>
-      <div className="flex-table-cell is-media is-grow">
+      <div className="flex-table-cell is-media">
         <FakeAvatar FirstName={firstName} LastName={lastName} Size={AvatarSize.Small} />
         <div>
           <span className="item-name strokeWidth-inverted">{firstName} {lastName}</span>

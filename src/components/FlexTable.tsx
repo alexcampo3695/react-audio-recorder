@@ -74,7 +74,11 @@ const FlexTable: React.FC<FlexTableProps> = ({
                     <div className="flex-table">
                         <div className="flex-table-header" data-filter-hide="">
                             {titles.map((header, index) => (
-                                <span key={index} className={index === titles.length - 1 ? "cell-end" : ""}>
+                                <span 
+                                    key={index} 
+                                    className={`${index === 0 ? "flex-grow" : ""} ${index === titles.length - 1 ? "cell-end" : ""}`}
+                                        
+                                >
                                     {header}
                                 </span>
                             ))}
