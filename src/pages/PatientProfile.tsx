@@ -5,6 +5,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import RecordingsFlexTable from '../components/RecordingTable';
+import Icd10Component from '../components/icd10Component';
 
 interface PatientData {
     PatientId: string;
@@ -111,8 +112,10 @@ const PatientProfile: React.FC = ({ }) => {
                                     />
                                     
                                 </div>
-                                <div className="column is-4">
-                                    {/* data goes here */}
+                                <div className="column is-7">
+                                    <Icd10Component
+                                        patientId = {patientId}
+                                    />
                                 </div>
                             </div>
                         </div>
