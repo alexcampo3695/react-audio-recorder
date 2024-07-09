@@ -69,3 +69,15 @@ export async function getTranscriptionByFileID(req: Request, res: Response) {
         res.status(500).json({ message: "Failed to retrieve transcription", error });
     }
 }
+
+export async function getTranscriptionByPatientId(req: Request, res: Response) {
+    const { patientId } = req.params;
+    const query = { 'patientData.PatientId': patientId };
+
+    try {
+        const transcriptions = await Transcription.find(query)
+        res.json(transcriptions);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to retrieve transcription", error });
+    }
+}

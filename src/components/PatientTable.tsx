@@ -29,10 +29,9 @@ interface FlexItemProps {
     CreatedBy: string
 }
 
-const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, LastName, DateOfBirth }) => {
+const PatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, LastName, DateOfBirth }) => {
     const history = useHistory();
     const{ user } = useUser();
-    
 
     const handleItemClick = () => {
         const patientData: FlexItemProps = {
@@ -42,9 +41,7 @@ const ExistingPatientItem: React.FC<FlexItemProps> = ({ PatientId, FirstName, La
             DateOfBirth: DateOfBirth,
             CreatedBy: user?.id || ''
         };
-        history.push(`/recorder`, { patientData } );
-
-        console.log('PatientData:', patientData)
+        history.push(`/patient_profile/${PatientId}`, { patientData } );
     }
 
     return (
@@ -169,7 +166,7 @@ const ExistingPatientsTable: React.FC = () => {
         >
 
             { patients.map((patient: any) => (
-                    <ExistingPatientItem
+                    <PatientItem
                         key={patient._id}
                         PatientId={patient.PatientId}
                         FirstName={patient.FirstName}

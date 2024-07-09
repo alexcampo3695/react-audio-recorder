@@ -17,17 +17,13 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import TwoFactorAuth from './pages/TwoFactorAuth';
 import ProfileSettingsPage from './pages/ProfileSettings';
-import IonicTabs from './pages/IonicTabs';
-import { IonApp, IonContent, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-// import { transcribeAudio } from './helpers/transcribe';
+import PatientPage from './pages/PatientsPage';
+import PatientProfile from './pages/PatientProfile';
 
 
 interface AudioData {
   source: 'recording' | 'upload';
   blob: Blob;
-  // transcription: string;
-  // summary: string;
 }
 
 const App: React.FC = () => {
@@ -36,8 +32,6 @@ const App: React.FC = () => {
 
   const addAudioElement = async (source: 'recording' | 'upload', blob: Blob) => {
     try {
-      // const response = await transcribeAudio(blob);
-      // const transcription = response.text;
       setAudioDataList((prevList) => [
         ...prevList,
         { source, blob }
@@ -46,20 +40,6 @@ const App: React.FC = () => {
       console.error("Error transcribing audio:", error);
     }
   };
-
-  // const handleSummarySubmit = (transcription: string, summary: string) => {
-  //   setAudioDataList((prevList) => {
-  //     const updatedList = [...prevList];
-  //     const index = updatedList.findIndex((audioData => audioData.transcription === transcription))
-  //     if (index !== -1) {
-  //       updatedList[index] = {
-  //         ...updatedList[index],
-  //         summary,
-  //       };
-  //     }
-  //     return updatedList;
-  //   });
-  // };
 
   const handleTranscriptionClick = (transcription: string) => {
     setSelectedTranscription(transcription);
@@ -79,6 +59,7 @@ const App: React.FC = () => {
           <Route path="/forgot-password" component={ForgotPassword} />
           <Route path="/home" component={Home} />
           <Route path="/profile_settings" component={ProfileSettingsPage} />
+          <Route path="/patients" component={PatientPage} />
           <Route path="/recorder" render={(props) => (
             <RecorderPage
               {...props}
@@ -96,6 +77,7 @@ const App: React.FC = () => {
           <Route path="/summary/:gridID" render={(props) => (
             <SummaryPage />
           )} />
+          <Route path="/patient_profile/:patientId" component={PatientProfile} />
         </Switch>
       </Router>
     </div>

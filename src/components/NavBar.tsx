@@ -4,6 +4,7 @@ import { useUser } from '../context/UserContext';
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import { useHistory } from "react-router-dom";
 import { API_BASE_URL } from "../config";
+import feather from "feather-icons";
 
 const NavBar = () => {
     const { user } = useUser();
@@ -30,8 +31,8 @@ const NavBar = () => {
     }
 
     useEffect(() => {
-        console.log('NavBar user:', user);
-    }, [user]);
+        feather.replace();
+    }, []);
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -82,6 +83,17 @@ const NavBar = () => {
                             data-content="Layouts"
                             onClick={(e) => handleTabClick('table', '/table', e)}
                             className={menuTab === 'table' ? "is-selected is-active" : ""}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-grid sidebar-svg"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="/patients"
+                            id="layouts-sidebar-menu"
+                            data-content="Layouts"
+                            onClick={(e) => handleTabClick('patients', '/patients', e)}
+                            className={menuTab === 'patients' ? "is-selected is-active" : ""}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-grid sidebar-svg"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                         </a>
