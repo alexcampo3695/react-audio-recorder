@@ -38,3 +38,16 @@ export async function updateIcd10Status(req: Request, res: Response) {
         res.status(500).json({ message: "Failed to update icd10 status", error });
     }
 };
+
+export async function getICD10sByPatient(req: Request, res: Response) {
+    try {
+        const { patientId } = req.params;
+        const icd10s = await ICD10.find({ patientId: patientId });
+        if (!icd10s) {
+            return res.status(404).json({ message: "ICD10's not found" });
+        }
+        res.json(icd10s);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to retrieve icd10s", error });
+    }
+}
