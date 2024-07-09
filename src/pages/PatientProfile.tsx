@@ -4,6 +4,7 @@ import "../styles/spinner.css";
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
+import RecordingsFlexTable from '../components/RecordingTable';
 
 interface PatientData {
     PatientId: string;
@@ -19,6 +20,10 @@ interface TranscriptionData {
     transcription: string;
     patientData: PatientData;
     fileId: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
 }
 
 interface LocationState {
@@ -39,7 +44,9 @@ const PatientProfile: React.FC = ({ }) => {
         return state?.patientData ?? null;
       }, [location.state]);
 
-    console.log('patientData:', patientData);
+    // console.log('patientData:', patientData);
+
+    console.log('patientId:', patientId);
 
     useEffect(() => {
         const fetchTranscription = async () => {
@@ -98,16 +105,10 @@ const PatientProfile: React.FC = ({ }) => {
 
                         <div className="profile-body">
                             <div className="columns">
-                                <div className="column is-8">
-                                    {transcriptions ? (
-                                        transcriptions.map((transcription) => (
-                                            <div key = {transcription._id}>
-                                                <h4>{transcription.filename}</h4>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <span>Loading transcriptions...</span>
-                                    )}
+                                <div className="column is-5">
+                                    <RecordingsFlexTable 
+                                        patientId={patientId}
+                                    />
                                     
                                 </div>
                                 <div className="column is-4">

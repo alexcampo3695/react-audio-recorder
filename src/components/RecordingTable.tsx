@@ -35,6 +35,9 @@ interface TableRowData {
   status: string;
 }
 
+interface RecordingFlexTableProps {
+  patientId?: string;
+}
 
 const RecordingFlexItem: React.FC<TableRowData> = ({
   number,
@@ -105,7 +108,7 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
   );
 }
 
-const RecordingsFlexTable: React.FC = () => {
+const RecordingsFlexTable: React.FC<RecordingFlexTableProps> = ({ patientId }) => {
   const [data, setData] = useState<TableRowData[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
@@ -120,7 +123,12 @@ const RecordingsFlexTable: React.FC = () => {
     if (!user || isLoading) return;
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/transcriptions?page=${pageNum}&limit=15&search=${searchTerm}&createdBy=${user.id}`, {
+
+      const url = patientId
+        ? `${API_BASE_URL}/api/transcriptions/patient/${patientId}`
+        : `${API_BASE_URL}/api/transcriptions?page=${pageNum}&limit=15&search=${searchTerm}&createdBy=${user.id}`;
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +138,7 @@ const RecordingsFlexTable: React.FC = () => {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
       const result = await response.json();
-      const transcriptions = result.transcriptions;
+      const transcriptions = Array.isArray(result) ? result : result.transcriptions || [];
       const parsedData: TableRowData[] = transcriptions
         .map((recording: Transcription, index: number) => {
           const metaData = recording.patientData || { FirstName: 'Unknown', LastName: 'Unknown', DateOfBirth: 'Unknown' };
@@ -187,14 +195,18 @@ const RecordingsFlexTable: React.FC = () => {
 
   useEffect(() => {
     const pollData = async () => {
-      const response = await fetch(`${API_BASE_URL}/api/transcriptions?page=1&limit=15&search=${searchTerm}&createdBy=${user?.id}`, {
+      const url = patientId
+        ? `${API_BASE_URL}/api/transcriptions/patient/${patientId}`
+        : `${API_BASE_URL}/api/transcriptions?page=1&limit=15&search=${searchTerm}&createdBy=${user?.id}`;
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       });
       const result = await response.json();
-      const transcriptions = result.transcriptions;
+      const transcriptions = Array.isArray(result) ? result : result.transcriptions || [];
   
       setData((prevData) => {
         const newData = [...prevData];
