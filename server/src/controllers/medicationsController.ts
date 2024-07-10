@@ -40,3 +40,17 @@ export async function updateMedicationStatus(req: Request, res: Response) {
         res.status(500).json({ message: "Failed to update Medication status", error });
     }
 };
+
+export async function getMedicationsByPatient(req: Request, res: Response) {
+    try {
+        const { patientId } = req.params;
+        const medications = await MedicationModel.find({ patientId: patientId });
+        if (!medications) {
+            return res.status(404).json({ message: "medications's not found" });
+        }
+        res.json(medications);
+    } catch (error) {
+        console.error('Error retrieving meds:', error);
+        res.status(500).json({ message: "Failed to retrieve medications", error });
+    }
+}

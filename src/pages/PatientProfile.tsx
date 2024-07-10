@@ -6,6 +6,7 @@ import { API_BASE_URL } from '../config';
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import RecordingsFlexTable from '../components/RecordingTable';
 import Icd10Component from '../components/icd10Component';
+import MedicationComponent from '../components/MedicationComponent';
 
 interface PatientData {
     PatientId: string;
@@ -112,8 +113,11 @@ const PatientProfile: React.FC = ({ }) => {
                                     />
                                     
                                 </div>
-                                <div className="column is-7">
+                                <div className="column is-4">
                                     <Icd10Component
+                                        patientId = {patientId}
+                                    />
+                                    <MedicationComponent
                                         patientId = {patientId}
                                     />
                                 </div>

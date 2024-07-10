@@ -55,7 +55,8 @@ const Icd10Row: React.FC<Icd10RowData> = ({ id, code, description, status, onSta
 };
 
 interface MedicationComponentProps {
-  fileId: string;
+  fileId?: string;
+  patientId?: string;
 }
 
 interface MedicationResponse {
@@ -74,14 +75,15 @@ interface MedicationResponse {
 }
 
 
-const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId }) => {
+const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId, patientId }) => {
   const [medications, setMedications] = useState<MedicationResponse[] | null>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchMedications = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/medications/file/${fileId}`);
+        const url = fileId ? `${API_BASE_URL}/api/medications/file/${fileId}` : `${API_BASE_URL}/api/medications/patient/${patientId}`;
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`Failed to fetch medications codes: ${response.status}`);
         }
