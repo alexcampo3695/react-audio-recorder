@@ -39,3 +39,17 @@ export async function updateTaskStatus(req: Request, res: Response) {
         res.status(500).json({ message: "Failed to update task status", error });
     }
 };
+
+export async function getTasksByUser(req: Request, res: Response) {
+    try {
+        const { createdById } = req.params
+        console.log('Fetching tasks for createdBy:', createdById);
+        const tasks = await TasksModel.find({ createdBy: createdById });
+        if (!tasks) {
+            return res.status(404).json({ message: "Tasks not found" });
+        }
+        res.json(tasks);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to retrieve tasks", error });
+    }
+};

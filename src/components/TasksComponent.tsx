@@ -102,7 +102,8 @@ const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, severity,
 };
 
 interface TaskComponentProps {
-  fileId: string;
+  fileId?: string;
+  createdById?: string;
 }
 
 interface TaskResponse {
@@ -118,14 +119,16 @@ interface TaskResponse {
   __v: number;
 }
 
-const TaskComponent: React.FC<TaskComponentProps> = ({ fileId }) => {
+const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById }) => {
   const [tasks, setTasks] = useState<TaskResponse[] | null>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/tasks/file/${fileId}`);
+        const url = createdById ? `${API_BASE_URL}/api/tasks/created_by/${createdById}` : `${API_BASE_URL}/api/tasks/file/${fileId}`;
+
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`Failed to fetch cpt codes: ${response.status}`);
         }

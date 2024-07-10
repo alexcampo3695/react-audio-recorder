@@ -5,29 +5,59 @@ import ExistingPatientsTable from './ExistingPatient';
 import { useUser } from '../context/UserContext';
 import { API_BASE_URL } from '../config';
 import { isPlatform } from '@ionic/react';
+import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
+import TaskComponent from './TasksComponent';
+
+interface UserDetails {
+    _id: string;
+    userId: string;
+    deaNumber: string;
+    email: string;
+    firstName: string;
+    gender: string;
+    lastName: string;
+    npiNumber: string;
+    phoneNumber: string;
+    practiceAddress: string;
+    providerType: string;
+    specialty: string;
+    stateLicenseNumber: string;
+}
 
 const HomeComponent = ({}) => {
     const [activeTab, setActiveTab] = useState('create')
     const [patients, setPatients] = useState([]);
-    // const{ user } = useUser();
+    const { user } = useUser();
+    const [userDetails, setUserDetails] = useState({} as UserDetails);
     
     const handleTabClick = (tab:string) => {
         setActiveTab(tab);
     }
 
+    // useEffect(() => {
+    //     async function fetchPatients() {
+    //         const patients = await fetch(`${API_BASE_URL}/api/get_patients`);
+    //         setPatients(await patients.json());
+    //     }
+    //     fetchPatients();
+    // }, []);
+
     useEffect(() => {
-        async function fetchPatients() {
-            const patients = await fetch(`${API_BASE_URL}/api/get_patients`);
-            setPatients(await patients.json());
+        async function fetchUserDetails() {
+            const userDetails = await fetch(`${API_BASE_URL}/api/user_details/${user?.id}`);
+            setUserDetails(await userDetails.json());
         }
-        fetchPatients();
+        console.log('userDetails:', userDetails)
+        fetchUserDetails();
     }, []);
+
+    console.log('userId:', user?.id)
 
     return (
         <div
             style = {isPlatform('ios') ? {overflow: 'hidden'} : {}}
         >
-            <div className="tabs-inner switch">
+            {/* <div className="tabs-inner switch">
                 <div className="tabs">
                     <ul>
                         <li 
@@ -58,7 +88,53 @@ const HomeComponent = ({}) => {
                 <CreatePatientForm />
             ) : (
                 <ExistingPatientsTable />
-            )}
+            )} */}
+
+            <div className="personal-dashboard personal-dashboard-v2">
+                <div className="columns is-multiline">
+                    <div className="column is-12">
+                        <div className="dashboard-header">
+                            <div className="h-avatar is-xl">
+                                <FakeAvatar 
+                                    FirstName={userDetails.firstName}
+                                    LastName={userDetails.lastName}
+                                    Size={AvatarSize.XL}
+                                />
+                            </div>
+                            <div className="user-meta is-dark-bordered-12">
+                                <h3 className="title is-4 is-narrow is-bold">
+                                    Welcome back, {userDetails.firstName} {userDetails.lastName}
+                                </h3>
+                                <p className="light-text">It's really nice to see you again</p>
+                            </div>
+                            <div className="user-action">
+                                <h3 className="title is-2 is-narrow">3</h3>
+                                <p className="light-text">Tasks are pending review</p>
+                                <a className="action-link">View Tasks</a>
+                            </div>
+                            <div className="cta h-hidden-tablet-p">
+                                <div className="media-flex inverted-text">
+                                    <i className="lnil lnil-crown-alt-1"></i>
+                                    <p className="white-text">
+                                        Start using technology to manage your patients!
+                                    </p>
+                                </div>
+                                <a className="link inverted-text">Make a Patient</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="column is-8">
+                        <TaskComponent
+                            createdById={user?.id}
+                        />
+                    </div>
+
+                    <div className="column is-4">
+                          {/* something goes here  */}
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

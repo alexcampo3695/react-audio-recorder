@@ -35,10 +35,6 @@ interface TableRowData {
   status: string;
 }
 
-interface RecordingFlexTableProps {
-  patientId?: string;
-}
-
 const RecordingFlexItem: React.FC<TableRowData> = ({
   number,
   firstName,
@@ -108,7 +104,12 @@ const RecordingFlexItem: React.FC<TableRowData> = ({
   );
 }
 
-const RecordingsFlexTable: React.FC<RecordingFlexTableProps> = ({ patientId }) => {
+interface RecordingFlexTableProps {
+  patientId?: string;
+  hasSearch?: boolean;
+}
+
+const RecordingsFlexTable: React.FC<RecordingFlexTableProps> = ({ patientId, hasSearch }) => {
   const [data, setData] = useState<TableRowData[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
@@ -252,6 +253,7 @@ const RecordingsFlexTable: React.FC<RecordingFlexTableProps> = ({ patientId }) =
       hasMore={hasMore}
       loadMore={loadMoreData}
       onSearchChange={handleSearchTermChange}
+      hasSearch={hasSearch}
     >
         { data.map((item) => (
           <RecordingFlexItem

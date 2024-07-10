@@ -108,9 +108,39 @@ const PatientProfile: React.FC = ({ }) => {
                         <div className="profile-body">
                             <div className="columns">
                                 <div className="column is-5">
-                                    <RecordingsFlexTable 
-                                        patientId={patientId}
-                                    />
+                                    <div className="profile-card">
+                                        <div className="profile-card-section">
+                                            <div className="section-title">
+                                                <h4>About Me</h4>
+                                                <a href="/admin-profile-edit-1.html"><i className="lnil lnil-pencil"></i></a>
+                                            </div>
+                                            <div className="section-content">
+                                                <p className="description">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                                    Falli igitur possumus. Praeteritis, inquit, gaudeo. Duo
+                                                    Reges: constructio interrete. Idemne, quod iucunde? Quis
+                                                    enim redargueret? Non semper, inquam; Quid nunc honeste
+                                                    dicit? Eam tum adesse, cum dolor omnis absit; Negat enim
+                                                    summo bono afferre incrementum diem.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="profile-card-section">
+                                            <div className="section-title">
+                                                <h4>Recordings</h4>
+                                                <a href="/admin-profile-edit-2.html"><i className="lnil lnil-pencil"></i></a>
+                                            </div>
+                                            <div className="section-content">
+                                                <div className="skills-wrapper">
+                                                    <RecordingsFlexTable 
+                                                        patientId={patientId}
+                                                        hasSearch={false}
+                                                    />  
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     
                                 </div>
                                 <div className="column is-7">

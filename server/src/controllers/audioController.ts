@@ -36,6 +36,8 @@ export async function uploadRecording(req: Request, res: Response) {
     const patientId = patientData ? patientData.PatientId : null;
     const userId = patientData ? patientData.CreatedBy : null;
 
+    console.log('patientData:', patientData);
+    console.log('patientId:', patientId);
     console.log('userId:', userId);
 
     try {

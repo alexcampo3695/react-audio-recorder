@@ -18,7 +18,10 @@ interface TablePageProps {
 const RecordingsTable: React.FC<TablePageProps> = ({ audioDataList, onTranscriptionClick }) => {
     return (
         <AppWrapper
-            children={<RecordingsFlexTable />}
+            children=
+                {<RecordingsFlexTable
+                    hasSearch={true}
+                />}
             title='Recordings Table'
         />
     );
