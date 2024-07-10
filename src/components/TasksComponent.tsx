@@ -5,22 +5,36 @@ import { API_BASE_URL } from "../config";
 import formatDate from "../helpers/DataManipulation";
 import Modal from "./Modal";
 import feather from "feather-icons";
+import { Link } from "react-router-dom";
+
+
+interface PatientData {
+  PatientId: string
+  FirstName: string
+  LastName: string
+  DateOfBirth: string
+  CreatedBy: string
+}
 
 interface TaskRowData {
+  patientId?: string;
   id: string;
   task: string;
   reasoning: string;
   severity: string;
   status: boolean;
   dueDate: string;
+  hasPatient?: boolean;
+  patientData?:string;
   onStatusChange: (id: string, newStatus: boolean) => void;
 }
 
-const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, severity, dueDate, onStatusChange }) => {
+
+const TaskRow: React.FC<TaskRowData> = ({ patientId , id, task, reasoning, status, severity, dueDate, onStatusChange, hasPatient, patientData }) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const handleCPTStatusChange = () => {
+  const handleTaskStatusChange = () => {
     const newStatus = !isChecked;
     setIsChecked(newStatus);
     onStatusChange(id, newStatus);
@@ -38,7 +52,7 @@ const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, severity,
             <input 
               type="checkbox"
               onClick = {() => setIsChecked(!isChecked)}
-              onChange = {handleCPTStatusChange}
+              onChange = {handleTaskStatusChange}
             >
             </input>
             <div className="checkmark-wrap">
@@ -52,11 +66,15 @@ const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, severity,
         <div className="flex-meta is-light">
             <a 
               onClick={() => setIsModalOpen(true)}
-              href="#"
             >
               {task}
             </a>
             <span>{"Due Date: "}{formatDate(dueDate)}</span>
+            {hasPatient && (
+              <Link to={`/patient_profile/${patientId}`} className="patient-data">
+                {patientData}
+              </Link>
+            )}
         </div>
         <div className="flex-end">
             <span 
@@ -101,9 +119,16 @@ const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, severity,
   );
 };
 
+
+
 interface TaskComponentProps {
   fileId?: string;
   createdById?: string;
+  title?: string;
+  tab1?: string;
+  tab2?: string;
+  hasPatient?: boolean;
+  patientData?: PatientData;
 }
 
 interface TaskResponse {
@@ -113,15 +138,35 @@ interface TaskResponse {
   reasoning: string;
   severity: string;
   dueDate: string;
+  patientId: string;
   status: boolean;
   createdAt: string;
   updatedAt: string;
   __v: number;
 }
 
-const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById }) => {
+type PatientDataMap = {
+  [key: string]: PatientData[];
+};
+
+const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, title, tab1, tab2, hasPatient }) => {
   const [tasks, setTasks] = useState<TaskResponse[] | null>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [patientData, setPatientData] = useState<PatientDataMap>({});
+
+  const fetchPatientData =async (patientId: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/patients/${patientId}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch patient data: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch patient data:', error);
+      return null;
+    }
+  };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -133,7 +178,24 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById }) =>
           throw new Error(`Failed to fetch cpt codes: ${response.status}`);
         }
         const data: TaskResponse[] = await response.json();
+
+
+        if (hasPatient) {
+          const patientDataPromises = data.map(task => fetchPatientData(task.patientId));
+          const patientDataArray = await Promise.all(patientDataPromises);
+          const patientDataMap = data.reduce((acc: PatientDataMap, task, index) => {
+            if (patientDataArray[index]) {
+              acc[task.patientId] = patientDataArray[index];
+            }
+            return acc;
+          }, {} as PatientDataMap);
+          setPatientData(patientDataMap);
+        }
+
         setTasks(data);
+
+        console.log('tasks:', tasks)
+        console.log('patientData:', patientData)
       } catch (error) {
         console.error('Failed to fetch summary:', error);
       }
@@ -141,7 +203,12 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById }) =>
     console.log('tasks:', tasks)
 
     fetchTasks();
-  }, [fileId]);
+  }, [fileId, createdById, hasPatient]);
+
+  useEffect(() => {
+    console.log('tasks:', tasks);
+    console.log('patientData:', patientData);
+  }, [tasks, patientData])
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
@@ -166,13 +233,13 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById }) =>
   return (
     <div className="list-widget list-widget-v2 tabbed-widget">
       <div className="widget-head">
-          <h3 className="dark-inverted">Recommended Tasks</h3>
+          <h3 className="dark-inverted">{title ||'Recommended Tasks'}</h3>
           <div className="tabbed-controls">
               <a className="tabbed-control is-active">
-                  <span>All</span>
+                  <span>{tab1 || 'All'}</span>
               </a>
               <a className="tabbed-control">
-                  <span>Mine</span>
+                  <span>{tab2 || 'Mine'}</span>
               </a>
               <div className="tabbed-naver"></div>
           </div>
@@ -182,12 +249,13 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById }) =>
           <div className="inner-list">
               {tasks?.length === 0 ? (
                 <NoData 
-                  Title='No CPT Codes Found'
+                  Title='No Tasks Found'
                   Subtitle= 'There have been no CPT Codes found in this transcription file.'
                 />
               ) : (
                 tasks?.map(tasks => (
                   <TaskRow
+                    patientId= {tasks.patientId}
                     key={tasks._id}
                     id={tasks._id}
                     task={tasks.task}
@@ -196,6 +264,8 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById }) =>
                     dueDate={tasks.dueDate}
                     status={tasks.status}
                     onStatusChange={handleStatusChange}
+                    hasPatient={hasPatient}
+                    patientData={patientData[tasks.patientId] && patientData[tasks.patientId][0] ? `${patientData[tasks.patientId][0].FirstName} ${patientData[tasks.patientId][0].LastName}` : ''}
                   />
                 ))
               )}

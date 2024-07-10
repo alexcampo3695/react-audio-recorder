@@ -8,6 +8,7 @@ import { isPlatform } from '@ionic/react';
 import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import TaskComponent from './TasksComponent';
 
+
 interface UserDetails {
     _id: string;
     userId: string;
@@ -24,23 +25,30 @@ interface UserDetails {
     stateLicenseNumber: string;
 }
 
+const fetchPatientData = async (patientId: string) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/patients/${patientId}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch patient data: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Failed to fetch patient data:', error);
+        return null;
+    }
+}
+
 const HomeComponent = ({}) => {
     const [activeTab, setActiveTab] = useState('create')
     const [patients, setPatients] = useState([]);
     const { user } = useUser();
     const [userDetails, setUserDetails] = useState({} as UserDetails);
+    const [patientData, setPatientData] = useState(null);
     
     const handleTabClick = (tab:string) => {
         setActiveTab(tab);
     }
-
-    // useEffect(() => {
-    //     async function fetchPatients() {
-    //         const patients = await fetch(`${API_BASE_URL}/api/get_patients`);
-    //         setPatients(await patients.json());
-    //     }
-    //     fetchPatients();
-    // }, []);
 
     useEffect(() => {
         async function fetchUserDetails() {
@@ -50,8 +58,6 @@ const HomeComponent = ({}) => {
         console.log('userDetails:', userDetails)
         fetchUserDetails();
     }, []);
-
-    console.log('userId:', user?.id)
 
     return (
         <div
@@ -116,7 +122,7 @@ const HomeComponent = ({}) => {
                                 <div className="media-flex inverted-text">
                                     <i className="lnil lnil-crown-alt-1"></i>
                                     <p className="white-text">
-                                        Start using technology to manage your patients!
+                                        Start using our technology to manage your patients!
                                     </p>
                                 </div>
                                 <a className="link inverted-text">Make a Patient</a>
@@ -127,6 +133,11 @@ const HomeComponent = ({}) => {
                     <div className="column is-8">
                         <TaskComponent
                             createdById={user?.id}
+                            title= "Tasks"
+                            tab1= "Today"
+                            tab2= "Future"
+                            hasPatient={true}
+                            // patientData={}
                         />
                     </div>
 

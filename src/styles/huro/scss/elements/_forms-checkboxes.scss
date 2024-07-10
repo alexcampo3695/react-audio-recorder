@@ -207,6 +207,17 @@ $curve: cubic-bezier(0.65, 0, 0.45, 1);
 2. Animated Checkbox Dark Mode
 ========================================================================== */
 
+.patient-data {
+  display: block;
+  margin-top: 4px; // Adjust margin as needed
+  // color: inherit; // Ensure it inherits color
+  text-decoration: none; // Remove underline if needed
+  font-family: $font-alt;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: $dark-text;
+}
+
 body {
   &.is-dark {
     .animated-checkbox {
@@ -261,6 +272,8 @@ body {
           font-size: 0.9rem;
           color: $light-text;
         }
+
+        
       }
     }
   }

@@ -72,3 +72,14 @@ export async function getPatientsByCreatedUser(req: Request, res: Response) {
         res.status(500).json({ message: 'Error fetching patients', error})
     }
 }
+
+export async function getPatientsById(req: Request, res: Response) {
+    
+    try {
+        const { patientId } = req.params;
+        const patient = await Patients.find({PatientId: patientId});
+        res.json(patient);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching patient', error})
+    }
+}
