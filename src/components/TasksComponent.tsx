@@ -168,6 +168,22 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, titl
     }
   };
 
+  const severityOrder: { [key in TaskResponse['severity']]: number} = {
+    'High': 1,
+    'Moderate': 2,
+    'Mild': 3,
+    'Low': 4,
+  }
+
+  const sortTasks = (tasks: TaskResponse[]) => {
+    return tasks.sort((a, b) => {
+      if (severityOrder[a.severity] !== severityOrder[b.severity]) {
+        return severityOrder[a.severity] - severityOrder[b.severity];
+      }
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+    });
+  }
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -192,7 +208,8 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, titl
           setPatientData(patientDataMap);
         }
 
-        setTasks(data);
+        const sortedData = sortTasks(data);
+        setTasks(sortedData);
 
         console.log('tasks:', tasks)
         console.log('patientData:', patientData)
