@@ -8,6 +8,7 @@ const TaskSchema = new Schema<TasksDocument>({
     fileId: { type: String, required: true },
     task: { type: String, required: true },
     reasoning: { type: String, required: true },
+    severity: { type: String, required: true },
     status: { type: Boolean, default: true },
     dueDate: { type: Date, required: true  },
     patientId: { type: String, required: true, ref: 'Patient' },

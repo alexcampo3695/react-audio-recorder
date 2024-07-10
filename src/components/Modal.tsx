@@ -1,32 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 
 interface ModalProps {
     ModalTitle: string;
-    Header: string;
-    Subtext: string;
+    Type: 'image' | 'custom';
+    Header?: string;
+    Subtext?: string;
     Image?: string;
     hasButtons: boolean;
-    PrimaryButtonText: string;
-    SecondaryButtonText: string;
-    HasChildren: boolean;
-    Children?: React.ReactNode;
-    onSubmit: () => void;
+    PrimaryButtonText?: string;
+    SecondaryButtonText?: string;
+    Children?: ReactElement
+    IsLarge: boolean;
+    onSubmit?: () => void;
     onClose: () => void;
 }
 const Modal: React.FC<ModalProps>= ({
     ModalTitle,
+    Type,
     Header,
     Subtext,
     hasButtons,
     PrimaryButtonText,
     SecondaryButtonText,
-    HasChildren,
     Children,
+    IsLarge,
     onSubmit,
     onClose
 }) => {
     return (
-        <div id="demo-right-actions-modal" className="modal h-modal is-active">
+        <div id="demo-modal" className={`modal h-modal is-active ${IsLarge ? 'is-big' : ''}`}>
             <div className="modal-background  h-modal-close"></div>
             <div className="modal-content">
                 <div className="modal-card">
@@ -38,15 +40,19 @@ const Modal: React.FC<ModalProps>= ({
                     </header>
                     <div className="modal-card-body">
                         <div className="inner-content">
-                            <div className="section-placeholder">
-                                <div className="placeholder-content">
-                                    <div className="h-avatar is-xl">
-                                        {/* <img className="avatar" src="" data-demo-src="assets/img/avatars/photos/22.jpg" alt=""></img> */}
+                            {Type === 'image' && (
+                                <div className="section-placeholder">
+                                    <div className="placeholder-content">
+                                        <div className="h-avatar is-xl">
+                                            {/* <img className="avatar" src="" data-demo-src="assets/img/avatars/photos/22.jpg" alt=""></img> */}
+                                        </div>
+                                        <h3 className="dark-inverted">{Header}</h3>
+                                        <p>{Subtext}</p>
                                     </div>
-                                    <h3 className="dark-inverted">{Header}</h3>
-                                    <p>{Subtext}</p>
                                 </div>
-                            </div>
+                            )}
+                            {Type === 'custom' && Children}
+                            
                         </div>
                     </div>
                     {hasButtons && (
@@ -54,11 +60,6 @@ const Modal: React.FC<ModalProps>= ({
                             <a className="button h-button is-rounded h-modal-close">{SecondaryButtonText}</a>
                             <a className="button h-button is-primary is-raised is-rounded" onClick={onSubmit}>{PrimaryButtonText}</a>
                         </div>
-                    )}
-                    {HasChildren && (
-                        <>
-                            {Children}
-                        </>
                     )}
 
                     

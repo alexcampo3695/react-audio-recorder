@@ -23,6 +23,7 @@ export async function generateTasks(transcription: string, fileId: any, patientI
                 {
                     reasoning: task.reasoning,
                     status: task.status,
+                    severity: task.severity,
                     dueDate: task.dueDate,
                     patientId: patientId,
                     fileId: fileId,
@@ -37,6 +38,7 @@ export async function generateTasks(transcription: string, fileId: any, patientI
                 task: task.task,
                 reasoning: task.reasoning,
                 dueDate: task.dueDate,
+                severity: task.severity,
                 status: task.status,
                 patientId: patientId,
                 createdBy: createdBy

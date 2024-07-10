@@ -39,7 +39,7 @@ const Icd10Row: React.FC<Icd10RowData> = ({ id, code, description, status, onSta
             </div>
         </div>
         <div className="flex-meta is-light">
-            <a href="#">{description}</a>
+            <a> {description} </a>
             <span>{code}</span>
         </div>
         <div className="flex-end">

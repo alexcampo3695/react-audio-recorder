@@ -88,7 +88,17 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId, patie
           throw new Error(`Failed to fetch medications codes: ${response.status}`);
         }
         const data: MedicationResponse[] = await response.json();
-        setMedications(data);
+
+        const uniqueMedicationsMap = new Map<string, MedicationResponse>();
+        data.forEach(medication => {
+          const key = `${medication.drugName}-${medication.dosage}`;
+          if(!uniqueMedicationsMap.has(key)) {
+            uniqueMedicationsMap.set(key, medication);
+          }
+        })
+
+        const uniqueMedications = Array.from(uniqueMedicationsMap.values());
+        setMedications(uniqueMedications);
       } catch (error) {
         console.error('Failed to fetch medications:', error);
       }

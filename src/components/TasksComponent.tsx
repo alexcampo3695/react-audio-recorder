@@ -10,12 +10,13 @@ interface TaskRowData {
   id: string;
   task: string;
   reasoning: string;
+  severity: string;
   status: boolean;
   dueDate: string;
   onStatusChange: (id: string, newStatus: boolean) => void;
 }
 
-const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, dueDate, onStatusChange }) => {
+const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, severity, dueDate, onStatusChange }) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -58,43 +59,42 @@ const TaskRow: React.FC<TaskRowData> = ({ id, task, reasoning, status, dueDate, 
             <span>{"Due Date: "}{formatDate(dueDate)}</span>
         </div>
         <div className="flex-end">
-            {/* hardcoded need to take care of! */}
             <span 
-              className={`tag is-rounded ${status === true ? 'is-success' : 'is-light'}`}
+              style = {{width: '65px', textAlign: 'center'}}
+              className={`tag is-rounded ${(() => {
+                switch (severity) {
+                  case 'High': return 'is-danger';
+                  case 'Moderate': return 'is-orange';
+                  case 'Mild': return 'is-primary';
+                  case 'Low': return 'is-success';
+                  default: return 'is-light';
+                }
+              })()}`}
             >
-                {status === true ? 'Active' : 'Inactive'}
+                {(() => {
+                  switch (severity) {
+                    case 'High': return 'High';
+                    case 'Moderate': return 'Moderate';
+                    case 'Mild': return 'Mild';
+                    case 'Low': return 'Low';
+                    default: return 'Unknown';
+                  }
+                
+                })()}
             </span> 
         </div>
         { isModalOpen && (
             <Modal
                 ModalTitle="Task Recommendation"
+                Type= 'image'
                 Header="Reasoning:"
                 Subtext={reasoning}
                 hasButtons={false}
                 PrimaryButtonText=""
                 SecondaryButtonText=""
+                IsLarge={false}
                 onSubmit={() => {}}
                 onClose={() => setIsModalOpen(false)}
-                HasChildren={false}
-                Children={
-                  <div
-                    style = {{backgroundColor: 'white', display:'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}
-                  >
-                    <button 
-                      className="button is-succes  is-light is-circle is-elevated"
-                      style={{}}
-                    >
-                      <span className="icon is-small">
-                        <i data-feather = "thumbs-up"></i>
-                      </span>
-                    </button>
-                    <button className="button is-primary is-circle is-elevated">
-                      <span className="icon">
-                          <i data-feather = "user-x"></i>
-                      </span>
-                    </button>
-                  </div>
-                }
             />
         )}
     </div>
@@ -110,6 +110,7 @@ interface TaskResponse {
   fileId: string;
   task: string;
   reasoning: string;
+  severity: string;
   dueDate: string;
   status: boolean;
   createdAt: string;
@@ -187,6 +188,7 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId }) => {
                     key={tasks._id}
                     id={tasks._id}
                     task={tasks.task}
+                    severity={tasks.severity}
                     reasoning={tasks.reasoning}
                     dueDate={tasks.dueDate}
                     status={tasks.status}
@@ -194,7 +196,6 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId }) => {
                   />
                 ))
               )}
-
           </div>
       </div>
   </div>

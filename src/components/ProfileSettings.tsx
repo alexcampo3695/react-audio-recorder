@@ -284,11 +284,13 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
             { modal && (
                 <Modal
                     ModalTitle="Account Deactivation"
+                    Type='image'
                     Header="Confirm Deactivation"
                     Subtext="This will deactivate your account and you will lose access to all services."
                     hasButtons={true}
                     PrimaryButtonText="Delete"
                     SecondaryButtonText="Cancel"
+                    IsLarge={false}
                     onSubmit={onDeactivateAccount}
                     onClose={() => setModal(false)}
                 />

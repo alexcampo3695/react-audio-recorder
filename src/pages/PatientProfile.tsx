@@ -113,7 +113,7 @@ const PatientProfile: React.FC = ({ }) => {
                                     />
                                     
                                 </div>
-                                <div className="column is-4">
+                                <div className="column is-7">
                                     <Icd10Component
                                         patientId = {patientId}
                                     />

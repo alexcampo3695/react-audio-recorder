@@ -3,6 +3,7 @@ export interface Tasks {
     task: string;
     reasoning: string;
     status: boolean;
+    severity: string;
     dueDate: Date;
     patientId: string;
     createdAt: Date;

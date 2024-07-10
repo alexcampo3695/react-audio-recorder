@@ -10,6 +10,8 @@ import "../styles/flex-list.css";
 import { handle } from "mdast-util-to-markdown/lib/handle";
 import NoData from "./NoData";
 import { API_BASE_URL } from "../config";
+import CreatePatientForm from "./CreatePatientForm";
+import Modal from "./Modal";
 
 interface Patient {
     _id: string;
@@ -94,6 +96,15 @@ const ExistingPatientsTable: React.FC = () => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    }
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    }
 
     const fetchPatients = async (searchTerm: string = '') => {
         if (!user) {
@@ -157,26 +168,46 @@ const ExistingPatientsTable: React.FC = () => {
     };
 
     return (
-        <FlexTable
-            titles={["Name", "DOB", "Actions"]}
-            hasMore={hasMore}
-            loadMore={loadMoreData}
-            searchPlaceholder="Search..."
-            onSearchChange={handleSearchTermChange}
-        >
+        <>
+            <FlexTable
+                titles={["Name", "DOB", "Actions"]}
+                hasMore={hasMore}
+                loadMore={loadMoreData}
+                searchPlaceholder="Search..."
+                onSearchChange={handleSearchTermChange}
+                hasSearch={true}
+                hasButton={true}
+                buttonLabel="Add Patient"
+                buttonOnclick={openModal}
+                buttonIcon={<i className="fas fa-users"></i>}
+            >
 
-            { patients.map((patient: any) => (
-                    <PatientItem
-                        key={patient._id}
-                        PatientId={patient.PatientId}
-                        FirstName={patient.FirstName}
-                        LastName={patient.LastName}
-                        DateOfBirth={patient.DateOfBirth}
-                        CreatedBy={patient.id}
-                    />
-                ))
-            }
-        </FlexTable>
+                { patients.map((patient: any) => (
+                        <PatientItem
+                            key={patient._id}
+                            PatientId={patient.PatientId}
+                            FirstName={patient.FirstName}
+                            LastName={patient.LastName}
+                            DateOfBirth={patient.DateOfBirth}
+                            CreatedBy={patient.id}
+                        />
+                    ))
+                }
+            </FlexTable>
+
+            {isModalOpen && (
+                <Modal
+                    ModalTitle="Create Patient"
+                    Type='custom'
+                    hasButtons={false}
+                    Children={<CreatePatientForm />}
+                    IsLarge={true}
+                    onClose={() => setIsModalOpen(false)}
+                />
+            )}
+        </>
+        
+        
     );
 };
 
