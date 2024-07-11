@@ -267,34 +267,34 @@ export async function taskGenerator(text: string): Promise<Tasks[]> {
                                 "task": "Monitor patient's response to Adderall",
                                 "reasoning": "Evaluate the effectiveness of Adderall 10 mg in managing ADHD symptoms and any side effects",
                                 "severity": "Mild",
-                                "status": true,
+                                "status": false,
                                 "dueDate": "2024-07-14T00:00:00.000Z"
                             },
                             {
                                 "task": "Reassess patient's depression symptoms",
                                 "reasoning": "Determine if additional treatment for depression is needed after initial trial of Adderall",
                                 "severity": "Moderate",
-                                "status": true,
+                                "status": false,
                                 "dueDate": "2024-07-21T00:00:00.000Z"
                             },
                             {
                                 "task": "Schedule follow-up appointment",
                                 "reasoning": "Ensure patient returns for follow-up to monitor progress and adjust treatment if necessary",
                                 "severity": "Low",
-                                "status": true,
+                                "status": false,
                                 "dueDate": "2024-07-28T00:00:00.000Z"
                             },
                             {
                                 "task": "Update medication list",
                                 "reasoning": "Add newly prescribed Adderall to the patient's record for accurate tracking",
                                 "severity": "Low",
-                                "status": true,
+                                "status": false,
                                 "dueDate": "2024-07-07T00:00:00.000Z"
                             }
                         ]
 
 
-                        Please set every 'status' boolean to true.
+                        Please set every 'status' boolean to false.
 
                         Please set a severity of 'Low', 'Mild' , 'Moderate', or 'High' for each task.
 

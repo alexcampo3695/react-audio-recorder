@@ -6,6 +6,8 @@ import formatDate from "../helpers/DataManipulation";
 import Modal from "./Modal";
 import feather from "feather-icons";
 import { Link } from "react-router-dom";
+import { parseISO, startOfDay, isSameDay, isAfter, addHours, toDate } from 'date-fns';
+
 
 
 interface PatientData {
@@ -129,6 +131,7 @@ interface TaskComponentProps {
   tab2?: string;
   hasPatient?: boolean;
   patientData?: PatientData;
+  hasFilters: boolean;
 }
 
 interface TaskResponse {
@@ -149,12 +152,13 @@ type PatientDataMap = {
   [key: string]: PatientData[];
 };
 
-const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, title, tab1, tab2, hasPatient }) => {
+const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, title, tab1, tab2, hasPatient, hasFilters }) => {
   const [tasks, setTasks] = useState<TaskResponse[] | null>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [patientData, setPatientData] = useState<PatientDataMap>({});
+  const [filter, setFilter] = useState<string>('Today');
 
-  const fetchPatientData =async (patientId: string) => {
+  const fetchPatientData = async (patientId: string) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/patients/${patientId}`);
       if (!response.ok) {
@@ -184,6 +188,28 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, titl
     });
   }
 
+
+
+  const filteredTasks = tasks?.filter((task) => {
+    const taskDate = parseISO(task.dueDate);
+
+    const today = new Date();
+    const todayUTC = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+
+    if (!filter) {
+        return true;
+    }
+
+    if (filter === 'Today') {
+        return isSameDay(taskDate, todayUTC) && !task.status;
+    } else if (filter === 'Future') {
+        return isAfter(taskDate, todayUTC) && !task.status;
+    }
+
+    return true;
+  });
+  
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -210,22 +236,15 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, titl
 
         const sortedData = sortTasks(data);
         setTasks(sortedData);
-
-        console.log('tasks:', tasks)
-        console.log('patientData:', patientData)
       } catch (error) {
         console.error('Failed to fetch summary:', error);
       }
     };
-    console.log('tasks:', tasks)
 
     fetchTasks();
   }, [fileId, createdById, hasPatient]);
 
-  useEffect(() => {
-    console.log('tasks:', tasks);
-    console.log('patientData:', patientData);
-  }, [tasks, patientData])
+  
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
@@ -251,26 +270,35 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, titl
     <div className="list-widget list-widget-v2 tabbed-widget">
       <div className="widget-head">
           <h3 className="dark-inverted">{title ||'Recommended Tasks'}</h3>
-          <div className="tabbed-controls">
-              <a className="tabbed-control is-active">
-                  <span>{tab1 || 'All'}</span>
+          {hasFilters && (
+            <div className="tabbed-controls">
+              <a 
+                className={`tabbed-control ${filter === 'Today' ? 'is-active' : ''}`}
+                onClick= {() => setFilter('Today')}
+              >
+                  <span>{tab1 || 'Mine'}</span>
               </a>
-              <a className="tabbed-control">
-                  <span>{tab2 || 'Mine'}</span>
+              <a 
+                className={`tabbed-control ${filter === 'Future' ? 'is-active' : ''}`}
+                onClick= {() => setFilter('Future')}
+              >
+                  <span>{tab2 || 'All'}</span>
               </a>
               <div className="tabbed-naver"></div>
-          </div>
+            </div>
+          )}
+          
       </div>
 
       <div className="inner-list-wrapper is-active">
           <div className="inner-list">
-              {tasks?.length === 0 ? (
+              {filteredTasks?.length === 0 ? (
                 <NoData 
                   Title='No Tasks Found'
-                  Subtitle= 'There have been no CPT Codes found in this transcription file.'
+                  Subtitle= 'There have been no tasks found.'
                 />
               ) : (
-                tasks?.map(tasks => (
+                filteredTasks?.map(tasks => (
                   <TaskRow
                     patientId= {tasks.patientId}
                     key={tasks._id}

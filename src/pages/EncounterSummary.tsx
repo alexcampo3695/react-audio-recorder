@@ -193,6 +193,7 @@ const SummaryPage: React.FC = () => {
                                 />
                                 <TaskComponent
                                     fileId={fileId ?? ''}
+                                    hasFilters={false}
                                 />
                             </div>
                             <div className="column is-6">

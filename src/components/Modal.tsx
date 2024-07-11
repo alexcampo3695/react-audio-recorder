@@ -55,12 +55,17 @@ const Modal: React.FC<ModalProps>= ({
                             
                         </div>
                     </div>
-                    {hasButtons && (
+                    
                         <div className="modal-card-foot is-centered">
-                            <a className="button h-button is-rounded h-modal-close">{SecondaryButtonText}</a>
-                            <a className="button h-button is-primary is-raised is-rounded" onClick={onSubmit}>{PrimaryButtonText}</a>
+                            {hasButtons && (
+                                <>
+                                    <a className="button h-button is-rounded h-modal-close">{SecondaryButtonText}</a>
+                                    <a className="button h-button is-primary is-raised is-rounded" onClick={onSubmit}>{PrimaryButtonText}</a>
+                                </>
+                                
+                            )}
                         </div>
-                    )}
+                    
 
                     
                 </div>

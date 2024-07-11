@@ -46,7 +46,10 @@ const CreatePatientForm = ({}) => {
 
     console.log('userId', user?.id)
     return (
-        <div className="form-layout is-separate">
+        <div 
+            className="form-layout is-separate"
+            style= {{border: 'none'}}
+        >
             <div className="form-outer">
                 <div className="form-body">
                     <div className="form-section">
