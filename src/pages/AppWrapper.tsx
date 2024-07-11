@@ -90,6 +90,7 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
         data-mobile-item="#home-sidebar-menu-mobile"
         style={isPlatform('ios') ? { paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' } : {}}
       >
+        <MobileNav />
         <NavBar />
         <div className="page-content-wrapper"
           style={{ paddingTop: isPlatform('ios') ? '75px' : '0' }} // Adjust padding to accommodate the header height

@@ -113,7 +113,7 @@ const ClinicalNoteComponent: React.FC<ClinicalNoteProps> = ({ fileId }) => {
   return (
     <div className="markdown-content">
       <div className="header">
-        <h1>📝 Clinical Note</h1>
+        <h3>📝 Clinical Note</h3>
         <div className="buttons">
           <button
             className="button h-button"
