@@ -6,15 +6,28 @@ PODS:
     - Capacitor
   - CapacitorHaptics (6.0.0):
     - Capacitor
+  - CapacitorPluginGlassfy (4.0.0):
+    - Capacitor
+    - Glassfy (= 1.4.0)
+    - GlassfyGlue (= 1.4.5)
   - CapacitorVoiceRecorder (5.0.0):
     - Capacitor
+  - Glassfy (1.4.0)
+  - GlassfyGlue (1.4.5):
+    - Glassfy (= 1.4.0)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
+  - CapacitorPluginGlassfy (from `../../node_modules/capacitor-plugin-glassfy`)
   - CapacitorVoiceRecorder (from `../../node_modules/capacitor-voice-recorder`)
+
+SPEC REPOS:
+  trunk:
+    - Glassfy
+    - GlassfyGlue
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -25,6 +38,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/filesystem"
   CapacitorHaptics:
     :path: "../../node_modules/@capacitor/haptics"
+  CapacitorPluginGlassfy:
+    :path: "../../node_modules/capacitor-plugin-glassfy"
   CapacitorVoiceRecorder:
     :path: "../../node_modules/capacitor-voice-recorder"
 
@@ -33,8 +48,11 @@ SPEC CHECKSUMS:
   CapacitorCordova: be703980ca797f847c3356f78fa175d21c8330c2
   CapacitorFilesystem: 60e59ba274c234a979e7a3be2552feaadcee4263
   CapacitorHaptics: 9ebc9363f0e9b8eb4295088a0b474530acf1859b
+  CapacitorPluginGlassfy: fff3790bdd1c3b46dd15544e2792bfbe4ecf7d0d
   CapacitorVoiceRecorder: 872ea857b497ce2c71afe3e4eb5de0a74290c0db
+  Glassfy: 6c13edc242715212cfd01a0a12c8553f2f06cfcb
+  GlassfyGlue: 828c39792238a84c07d27a71c9eb4819b0b1dfa9
 
-PODFILE CHECKSUM: 42f322877703b134b4c3a9bc8d50a37d721cd2b6
+PODFILE CHECKSUM: 5772b35f24dfb7b49e9194a47960a30d028f3f17
 
 COCOAPODS: 1.15.2

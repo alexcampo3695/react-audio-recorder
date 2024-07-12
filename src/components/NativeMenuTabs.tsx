@@ -41,6 +41,16 @@ const NativeMenuTabs: React.FunctionComponent = () => {
           </div>
         </NavLink>
       </li>
+      <li className="list-item-ios">
+        <NavLink to="/payment" className={isActive('/payment') ? 'active' : ''}>
+          <div className="icon">
+            <i
+              className="fas fa-credit-card"
+              style={isActive('/profile_settings') ? { color: '#26619B' } : { color: '#cecece' }}
+            ></i>
+          </div>
+        </NavLink>
+      </li>
     </div>
   );
 };

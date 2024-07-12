@@ -62,6 +62,7 @@
     "@ionic/react": "^7.8.6",
     "@ionic/react-router": "^7.8.6",
     "@types/react-infinite-scroll-component": "^5.0.0",
+    "capacitor-plugin-glassfy": "^4.0.0",
     "capacitor-voice-recorder": "^5.0.0",
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.1.3",

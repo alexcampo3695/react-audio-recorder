@@ -19,6 +19,8 @@ import TwoFactorAuth from './pages/TwoFactorAuth';
 import ProfileSettingsPage from './pages/ProfileSettings';
 import PatientPage from './pages/PatientsPage';
 import PatientProfile from './pages/PatientProfile';
+import PaymentPage from './pages/PaymentsPage';
+
 
 
 interface AudioData {
@@ -78,6 +80,7 @@ const App: React.FC = () => {
             <SummaryPage />
           )} />
           <Route path="/patient_profile/:patientId" component={PatientProfile} />
+          <Route path="/payment" component={PaymentPage} />
         </Switch>
       </Router>
     </div>
