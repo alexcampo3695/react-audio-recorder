@@ -181,6 +181,7 @@ const HomeComponent = ({}) => {
                                 tab2= "Future"
                                 hasPatient={true}
                                 hasFilters={true}
+                                filterStart='Today'
                             />
                         </div>
 

@@ -23,6 +23,7 @@ import userRoutes from './routes/userRoutes';
 import userDetailsRoutes from './routes/userDetailsRoutes';
 import emailRoutes from './routes/emailRoutes';
 import taskRoutes from './routes/taskRoutes';
+import paymentRoutes from './routes/paymentRoutes';
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use('/api/clinical_note', clincalNotesRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/user_details', userDetailsRoutes);
 app.use('/api/email', emailRoutes)
+app.use('/api/payment', paymentRoutes)
 
 
 export default app;

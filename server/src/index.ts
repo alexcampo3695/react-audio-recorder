@@ -35,6 +35,7 @@ import userRoutes from './routes/userRoutes';
 import userDetailsRoutes from './routes/userDetailsRoutes';
 import emailRoutes from './routes/emailRoutes';
 import taskRoutes from './routes/taskRoutes';
+import paymentRoutes from './routes/paymentRoutes';
 
 const app = express();
 // const PORT = process.env.VITE_BACKEND_URL || 8002; // Changed to 8002
@@ -68,6 +69,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/user_details', userDetailsRoutes);
 app.use('/api/email', emailRoutes)
 app.use('/api/tasks', taskRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // Configure the storage for GridFS
 const storage = new GridFsStorage({

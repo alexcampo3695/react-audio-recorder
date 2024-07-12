@@ -132,6 +132,7 @@ interface TaskComponentProps {
   hasPatient?: boolean;
   patientData?: PatientData;
   hasFilters: boolean;
+  filterStart?: string;
 }
 
 interface TaskResponse {
@@ -152,11 +153,11 @@ type PatientDataMap = {
   [key: string]: PatientData[];
 };
 
-const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, title, tab1, tab2, hasPatient, hasFilters }) => {
+const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, title, tab1, tab2, hasPatient, hasFilters, filterStart }) => {
   const [tasks, setTasks] = useState<TaskResponse[] | null>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [patientData, setPatientData] = useState<PatientDataMap>({});
-  const [filter, setFilter] = useState<string>('Today');
+  const [filter, setFilter] = useState<string>(filterStart || '');
 
   const fetchPatientData = async (patientId: string) => {
     try {
@@ -196,7 +197,7 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, titl
     const today = new Date();
     const todayUTC = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
 
-    if (!filter) {
+    if (!filter && !hasFilters) {
         return true;
     }
 
@@ -208,6 +209,8 @@ const TaskComponent: React.FC<TaskComponentProps> = ({ fileId, createdById, titl
 
     return true;
   });
+
+  console.log(`filteredTasks: ${filter}`, filteredTasks);
   
 
   useEffect(() => {

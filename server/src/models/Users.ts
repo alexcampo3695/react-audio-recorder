@@ -13,6 +13,7 @@ export interface IUser extends Document {
   twoFactorExpire?: Date;
   matchPassword(password: string): Promise<boolean>;
   isActive: boolean
+  PaymentMeta: mongoose.Schema.Types.ObjectId;
 }
 
 const userSchema = new Schema<IUser>({
@@ -25,7 +26,8 @@ const userSchema = new Schema<IUser>({
   resetPasswordExpire: { type: Date },
   twoFactorCode: { type: String },
   twoFactorExpire: { type: Date },
-  isActive: {type: Boolean, default: true}
+  isActive: {type: Boolean, default: true},
+  PaymentMeta: { type: mongoose.Schema.Types.ObjectId, ref: 'PaymentMeta' },
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

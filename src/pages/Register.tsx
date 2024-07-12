@@ -57,7 +57,7 @@ const Register = () => {
             const data = await response.json();
             notyf.success('Registration successful!');
             console.log('Registration successful:', data);
-            history.push('/', { state: { userRegistration } });
+            history.push('/payment', { state: { userRegistration } });
         } catch (error) {
             console.error('Registration error:', error);
             if (error instanceof Error) {
