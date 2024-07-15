@@ -35,7 +35,7 @@ export async function summarizeTranscription(text: string): Promise<string> {
               }              
         ],
         max_tokens: 4096,
-        temperature: 0.7
+        temperature: 0.0
     };
 
     try {
@@ -109,6 +109,7 @@ export async function diariazeTranscription(text: string): Promise<string> {
         transcription = transcription.replace(/```markdown|```/g, '').trim();
 
         console.log('Processed transcription:', transcription);
+
         return transcription;
     } catch (error: unknown) {
         if (error instanceof AxiosError) {

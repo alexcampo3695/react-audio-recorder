@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Glassfy, GlassfyOffering, GlassfyPermission, GlassfySku } from "capacitor-plugin-glassfy" ;
-import InAppPayment from "../components/InAppPayment";
 import { API_BASE_URL } from "../config";
 import { useUser } from "../context/UserContext";
 
@@ -14,6 +13,8 @@ export const Payments: React.FC<PaymentsProps> = ({ Title, Subtitle }) => {
     const [offerings, setOfferings] = useState<GlassfyOffering[]>([]);
     const { user } = useUser();
     const GLASSFY_API_KEY = import.meta.env.VITE_GLASSFY_API_KEY
+
+    const userId = user?.id;
 
     console.log('api_key:',GLASSFY_API_KEY)
 
@@ -35,26 +36,13 @@ export const Payments: React.FC<PaymentsProps> = ({ Title, Subtitle }) => {
       const handlePurchase = async (sku: GlassfySku) => {
         try {
             const transaction = await Glassfy.purchaseSku({ sku });
-            const response = await fetch(`${API_BASE_URL}/api/payment`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                userId: user?.id,
-                productId: sku.product.identifier,
-                transactionId: transaction.productId,
-                amount: sku.product.price,
-              }),
-            });
-            console.log("Purchase Succesful", transaction);
+            await Glassfy.connectCustomSubscriber({ subscriberId: userId || '' });
         } catch (e) {
             console.error('Purchase Failed', e);
         }
       }
 
       return (
-        
         <>
           {offerings.map((offering) => (
               <div>
@@ -75,19 +63,16 @@ export const Payments: React.FC<PaymentsProps> = ({ Title, Subtitle }) => {
                                 </div>
                             </div>
                             <div className="columns is-multiline">
-                                <div className="title-wrap">
-                                    <p>Looks like you're new here</p>
-                                    <h2>Welcome to Huro. What would you like to do?</h2>
-                                </div>
                                 <div className="column is-4">
                                     <div 
                                       className="tile-grid-item"
                                       onClick = {() => handlePurchase(sku)}
                                     >
                                         <div className="tile-grid-item-inner">
-                                            <img 
+                                            {/* <img 
                                               style={{borderRadius: '10px'}}
-                                              src="/src/styles/assets/drop.svg" data-demo-src="assets/img/icons/files/pdf.svg" alt=""></img>
+                                              src="/src/styles/assets/drop.svg" data-demo-src="assets/img/icons/files/pdf.svg" alt="">
+                                            </img> */}
                                             <div className="meta">
                                                 <span className="dark-inverted">{sku.product.title}</span>
                                                   <span>

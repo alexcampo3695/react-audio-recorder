@@ -1,7 +1,7 @@
 import React from "react";
 import ProfileSettings from "../components/ProfileSettings";
 import AppWrapper from "./AppWrapper";
-import ProductService, { Payments } from "../helpers/ProductService";
+import ProductService, { Payments } from "../components/ProductService";
 
 
 

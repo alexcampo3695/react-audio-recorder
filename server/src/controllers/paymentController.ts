@@ -3,87 +3,88 @@ import { ObjectId } from 'mongodb';
 import Tasks from '../models/Tasks';
 import TasksModel from '../models/Tasks';
 import axios from 'axios';
+import { parse } from 'dotenv';
 const User = require('../models/Users');
-const PaymentMeta = require('../models/PaymentMeta');
+import PaymentMeta from '../models/PaymentMeta';
 
 const GLASSFY_API_KEY = process.env.GLASSFY_API_KEY;
 
-const validatePurchase = async (transactionId: string) => {
-    try {
-        const response = await axios.post('https://s2s.glassfy.io/v1/notification-server-to-server/d8f311f6f42c499c984578854a4e58d2/2c9e44aca5b0455d8a81e82bbc897ef7', {
-            transactionId: transactionId
-        }, {
-            headers: {
-                'Authorization': `Bearer ${GLASSFY_API_KEY}`
-            }, 
-        })
-        return response.data;
-    } catch (e) {
-        throw new Error('Failed to validate purchase with Glassfy');
-    }
+interface GlassfyPermissionPayload {
+    permissions: {
+      subscriberId: string;
+      all: Array<{
+        accountableSkus: Array<{ productId: string }>;
+        permissionId: string;
+        isValid: boolean;
+        expireDate: number;
+      }>;
+    };
+    productId: string;
+    receiptValidated: boolean;
 }
 
-export async function postPayment(req: Request, res: Response) {
-    const { userId, productId, transactionId, amount} = req.body;
-
-    console.log('glassfy api key:', GLASSFY_API_KEY)
+export async function glassfyWebHook(req: Request, res: Response) {
+    console.log('Received Glassfy webhook data:', JSON.stringify(req.body, null, 2));
 
     try {
+        const event = req.body;
+        let payment;
 
-        if (!GLASSFY_API_KEY) {
-            return res.status(500).json({ message: 'Glassfy API key not found'})
-        }
+        if (event.permissions) {
+            // Handle the first type of payload (permissions)
+            const { permissions, productId, receiptValidated } = event as GlassfyPermissionPayload;
+            const relevantPermission = permissions.all.find(p => p.accountableSkus.some(sku => sku.productId === productId));
 
-        const validation = await validatePurchase(transactionId);
+            if (!relevantPermission) {
+                throw new Error('No relevant permission found');
+            }
 
-        if (!validation || !validation.valid) {
-            return res.status(400).json({ message: 'Invalid transaction' });
-        }
-
-        const purchaseData = {
-            userId,
-            productId,
-            transactionId,
-            amount,
-            purchaseDate: new Date(),
-        };
-
-        console.log('purchaseData:', purchaseData);
-    
-        const user = await User.findById(userId);
-        if(!user) return res.status(404).json({ message: 'User not found' });
-    
-        let paymentMeta = await PaymentMeta.findOne({ userId: user._id });
-    
-        if (!paymentMeta) {
-            paymentMeta = new PaymentMeta({
-                userId: user._id
-            })
-        }
-    
-        if (productId === 'monthly_subscription' || productId === 'annual_subscription') {
-            paymentMeta.subscription = {
-                type: productId === 'monthly_subscription' ? 'monthly' : 'annual',
-                startDate: new Date(),
-                endDate: productId === 'monthly_subscription' 
-                    ? new Date(new Date().setMonth(new Date().getMonth() + 1))
-                    : new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
-                status: 'active',
-                transactionId,
-            };
-        } else if (productId === 'pay_per_transaction') {
-            paymentMeta.payPerTranscription.remainingTranscriptions += 1;
-            paymentMeta.payPerTranscription.transactions.push({
-                transactionId,
-                date: new Date(),
-                amount,
+            payment = new PaymentMeta({
+                subscriberId: permissions.subscriberId,
+                productId,
+                permissionId: relevantPermission.permissionId,
+                isValid: relevantPermission.isValid,
+                expireDate: new Date(relevantPermission.expireDate),
+                receiptValidated,
             });
+        } else if (event.subscriberid && event.productid) {
+            // Handle the second type of payload (event)
+            payment = new PaymentMeta({
+                subscriberId: event.subscriberid,
+                productId: event.productid,
+                eventType: event.type,
+                store: event.store,
+                originalTransactionId: event.original_transaction_id,
+                purchaseDateMs: new Date(event.date_ms),
+                price: event.price,
+                currencyCode: event.currency_code,
+                expireDate: new Date(event.expire_date_ms),
+                isSubscriptionActive: event.is_subscription_active,
+                environment: event.environment,
+                eventId: event.id,
+                eventDate: new Date(event.event_date),
+                source: event.source,
+                vendorId: event.vendorid,
+                appId: event.appid,
+                originalPurchaseDateMs: new Date (event.original_purchase_date_ms),
+                priceUsd: event.price_usd,
+                countryCode: event.country_code,
+                duration: event.duration,
+                customId: event.customid,
+                device: event.device,
+                systemVersion: event.system_version,
+            });
+        } else {
+            throw new Error('Unrecognized event payload structure');
         }
-    
-        await paymentMeta.save();
-        res.status(201).json({ message: 'Payment successful' });
-    } catch (e) {
-        res.status(500).json({ message: 'Failed to process payment', error: e });
+
+        await payment.save();
+
+        console.log('Payment saved successfully:', payment);
+        res.status(200).json({ message: 'Successfully processed Glassfy event!' });
+    } catch (error) {
+        console.error('Failed to process Glassfy event', error);
+        console.error('Event payload:', JSON.stringify(req.body, null, 2));
+        res.status(500).json({ message: 'Failed to process Glassfy event', error });
     }
 }
-

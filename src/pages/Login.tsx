@@ -169,11 +169,12 @@ const Login = () => {
                                         Forgot Password?
                                     </a>
                                 </div>
+                                
                                 <div className="button-wrap has-help">
                                     <button id="login-submit" type="submit" className="button h-button is-big is-rounded is-primary is-bold is-raised">
                                         Login Now
                                     </button>
-                                    <span>Or <a href="/register">Create</a> an account.</span>
+                                    {isPlatform('ios')  ? (<span>Or <a href="/register">Create</a> an account.</span>) : (<></>)}
                                 </div>
                             </form>
 
