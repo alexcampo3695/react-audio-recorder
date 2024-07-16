@@ -236,3 +236,19 @@
     font-size: 1.5rem;
   }
 }
+
+.antidote-recorder-button-mobile {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20rem;
+  height: 20rem;
+  border-radius: 50%;
+  background-color: $primary;
+  margin-bottom: 1rem;
+  margin-top: -20px;
+  z-index: 1; /* Add this line */
+  // box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 22px 70px 4px;
+}

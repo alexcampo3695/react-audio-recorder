@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Glassfy, GlassfyOffering, GlassfyPermission, GlassfySku } from "capacitor-plugin-glassfy" ;
 import { API_BASE_URL } from "../config";
 import { useUser } from "../context/UserContext";
+import PageLoader from "../pages/LoaderPage";
 
 interface PaymentsProps {
     Title: string
@@ -9,9 +10,10 @@ interface PaymentsProps {
 }
 
 
-export const Payments: React.FC<PaymentsProps> = ({ Title, Subtitle }) => {
+export const Payments: React.FC = ({  }) => {
     const [offerings, setOfferings] = useState<GlassfyOffering[]>([]);
     const { user } = useUser();
+    const [loading, setLoading] = useState<boolean>(false);
     const GLASSFY_API_KEY = import.meta.env.VITE_GLASSFY_API_KEY
 
     const userId = user?.id;
@@ -21,12 +23,15 @@ export const Payments: React.FC<PaymentsProps> = ({ Title, Subtitle }) => {
     useEffect(() => {
         const initGlassfy = async () => {
           try {
+            setLoading(true);
             await Glassfy.initialize({ apiKey: 'fbe75b0835d54fd3ace820863c2c7855', watcherMode: false });
             const offerings = await Glassfy.offerings();
             console.log('offerings', offerings);
             setOfferings(offerings.all);
           } catch (e) {
             console.error("initialization error", e);
+          } finally {
+            setLoading(false);
           }
         }
     
@@ -44,7 +49,9 @@ export const Payments: React.FC<PaymentsProps> = ({ Title, Subtitle }) => {
 
       return (
         <>
-          {offerings.map((offering) => (
+          
+          {loading ? (<PageLoader />) : (
+            offerings.map((offering) => (
               <div>
                   <h2>{offering.offeringId}</h2>
                   {offering.skus.map((sku) => (
@@ -94,7 +101,8 @@ export const Payments: React.FC<PaymentsProps> = ({ Title, Subtitle }) => {
                       </>
                   ))}
               </div>
-          ))}
+          ))
+          )}
         </>
       )
 };

@@ -5,8 +5,8 @@ const config: CapacitorConfig = {
   appName: 'Care Voice',
   webDir: 'dist',
   server: {
-    url: 'https://carevoice.antidote-ai.com',
-    // url: 'http://localhost:4173/',
+    // url: 'https://carevoice.antidote-ai.com',
+    url: 'http://localhost:4173/',
     cleartext: true
   }
 };

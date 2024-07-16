@@ -49,27 +49,32 @@ const HomeComponent = ({}) => {
     const [userDetails, setUserDetails] = useState({} as UserDetails);
     const [tasks, setTasks] = useState<TaskResponse[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openModal = () => {
-        setIsModalOpen(true);
-    }
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    }
-    
-    const handleTabClick = (tab:string) => {
-        setActiveTab(tab);
-    }
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         async function fetchUserDetails() {
-            const userDetails = await fetch(`${API_BASE_URL}/api/user_details/${user?.id}`);
-            setUserDetails(await userDetails.json());
+            if (!user?.id) {
+                console.log('No user ID available');
+                setIsLoading(false);
+                return;
+            }
+            try {
+                setIsLoading(true);
+                const response = await fetch(`${API_BASE_URL}/api/user_details/${user.id}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Fetched user details:', data);
+                setUserDetails(data);
+            } catch (e) {
+                console.error('Failed to fetch user details:', e);
+            } finally {
+                setIsLoading(false);
+            }
         }
-        console.log('userDetails:', userDetails)
         fetchUserDetails();
-    }, []);
+    }, [user?.id]);
 
     useEffect(() => {
         async function fetchTasks() {

@@ -174,7 +174,8 @@ const Login = () => {
                                     <button id="login-submit" type="submit" className="button h-button is-big is-rounded is-primary is-bold is-raised">
                                         Login Now
                                     </button>
-                                    {isPlatform('ios')  ? (<span>Or <a href="/register">Create</a> an account.</span>) : (<></>)}
+                                    {/* {isPlatform('ios')  ? (<span>Or <a href="/register">Create</a> an account.</span>) : (<></>)} */}
+                                    <span>Or <a href="/register">Create</a> an account.</span>
                                 </div>
                             </form>
 

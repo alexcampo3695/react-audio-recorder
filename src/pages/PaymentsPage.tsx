@@ -10,8 +10,6 @@ const PaymentPage = () => {
     <AppWrapper
         children={
           <Payments 
-            Title="Wahtever" 
-            Subtitle="Whatever"
           />
         }
         title='Products'

@@ -4,7 +4,40 @@ import { useUser } from "../context/UserContext";
 import { Notyf } from "notyf";
 import 'notyf/notyf.min.css';
 import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
+import { API_BASE_URL } from "../config";
+import { isPlatform } from "@ionic/react";
+import Modal from "./Modal";
+import ProductService from "./ProductService";
 // import { Permissions } from '@capacitor/core';
+
+interface PaymentSchema {
+  subscriberId: String,
+  productId: String,
+  eventType: Number,
+  store: String,
+  originalTransactionId: String,
+  purchaseDateMs: Number,
+  price: Number,
+  currencyCode: String,
+  expireDate: Number,
+  isSubscriptionActive: Boolean,
+  environment: String,
+  eventId: String,
+  eventDate: Number,
+  source: String,
+  vendorId: String,
+  appId: String,
+  originalPurchaseDateMs: Number,
+  priceUsd: Number,
+  countryCode: String,
+  duration: Number,
+  customId: String,
+  device: String,
+  systemVersion: String,
+  permissionId: String,
+  isValid: Boolean,
+  receiptValidated: Boolean,
+}
 
 interface IonicAudioRecorderProps {
   onRecordingComplete?: (blob: Blob) => void;
@@ -20,12 +53,69 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
   const [recordingState, setRecordingState] = useState<"idle" | "recording" | "paused">("idle");
   const { user } = useUser();
   const notyf = new Notyf();
+  const [paymentData, setPaymentData] = useState<PaymentSchema[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
+
+  const fetchUserPayment = async () => {
+    const url = `${API_BASE_URL}/api/payment/${user?.id}`;
+    setIsLoading(true);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user payment: ${response.status}`);
+      }
+      const paymentData: PaymentSchema[] = await response.json();
+      setPaymentData(paymentData);
+    } catch (e) {
+      console.error('Failed to fetch user payment:', e);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  console.log('ios', isPlatform('ios'))
+
+  useEffect(() => {
+    console.log('Current user ID:', user?.id);
+    if (user?.id) {
+      fetchUserPayment();
+    } else {
+      console.log('No user ID available, skipping payment fetch');
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     if (onRecordingStateChange) {
       onRecordingStateChange(recordingState === "recording");
     }
   }, [recordingState, onRecordingStateChange]);
+
+  console.log('paymentData', paymentData)
+
+  const checkPaymentStatus = (paymentData: PaymentSchema[] | null | undefined) => {
+    if (!paymentData || paymentData.length === 0) {
+      notyf.error('You do not have an active subscription');
+      setPaymentModalOpen(true);
+      
+      return false;
+    }
+
+    const validSubscriptions = paymentData.find(payment => 
+      (payment.productId === "care_voice_subscription_monthly_99.99" || "care_voice_subscription_monthly_899.99") 
+      && payment.isSubscriptionActive === true
+    )
+
+    if (!validSubscriptions) {
+      notyf.error("No active subscription found. Please subscribe on IOS App.");
+      setPaymentModalOpen(true);
+      
+      
+      return false;
+    }
+
+    return true;
+  }
 
   function base64ToBlob(base64: string, mime: string): Blob {
     const byteCharacters = atob(base64);
@@ -56,6 +146,10 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
       notyf.error('getUserMedia API is not supported in this browser.');
       return;
     }
+
+    if ((checkPaymentStatus(paymentData) === false)) {
+      return;
+    };
   
     try {
       await VoiceRecorder.requestAudioRecordingPermission();
@@ -112,38 +206,50 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
   }
 
   return (
-    <div className="antidote-recorder-container" data-testid="audio_recorder">
-      <div>
-        <div className="antidote-recorder-container">
-          <div className={`antidote-recorder-button ${recordingState !== "idle" ? "is-recording" : ""} ${recordingState === "paused" ? "is-paused" : ""}`} onClick={toggleRecording}>
-            <img className="light-image recorder-emblem" src={antidoteEmblem} alt="" />
-            <img className="dark-image recorder-emblem" src={antidoteEmblem} alt="" />
+    <>
+      <div className="antidote-recorder-container" data-testid="audio_recorder">
+        <div>
+          <div className="antidote-recorder-container">
+            <div className={`antidote-recorder-button ${recordingState !== "idle" ? "is-recording" : ""} ${recordingState === "paused" ? "is-paused" : ""} ${isPlatform('ios')? "antidote-recorder-button-mobile" : "antidote-recorder-button"}`} onClick={toggleRecording}>
+              <img className="light-image recorder-emblem" src={antidoteEmblem} alt="" />
+              <img className="dark-image recorder-emblem" src={antidoteEmblem} alt="" />
+            </div>
+            <div className="timer-container">
+              {/* <div className="title-wrap">
+                <h1 className="title is-4">{formatTime(recordingTime)}</h1>
+              </div> */}
+            </div>
           </div>
-          <div className="timer-container">
-            {/* <div className="title-wrap">
-              <h1 className="title is-4">{formatTime(recordingTime)}</h1>
-            </div> */}
-          </div>
-        </div>
-        <div className="antidote-controls-container">
-          <div className={"complete"} onClick={recordingState === 'recording' ? () => stopRecording() : startRecording} data-testid="ar_mic" title={recordingState === 'recording' ? "Save recording" : "Start recording"}>
-            <i>
-              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-check">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </i>
-          </div>
-          <div className={"deleted"} onClick={() => stopRecording(false)} title="Discard Recording" data-testid="ar_cancel">
-            <i>
-              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </i>
+          <div className="antidote-controls-container">
+            <div className={"complete"} onClick={recordingState === 'recording' ? () => stopRecording() : startRecording} data-testid="ar_mic" title={recordingState === 'recording' ? "Save recording" : "Start recording"}>
+              <i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-check">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </i>
+            </div>
+            <div className={"deleted"} onClick={() => stopRecording(false)} title="Discard Recording" data-testid="ar_cancel">
+              <i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </i>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      {paymentModalOpen && (
+        <Modal
+          ModalTitle="Subscribe"
+          Type='custom'
+          hasButtons={false}
+          Children={<ProductService />}
+          IsLarge={true}
+          onClose={() => setPaymentModalOpen(false)}
+        />
+      )}
+    </>
   );
 };
 

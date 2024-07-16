@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react"; 
+import React, { useState, useMemo, useCallback, useEffect } from "react"; 
 import AudioRecorder from "../components/AudioRecordingComponent";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import AppWrapper from "./AppWrapper";
@@ -7,10 +7,41 @@ import AudioUploader from "../components/AudioUploader";
 import { useUser } from "../context/UserContext";
 import IonicAudioRecorder from "../components/IonicAudioRecorder";
 import { API_BASE_URL } from "../config";
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 
 interface RecorderPageProps {
   onRecordingComplete: (blob: Blob) => void;
   onFileUpload: (file: File) => void;
+}
+
+interface PaymentSchema {
+  subscriberId: String,
+  productId: String,
+  eventType: Number,
+  store: String,
+  originalTransactionId: String,
+  purchaseDateMs: Number,
+  price: Number,
+  currencyCode: String,
+  expireDate: Number,
+  isSubscriptionActive: Boolean,
+  environment: String,
+  eventId: String,
+  eventDate: Number,
+  source: String,
+  vendorId: String,
+  appId: String,
+  originalPurchaseDateMs: Number,
+  priceUsd: Number,
+  countryCode: String,
+  duration: Number,
+  customId: String,
+  device: String,
+  systemVersion: String,
+  permissionId: String,
+  isValid: Boolean,
+  receiptValidated: Boolean,
 }
 
 interface PatientData {
@@ -30,6 +61,10 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
 }) => {
   const history = useHistory();
   const location = useLocation();
+  const [activeTab, setActiveTab] = useState('record');
+  const [paymentData, setPaymentData] = useState<PaymentSchema[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const notyf = new Notyf();
 
 
   const patientData = useMemo(() => {
@@ -40,6 +75,17 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
 
   const [isRecording, setIsRecording] = useState(false);
   const { user } = useUser();
+
+  const hasActiveSubscription = (paymentData: PaymentSchema[] | null ): boolean => {
+    if (!paymentData || paymentData.length === 0) {
+      return false;
+    }
+
+    return paymentData.some(payment => 
+      payment.isSubscriptionActive === true &&
+      (payment.productId === "care_voice_subscription_monthly_99.99" || "care_voice_subscription_monthly_99.99")
+    )
+  }
 
   const handleRecordingStateChange = useCallback((isRecording: boolean) => {
     setIsRecording(isRecording);
@@ -80,21 +126,46 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
     }
   }
   
-  const [activeTab, setActiveTab] = useState('record');
+  
     
   const handleTabClick = (tab: string, event:React.MouseEvent) => {
     event.preventDefault()
-    setActiveTab(tab);
-    console.log(activeTab)
+    if (tab === 'upload') {
+      if (hasActiveSubscription(paymentData)) {
+        setActiveTab(tab)
+      } else {
+        notyf.error('You do not have an active subscription');
+      }
+    } else {
+      setActiveTab(tab)
+    }
   }
 
-  const memoizedAudioRecorder = useMemo(() => (
-    <AudioRecorder
-      onRecordingComplete={handleRecordingComplete}
-      onRecordingStateChange={handleRecordingStateChange}
-      isRecording={isRecording}
-    />
-  ), [handleRecordingComplete, handleRecordingStateChange, isRecording]);
+  const fetchUserPayment = async () => {
+    const url = `${API_BASE_URL}/api/payment/${user?.id}`;
+    setIsLoading(true);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user payment: ${response.status}`);
+      }
+      const paymentData: PaymentSchema[] = await response.json();
+      setPaymentData(paymentData);
+    } catch (e) {
+      console.error('Failed to fetch user payment:', e);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    console.log('Current user ID:', user?.id);
+    if (user?.id) {
+      fetchUserPayment();
+    } else {
+      console.log('No user ID available, skipping payment fetch');
+    }
+  }, [user?.id]);
 
   return (
     <AppWrapper
@@ -136,6 +207,7 @@ const RecorderPage: React.FC<RecorderPageProps> = ({
                 isRecording={isRecording}
               />
             ) : (
+              
               <AudioUploader onFileUpload={onFileUpload} />
               
             )}

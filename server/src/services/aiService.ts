@@ -78,12 +78,12 @@ export async function diariazeTranscription(text: string): Promise<string> {
             },
             {
                 role: "user",
-                content: `You are receiving a conversation between a registered nurse and a patient in a jail setting for a sick call.
+                content: `You are receiving a conversation between a clinician and a patient for a health care visit.
               Your task is to strictly diarize the conversation in markdown format. 
               Please ensure the following:
               - Only include events and information that are explicitly mentioned in the transcript.
               - Fix any grammatical errors conservatively.
-              - Label and distinguish between "Registered Nurse" and "Patient".
+              - Label and distinguish between "Clinician" and "Patient".
               - Do not add any events or information that did not occur in the provided text.
               - Format the conversation in markdown.
               - FORMAT in compilable MARKDOWN Format. NO extra characters please.

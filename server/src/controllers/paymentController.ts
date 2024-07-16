@@ -88,3 +88,19 @@ export async function glassfyWebHook(req: Request, res: Response) {
         res.status(500).json({ message: 'Failed to process Glassfy event', error });
     }
 }
+
+export async function getPaymentMetaBySuscriber(req: Request, res: Response) {
+    const { subscriberId } = req.params;
+    try {
+        const payments = await PaymentMeta.find({ subscriberId });
+
+        if (!payments) {
+            return res.status(404).json({ message: "Payments not found" });
+        }
+        
+        res.status(200).json(payments);
+    } catch (error) {
+        console.error('Failed to fetch payment meta:', error);
+        res.status(500).json({ message: 'Failed to fetch payment meta', error });
+    }
+}

@@ -10,6 +10,9 @@ import '../styles/profile-settings.css'
 import feather from "feather-icons";
 import Modal from "./Modal";
 import { API_BASE_URL } from "../config";
+import ProductService from "./ProductService";
+import { isPlatform } from "@ionic/react";
+import NoData from "./NoData";
 
 interface ProfileFormBodyProps {
     formData: any;
@@ -385,7 +388,7 @@ const ProfileSettings = () => {
         }
     };
 
-
+    console.log('page:', page)
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -448,7 +451,7 @@ const ProfileSettings = () => {
 
                         <div className="account-menu">
                             <a
-                                className={`account-menu-item ${'general' ? 'is-active' : ''}`}
+                                className={`account-menu-item ${page === 'general' ? 'is-active' : ''}`}
                                 onClick={() => { setPage('general');  }}
                             >
                                 <i className="lnil lnil-user-alt"></i>
@@ -472,38 +475,59 @@ const ProfileSettings = () => {
                                 </span>
                             </a>
                         </div>
+                        <div className="account-menu">
+                            <a
+                                className={`account-menu-item ${page === 'subscription' ? 'is-active' : ''}`}
+                                onClick={() => { setPage('subscription');  }}
+                            >
+                                <i className="lnil lnil-credit-card"></i>
+                                <span>Purchases</span>
+                                <span className="end">
+                                    <i aria-hidden="true" className="fas fa-arrow-right"></i>
+                                </span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
                 <div className="column is-8">
                     <div className="account-box is-form is-footerless">
+                        
                         <div className="form-head stuck-header">
                             <div className="form-head-inner">
                                 <div className="left">
                                     <h3>Settings</h3>
-                                    <p>Edit your account prefs and settings</p>
+                                    <p>Edit your account preferences and settings</p>
                                 </div>
-                                <div className="right">
-                                    <div className="buttons">
-                                        <button
-                                            id="save-button"
-                                            className="button h-button is-primary is-raised"
-                                            onClick={handleGeneralDataSubmit}
-                                        >
-                                            Save Changes
-                                        </button>
+                                {page === 'general' && (
+                                    <div className="right">
+                                        <div className="buttons">
+                                            <button
+                                                id="save-button"
+                                                className="button h-button is-primary is-raised"
+                                                onClick={handleGeneralDataSubmit}
+                                            >
+                                                Save Changes
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
-                        {!loading && 
+                        {page === 'general' && !loading ? (
                             <ProfileFormBody 
                                 formData={formData} 
                                 onUpdateFormData={setFormData} 
                                 onSignatureChange={setSignature} 
                                 signature={signature}
                                 onDeactivateAccount={handleDeactivateAccount}
-                            />}
+                            />
+                        ) : (
+                            // <ProductService />
+                            (isPlatform('ios') ? (<ProductService />) : (
+                                <NoData Title="Check Subscriptions Via Mobile App!" Subtitle="We currently do not support subscription access via our web application. Please use your native app for this functionality."/>
+                            ))
+                        )}
                     </div>
                 </div>
             </div>

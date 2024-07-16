@@ -7,6 +7,7 @@ import FakeAvatar, { AvatarSize } from "../elements/FakeAvatar";
 import RecordingsFlexTable from '../components/RecordingTable';
 import Icd10Component from '../components/icd10Component';
 import MedicationComponent from '../components/MedicationComponent';
+import feather from 'feather-icons';
 
 interface PatientData {
     PatientId: string;
@@ -33,6 +34,8 @@ interface LocationState {
   }
 
 
+
+
 const PatientProfile: React.FC = ({ }) => {
     const { patientId } = useParams<{ patientId: string }>();
     const [transcriptions, setTranscriptions] = useState<TranscriptionData[] | null>(null);
@@ -49,6 +52,10 @@ const PatientProfile: React.FC = ({ }) => {
     // console.log('patientData:', patientData);
 
     console.log('patientId:', patientId);
+
+    useEffect(() => {
+        feather.replace();
+    }, []);
 
     useEffect(() => {
         const fetchTranscription = async () => {
@@ -109,7 +116,7 @@ const PatientProfile: React.FC = ({ }) => {
                             <div className="columns">
                                 <div className="column is-5">
                                     <div className="profile-card">
-                                        <div className="profile-card-section">
+                                        {/* <div className="profile-card-section">
                                             <div className="section-title">
                                                 <h4>About Me</h4>
                                                 <a href="/admin-profile-edit-1.html"><i className="lnil lnil-pencil"></i></a>
@@ -124,11 +131,25 @@ const PatientProfile: React.FC = ({ }) => {
                                                     summo bono afferre incrementum diem.
                                                 </p>
                                             </div>
-                                        </div>
+                                        </div> */}
                                         <div className="profile-card-section">
-                                            <div className="section-title">
+                                            <div 
+                                                className="section-title"
+                                                style={{display: 'flex', justifyContent: 'space-between'}}
+                                            >
                                                 <h4>Recordings</h4>
-                                                <a href="/admin-profile-edit-2.html"><i className="lnil lnil-pencil"></i></a>
+                                                <button 
+                                                    className="button is-primary is-circle is-elevated"
+                                                    onClick={() => history.push('/recorder', { patientData })}
+                                                >
+                                                    <span className="icon is-small">
+                                                    <i 
+                                                        aria-hidden="true"
+                                                        style={{color: 'white'}}
+                                                        className="fas fa-plus">
+                                                    </i>
+                                                    </span>
+                                                </button>
                                             </div>
                                             <div className="section-content">
                                                 <div className="skills-wrapper">

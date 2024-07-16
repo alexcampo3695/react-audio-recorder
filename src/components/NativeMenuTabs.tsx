@@ -16,7 +16,7 @@ const NativeMenuTabs: React.FunctionComponent = () => {
           <div className="icon">
             <i
               className="fas fa-home"
-              style={{ color: isActive('/home') ? '#26619B' : '#cecece'}}
+              style={{ color: isActive('/home') ? '#26619B' : '#cecece', fontSize: '1.5rem' }}
             ></i>
           </div>
         </NavLink>
@@ -26,7 +26,17 @@ const NativeMenuTabs: React.FunctionComponent = () => {
           <div className="icon">
             <i
               className="fas fa-clipboard-list"
-              style={isActive('/table') ? { color: '#26619B' } : { color: '#cecece' }}
+              style={{ color: isActive('/table') ? '#26619B' : '#cecece', fontSize: '1.5rem' }}
+            ></i>
+          </div>
+        </NavLink>
+      </li>
+      <li className="list-item-ios">
+        <NavLink to="/patients" className={isActive('/patients') ? 'active' : ''}>
+          <div className="icon">
+            <i
+              className="fas fa-users"
+              style={{ color: isActive('/patients') ? '#26619B' : '#cecece', fontSize: '1.5rem' }}
             ></i>
           </div>
         </NavLink>
@@ -36,21 +46,13 @@ const NativeMenuTabs: React.FunctionComponent = () => {
           <div className="icon">
             <i
               className="fas fa-cog"
-              style={isActive('/profile_settings') ? { color: '#26619B' } : { color: '#cecece' }}
+              style={{ color: isActive('/profile_settings') ? '#26619B' : '#cecece', fontSize: '1.5rem' }}
             ></i>
           </div>
         </NavLink>
       </li>
-      <li className="list-item-ios">
-        <NavLink to="/payment" className={isActive('/payment') ? 'active' : ''}>
-          <div className="icon">
-            <i
-              className="fas fa-credit-card"
-              style={isActive('/profile_settings') ? { color: '#26619B' } : { color: '#cecece' }}
-            ></i>
-          </div>
-        </NavLink>
-      </li>
+      
+      
     </div>
   );
 };
