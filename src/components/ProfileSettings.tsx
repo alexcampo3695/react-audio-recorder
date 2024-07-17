@@ -270,7 +270,7 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                         </div>
                     </div>
                     <div className="fieldset-heading">
-                        <h4>Deactivate Account</h4>
+                        <h4>Delete Account</h4>
                         <button 
                             className="button h-button is-danger is-rounded is-elevated" 
                             style = {{marginTop:"10px"}}
@@ -279,17 +279,17 @@ const ProfileFormBody: React.FC<ProfileFormBodyProps> = ({ formData, onUpdateFor
                                 <span className="icon">
                                     <i data-feather = "user-x"></i>
                                 </span>
-                            <span>Deactivate</span>
+                            <span>Delete Account</span>
                         </button>
                     </div>
                 </div>
             </div>
             { modal && (
                 <Modal
-                    ModalTitle="Account Deactivation"
+                    ModalTitle="Account Deletion"
                     Type='image'
                     Header="Confirm Deactivation"
-                    Subtext="This will deactivate your account and you will lose access to all services."
+                    Subtext="This will delete your account and you will lose access to all services."
                     hasButtons={true}
                     PrimaryButtonText="Delete"
                     SecondaryButtonText="Cancel"

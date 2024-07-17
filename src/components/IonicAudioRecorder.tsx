@@ -209,8 +209,14 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
     <>
       <div className="antidote-recorder-container" data-testid="audio_recorder">
         <div>
-          <div className="antidote-recorder-container">
-            <div className={`antidote-recorder-button ${recordingState !== "idle" ? "is-recording" : ""} ${recordingState === "paused" ? "is-paused" : ""} ${isPlatform('ios')? "antidote-recorder-button-mobile" : "antidote-recorder-button"}`} onClick={toggleRecording}>
+          <div 
+            className="antidote-recorder-container"
+          >
+            <div 
+              className={`antidote-recorder-button ${recordingState !== "idle" ? "is-recording" : ""} ${recordingState === "paused" ? "is-paused" : ""} ${isPlatform('ios')? "antidote-recorder-button-mobile" : "antidote-recorder-button"}`} 
+              onClick={toggleRecording}
+              style={{marginTop: isPlatform('ios') ? '-100px' : ''}}
+            >
               <img className="light-image recorder-emblem" src={antidoteEmblem} alt="" />
               <img className="dark-image recorder-emblem" src={antidoteEmblem} alt="" />
             </div>
@@ -220,22 +226,48 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
               </div> */}
             </div>
           </div>
-          <div className="antidote-controls-container">
-            <div className={"complete"} onClick={recordingState === 'recording' ? () => stopRecording() : startRecording} data-testid="ar_mic" title={recordingState === 'recording' ? "Save recording" : "Start recording"}>
-              <i>
-                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-check">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </i>
-            </div>
-            <div className={"deleted"} onClick={() => stopRecording(false)} title="Discard Recording" data-testid="ar_cancel">
+          <div 
+            className="antidote-controls-container"
+          >
+            <button 
+              className="button is-success-light is-circle is-elevated complete"
+              onClick={recordingState === 'recording' ? () => stopRecording() : startRecording} data-testid="ar_mic" title={recordingState === 'recording' ? "Save recording" : "Start recording"}
+              style={{marginTop: isPlatform('ios') ? '-80px' : ''}}
+            >
+              <span className="icon is-small">
+                <i 
+                  aria-hidden="true" 
+                  className="fas fa-check"
+                  style={{fontSize: isPlatform('ios') ? '1rem' : '1.5rem'}}
+                >
+                </i>
+              </span>
+            </button>
+
+
+            <button 
+              className="button is-danger-light is-circle is-elevated complete"
+              onClick={() => stopRecording(false)} title="Discard Recording" data-testid="ar_cancel"
+              style={{marginTop: isPlatform('ios') ? '-80px' : ''}}
+            >
+              <span className="icon is-small">
+                <i 
+                  aria-hidden="true" 
+                  className="fas fa-trash-alt"
+                  style={{fontSize: isPlatform('ios') ? '1rem' : '1.5rem', color: '#e62965'}}
+                >
+                </i>
+              </span>
+            </button>
+            
+            {/* <div className={"deleted"} onClick={() => stopRecording(false)} title="Discard Recording" data-testid="ar_cancel">
               <i>
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
               </i>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
