@@ -13,6 +13,7 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
+import { useUser } from "../context/UserContext";
 
 import NativeMenuTabs from '../components/NativeMenuTabs';
 import MobileHeader from '../components/MobileHeader';
@@ -25,6 +26,8 @@ interface AppWrapperProps {
 const AppWrapper = ({ children, title }: AppWrapperProps) => {
   const [darkMode, setDarkMode] = useState(false);
   const location = useLocation();
+  const { user } = useUser();
+  
 
   const toggleBodyClass = () => {
     const body = document.querySelector('body');
@@ -70,7 +73,13 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
       case '/profile_settings':
         return 'Profile';
       case '/table':
-        return 'Table';
+        return 'Recordings';
+      case '/recorder':
+        return 'recorder';
+      case `/patient_profile/${user?.id}`:
+        return 'Patient Profile';
+      case '/summary':
+        return 'Encounter Analysis';
       default:
         return 'Default Title';
     }

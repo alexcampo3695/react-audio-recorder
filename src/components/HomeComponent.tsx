@@ -97,6 +97,10 @@ const HomeComponent = ({}) => {
         })
     }
 
+    const handleTabClick = (tab: string) => {
+        setActiveTab(tab);
+    }
+
     const todaysTasks = filterTasksForToday(tasks);
 
     console.log('todaysTasks:', todaysTasks)
@@ -106,7 +110,7 @@ const HomeComponent = ({}) => {
             <div
                 style = {isPlatform('ios') ? {overflow: 'hidden'} : {}}
             >
-                {/* <div className="tabs-inner switch">
+                <div className="tabs-inner switch">
                     <div className="tabs">
                         <ul>
                             <li 
@@ -137,9 +141,9 @@ const HomeComponent = ({}) => {
                     <CreatePatientForm />
                 ) : (
                     <ExistingPatientsTable />
-                )} */}
+                )}
 
-                <div className="personal-dashboard personal-dashboard-v2">
+                {/* <div className="personal-dashboard personal-dashboard-v2">
                     <div className="columns is-multiline">
                         <div className="column is-12">
                             <div className="dashboard-header">
@@ -191,10 +195,9 @@ const HomeComponent = ({}) => {
                         </div>
 
                         <div className="column is-4">
-                            {/* something goes here  */}
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
             {isModalOpen && (
                 <Modal
