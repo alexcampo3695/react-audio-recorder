@@ -8,7 +8,10 @@ import { API_BASE_URL } from "../config";
 import { isPlatform } from "@ionic/react";
 import Modal from "./Modal";
 import ProductService from "./ProductService";
+// import ProductServiceAlt from "./ProductServiceAlt";
+import SubscriptionOverview from "../react-native/SubscriptionOverview";
 // import { Permissions } from '@capacitor/core';
+import { useLocation, useHistory } from "react-router-dom";
 
 interface PaymentSchema {
   subscriberId: String,
@@ -56,6 +59,7 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
   const [paymentData, setPaymentData] = useState<PaymentSchema[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
+  const history = useHistory();
 
   const fetchUserPayment = async () => {
     const url = `${API_BASE_URL}/api/payment/${user?.id}`;
@@ -74,10 +78,7 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
     }
   }
 
-  console.log('ios', isPlatform('ios'))
-
   useEffect(() => {
-    console.log('Current user ID:', user?.id);
     if (user?.id) {
       fetchUserPayment();
     } else {
@@ -91,7 +92,7 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
     }
   }, [recordingState, onRecordingStateChange]);
 
-  console.log('paymentData', paymentData)
+  console.log('setModalOpen', paymentModalOpen);
 
   const checkPaymentStatus = (paymentData: PaymentSchema[] | null | undefined) => {
     if (!paymentData || paymentData.length === 0) {
@@ -138,8 +139,6 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
 
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   };
-
-  console.log('state', recordingState)
 
   const startRecording = async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -198,11 +197,16 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
   }
 
   const toggleRecording = () => {
-    if (recordingState === "idle") {
-      startRecording();
-    } else if (recordingState === "recording") {
-      stopRecording();
+    if (checkPaymentStatus(paymentData) === true) {
+      if (recordingState === "idle") {
+        startRecording();
+      } else if (recordingState === "recording") {
+        stopRecording();
+      }
+    } else {
+      history.push('/subscriptions');
     }
+    
   }
 
   return (
@@ -271,16 +275,6 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
           </div>
         </div>
       </div>
-      {paymentModalOpen && (
-        <Modal
-          ModalTitle="Subscribe"
-          Type='custom'
-          hasButtons={false}
-          Children={<ProductService />}
-          IsLarge={true}
-          onClose={() => setPaymentModalOpen(false)}
-        />
-      )}
     </>
   );
 };

@@ -20,6 +20,7 @@ import ProfileSettingsPage from './pages/ProfileSettings';
 import PatientPage from './pages/PatientsPage';
 import PatientProfile from './pages/PatientProfile';
 import PaymentPage from './pages/PaymentsPage';
+import SubscriptionsPage from './pages/SuscribePage';
 
 
 
@@ -81,6 +82,7 @@ const App: React.FC = () => {
           )} />
           <Route path="/patient_profile/:patientId" component={PatientProfile} />
           <Route path="/payment" component={PaymentPage} />
+          <Route path="/subscriptions" component={SubscriptionsPage} />
         </Switch>
       </Router>
     </div>

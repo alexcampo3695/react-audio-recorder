@@ -75,10 +75,10 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
       case '/table':
         return 'Recordings';
       case '/recorder':
-        return 'recorder';
+        return 'Recorder';
       case `/patient_profile/${user?.id}`:
         return 'Patient Profile';
-      case '/summary':
+      case '/Summary':
         return 'Encounter Analysis';
       default:
         return 'Default Title';
