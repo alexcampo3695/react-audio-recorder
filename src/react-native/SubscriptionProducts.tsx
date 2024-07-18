@@ -15,7 +15,7 @@ import { Glassfy, GlassfyOffering, GlassfySku } from 'capacitor-plugin-glassfy';
 import PageLoader from '../pages/LoaderPage';
 import { useHistory } from 'react-router-dom';
 import { Notyf } from "notyf";
-import { APPLE_SECRET } from '../config';
+import { API_BASE_URL, APPLE_SECRET } from '../config';
 
 // import FeatherIcon from 'react-native-vector-icons/Feather';
 
@@ -60,16 +60,10 @@ export default function SubscriptionProducts() {
   
 
   const handlePurchase = async () => {
-    if (skuData && userId) {
+    if (skuData) {
       try {
         const transaction = await Glassfy.purchaseSku({ sku: skuData });
-        
-        await axios.post('/api/proccess-purchase', {
-          receiptData: transaction,
-          subscriberId: transaction.permissions.subscriberId,
-          userId: userId
-        });
-
+        await Glassfy.connectCustomSubscriber({ subscriberId: userId || '' });
         history.push('/home')
         notyf.success('Purchase Successful!');
       } catch (e) {
@@ -85,13 +79,6 @@ export default function SubscriptionProducts() {
         const restoredTransactions = await Glassfy.restorePurchases();
         
         // Extract the relevant data from the restored transactions object
-       
-
-        await axios.post('/api/proccess-purchase', {
-          receiptData: restoredTransactions,
-          subscriberId: restoredTransactions.subscriberId,
-          userId: userId
-        });
         history.push('/home');
         notyf.success('Restore Successful!');
       } catch (e) {
