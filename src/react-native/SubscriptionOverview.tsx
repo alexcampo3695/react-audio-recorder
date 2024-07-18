@@ -94,7 +94,7 @@ const SubscriptionOverview = ({ }) => {
           <View style={styles.paywallFooter}>
             <TouchableOpacity
               onPress={() => {
-                // handle onPress
+                history.push('/subscription_products');
               }}>
               <View style={styles.btn}>
                 <View style={{ width: 31 }} />
@@ -111,7 +111,7 @@ const SubscriptionOverview = ({ }) => {
 
             <TouchableOpacity
               onPress={() => {
-                history.push('/subscriptions');
+                history.push('/subscription_products');
               }}>
               {/* <View style={styles.btnSecondary}>
                 <Text style={styles.btnSecondaryText}>

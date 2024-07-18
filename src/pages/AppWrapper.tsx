@@ -80,6 +80,12 @@ const AppWrapper = ({ children, title }: AppWrapperProps) => {
         return 'Patient Profile';
       case '/Summary':
         return 'Encounter Analysis';
+      case '/patients':
+        return 'Patients';
+      case '/subscriptions':
+        return 'Subscription Overview';
+      case '/subscription_products':
+        return 'Products';
       default:
         return 'Default Title';
     }

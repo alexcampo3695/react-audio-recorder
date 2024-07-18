@@ -20,7 +20,9 @@ import ProfileSettingsPage from './pages/ProfileSettings';
 import PatientPage from './pages/PatientsPage';
 import PatientProfile from './pages/PatientProfile';
 import PaymentPage from './pages/PaymentsPage';
-import SubscriptionsPage from './pages/SuscribePage';
+import SubscriptionsPage from './pages/SubscriptionOverviewPage';
+import SubscriptionProductsPage from './pages/SubscriptionProductsPage';
+import PageLoader from './pages/LoaderPage';
 
 
 
@@ -83,6 +85,8 @@ const App: React.FC = () => {
           <Route path="/patient_profile/:patientId" component={PatientProfile} />
           <Route path="/payment" component={PaymentPage} />
           <Route path="/subscriptions" component={SubscriptionsPage} />
+          <Route path="/subscription_products" component={SubscriptionProductsPage} />
+          <Route path="/loader" component={PageLoader} />
         </Switch>
       </Router>
     </div>

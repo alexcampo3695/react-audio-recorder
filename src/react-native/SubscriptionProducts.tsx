@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Glassfy, GlassfyOffering, GlassfyPermission, GlassfySku } from "capacitor-plugin-glassfy" ;
+import React, { useEffect, useState } from 'react';
+// import { Glassfy, GlassfyOffering, GlassfyPermission, GlassfySku } from "capacitor-plugin-glassfy" ;
+import Colors from '../helpers/Colors';
 import {
   StyleSheet,
   SafeAreaView,
@@ -8,70 +9,129 @@ import {
   Text,
   TouchableWithoutFeedback,
 } from 'react-native';
-import FeatherIcon from 'react-native-vector-icons/Feather';
+import { useUser } from '../context/UserContext';
+import { Glassfy, GlassfyOffering, GlassfySku } from 'capacitor-plugin-glassfy';
+import PageLoader from '../pages/LoaderPage';
+import { useHistory } from 'react-router-dom';
+import { Notyf } from "notyf";
+// import FeatherIcon from 'react-native-vector-icons/Feather';
 
-const prices = [
-  {
-    price: '$99.99',
-    label: 'Lifetime',
-    description: 'Pay Once - Access Forever',
-  },
-  { price: '$24.99', label: 'Yearly', description: 'Includes Family Sharing' },
-  { price: '$9.99', label: 'Monthly', description: 'Includes Family Sharing' },
-];
 
-export default function Example() {
+export default function SubscriptionProducts() {
   const [selected, setSelected] = useState(0);
+  const [offerings, setOfferings] = useState<GlassfyOffering[]>([]);
+  const { user } = useUser();
+  const [loading, setLoading] = useState<boolean>(false);
+  const GLASSFY_API_KEY = import.meta.env.VITE_GLASSFY_API_KEY
+  const [skuData, setSkuData] = useState<GlassfySku | null>(null);
+  const userId = user?.id;
+  const history = useHistory();
+  const notyf = new Notyf();
+
+  console.log('api_key:',GLASSFY_API_KEY)
+  console.log('sku', skuData?.productId);
+
+  useEffect(() => {
+    const initGlassfy = async () => {
+      try {
+        setLoading(true);
+        await Glassfy.initialize({ apiKey: 'fbe75b0835d54fd3ace820863c2c7855', watcherMode: false });
+        const offerings = await Glassfy.offerings();
+        console.log('offerings', offerings);
+        setOfferings(offerings.all);
+      } catch (e) {
+        console.error("initialization error", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    initGlassfy();
+  }, []);
+
+  const handlePurchase = async () => {
+    if (skuData) {
+      try {
+        const transaction = await Glassfy.purchaseSku({ sku: skuData });
+        await Glassfy.connectCustomSubscriber({ subscriberId: userId || '' });
+        history.push('/home')
+        notyf.success('Purchase Successful!');
+      } catch (e) {
+          console.error('Purchase Failed', e);
+          notyf.error('Sorry your purchase has failed. Please contact support.');
+      }
+    }
+  }
+
+  const handleRestore = async () => {
+    try {
+      const restoredTransactions = await Glassfy.restorePurchases();
+      history.push('/home')
+      notyf.success('Restore Successful!');
+    } catch (e) {
+      console.error('RestoreFailed', e);
+      notyf.error('Sorry your purchase has failed. Please contact support.');
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return <PageLoader />;
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F4EFF3' }}>
+    <>
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            // handle onPress
-          }}
-          style={styles.headerAction}>
-          <FeatherIcon
-            color="#F82E08"
-            name="arrow-left"
-            size={24} />
-        </TouchableOpacity>
-
-        <Text style={styles.title}>👑 Premium Access</Text>
-
+        <Text style={styles.title}>💎 Premium Unlimited Access</Text>
         <Text style={styles.subtitle}>
-          Boost your productivity with premium tools and personalized features.
+          CareVoice transforms conversations into seamless medical documentation.
           Subscribe now for unlimited access!
         </Text>
       </View>
 
       <View style={styles.form}>
         <View>
-          {prices.map((item, index) => {
+          {offerings.map((offering, offeringIndex) => (
+          offering.skus.map((sku, index) => {
             const isActive = selected === index;
             return (
               <TouchableWithoutFeedback
-                key={index}
-                onPress={() => setSelected(index)}
+                key={`sku-${offeringIndex}-${index}`}
+                onPress={() => {
+                  setSelected(index);
+                  setSkuData(sku);
+                }}
                 // type="without-feedback"
               >
                 <View
                   style={[
                     styles.radio,
                     isActive
-                      ? { borderColor: '#F82E08', backgroundColor: '#feeae6' }
+                      ? { borderColor: Colors.primary, backgroundColor: Colors.primaryLighter }
                       : {},
                   ]}>
-                  <FeatherIcon
+                  {/* <span className="icon">
+                    <i 
+                      data-feather={isActive ? "check-circle" : "circle"}
+                      color={isActive ? '#F82E08' : '#363636'}
+                    >
+                    </i>
+                  </span> */}
+                  {/* <FeatherIcon
                     color={isActive ? '#F82E08' : '#363636'}
                     name={isActive ? 'check-circle' : 'circle'}
-                    size={24} />
+                    size={24} /> */}
 
                   <View style={styles.radioBody}>
                     <View>
-                      <Text style={styles.radioLabel}>{item.label}</Text>
+                      <Text style={styles.radioLabel}>{sku.product.title}</Text>
 
-                      <Text style={styles.radioText}>{item.description}</Text>
+                      <Text style={styles.radioText}>
+                       {sku.productId === 'care_voice_subscription_monthly_99.99'
+                       ? 'Enjoy unlimited usage each month'
+                       : 'Enjoy unlimited usage each year'}
+                      </Text>
                     </View>
 
                     <Text
@@ -79,19 +139,21 @@ export default function Example() {
                         styles.radioPrice,
                         isActive && styles.radioPriceActive,
                       ]}>
-                      {item.price}
+                      {'$'}{sku.product.price}
                     </Text>
                   </View>
                 </View>
               </TouchableWithoutFeedback>
-            );
-          })}
+            )
+            
+          })
+        ))}
         </View>
 
         <View>
           <TouchableOpacity
             onPress={() => {
-              // handle onPress
+              handlePurchase()
             }}>
             <View style={styles.btn}>
               <Text style={styles.btnText}>Continue</Text>
@@ -100,7 +162,7 @@ export default function Example() {
 
           <TouchableOpacity
             onPress={() => {
-              // handle onPress
+              handleRestore()
             }}>
             <View style={styles.btnEmpty}>
               <Text style={styles.btnEmptyText}>Restore Purchase</Text>
@@ -113,13 +175,13 @@ export default function Example() {
           </Text>
         </View>
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 34,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#181818',
     marginBottom: 12,
@@ -141,7 +203,7 @@ const styles = StyleSheet.create({
     borderRadius: 9999,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ffdada',
+    backgroundColor: Colors.primaryLight,
     marginBottom: 16,
   },
   /** Form */
@@ -214,8 +276,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderWidth: 1,
-    backgroundColor: '#F82E08',
-    borderColor: '#F82E08',
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   btnText: {
     fontSize: 17,
@@ -232,13 +294,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderWidth: 1.5,
     backgroundColor: 'transparent',
-    borderColor: '#F82E08',
+    borderColor: Colors.primary,
     marginTop: 12,
   },
   btnEmptyText: {
     fontSize: 17,
     lineHeight: 22,
     fontWeight: 'bold',
-    color: '#F82E08',
+    color: Colors.primary,
   },
 });

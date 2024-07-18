@@ -39,12 +39,12 @@ export const Payments: React.FC = ({  }) => {
       }, []);
 
       const handlePurchase = async (sku: GlassfySku) => {
-        try {
-            const transaction = await Glassfy.purchaseSku({ sku });
-            await Glassfy.connectCustomSubscriber({ subscriberId: userId || '' });
-        } catch (e) {
-            console.error('Purchase Failed', e);
-        }
+          try {
+              const transaction = await Glassfy.purchaseSku({ sku });
+              await Glassfy.connectCustomSubscriber({ subscriberId: userId || '' });
+          } catch (e) {
+              console.error('Purchase Failed', e);
+          }
       }
 
       return (
