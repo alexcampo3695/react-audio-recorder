@@ -2463,6 +2463,13 @@
   "resolved" "https://registry.npmjs.org/@types/aria-query/-/aria-query-5.0.4.tgz"
   "version" "5.0.4"
 
+"@types/axios@^0.14.0":
+  "integrity" "sha512-KqQnQbdYE54D7oa/UmYVMZKq7CO4l8DEENzOKc4aBRwxCXSlJXGz83flFx5L7AWrOQnmuN3kVsRdt+GZPPjiVQ=="
+  "resolved" "https://registry.npmjs.org/@types/axios/-/axios-0.14.0.tgz"
+  "version" "0.14.0"
+  dependencies:
+    "axios" "*"
+
 "@types/babel__core@^7.20.5":
   "integrity" "sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA=="
   "resolved" "https://registry.npmjs.org/@types/babel__core/-/babel__core-7.20.5.tgz"
@@ -3590,6 +3597,15 @@
   "version" "1.0.7"
   dependencies:
     "possible-typed-array-names" "^1.0.0"
+
+"axios@*", "axios@^1.7.2":
+  "integrity" "sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw=="
+  "resolved" "https://registry.npmjs.org/axios/-/axios-1.7.2.tgz"
+  "version" "1.7.2"
+  dependencies:
+    "follow-redirects" "^1.15.6"
+    "form-data" "^4.0.0"
+    "proxy-from-env" "^1.1.0"
 
 "babel-core@^7.0.0-bridge.0":
   "integrity" "sha512-poPX9mZH/5CSanm50Q+1toVci6pv5KSRv/5TWCwtzQS5XEwn40BcCrgIeMFWP9CKKIniKXNxoIOnOq4VVlGXhg=="
@@ -5632,6 +5648,11 @@
   "integrity" "sha512-p9xnhi64bGDZF+QhZ9D3Iqh8ILS0K+6KHnted0kyo0WHXcPvCrTvVfLFLdTU4OhmN3e4E9w1ikXiZjwro60nkw=="
   "resolved" "https://registry.npmjs.org/flow-parser/-/flow-parser-0.240.0.tgz"
   "version" "0.240.0"
+
+"follow-redirects@^1.15.6":
+  "integrity" "sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA=="
+  "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.6.tgz"
+  "version" "1.15.6"
 
 "for-each@^0.3.3":
   "integrity" "sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw=="

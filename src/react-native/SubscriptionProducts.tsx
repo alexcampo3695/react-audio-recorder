@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import { Glassfy, GlassfyOffering, GlassfyPermission, GlassfySku } from "capacitor-plugin-glassfy" ;
+import axios from 'axios';
 import Colors from '../helpers/Colors';
 import {
   StyleSheet,
@@ -8,17 +8,20 @@ import {
   TouchableOpacity,
   Text,
   TouchableWithoutFeedback,
+  Linking,
 } from 'react-native';
 import { useUser } from '../context/UserContext';
 import { Glassfy, GlassfyOffering, GlassfySku } from 'capacitor-plugin-glassfy';
 import PageLoader from '../pages/LoaderPage';
 import { useHistory } from 'react-router-dom';
 import { Notyf } from "notyf";
+import { APPLE_SECRET } from '../config';
+
 // import FeatherIcon from 'react-native-vector-icons/Feather';
 
 
 export default function SubscriptionProducts() {
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState<number | null>(null);
   const [offerings, setOfferings] = useState<GlassfyOffering[]>([]);
   const { user } = useUser();
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,8 +31,8 @@ export default function SubscriptionProducts() {
   const history = useHistory();
   const notyf = new Notyf();
 
-  console.log('api_key:',GLASSFY_API_KEY)
-  console.log('sku', skuData?.productId);
+  const APPLE_SECRET = import.meta.env.VITE_PROD_BACKEND_URL
+  console.log('apple_secret', APPLE_SECRET)
 
   useEffect(() => {
     const initGlassfy = async () => {
@@ -39,6 +42,11 @@ export default function SubscriptionProducts() {
         const offerings = await Glassfy.offerings();
         console.log('offerings', offerings);
         setOfferings(offerings.all);
+
+        if (offerings.all.length > 0 && offerings.all[0].skus.length > 0) {
+          setSelected(0);
+          setSkuData(offerings.all[0].skus[0])
+        }
       } catch (e) {
         console.error("initialization error", e);
       } finally {
@@ -49,11 +57,19 @@ export default function SubscriptionProducts() {
     initGlassfy();
   }, []);
 
+  
+
   const handlePurchase = async () => {
-    if (skuData) {
+    if (skuData && userId) {
       try {
         const transaction = await Glassfy.purchaseSku({ sku: skuData });
-        await Glassfy.connectCustomSubscriber({ subscriberId: userId || '' });
+        
+        await axios.post('/api/proccess-purchase', {
+          receiptData: transaction,
+          subscriberId: transaction.permissions.subscriberId,
+          userId: userId
+        });
+
         history.push('/home')
         notyf.success('Purchase Successful!');
       } catch (e) {
@@ -64,15 +80,24 @@ export default function SubscriptionProducts() {
   }
 
   const handleRestore = async () => {
-    try {
-      const restoredTransactions = await Glassfy.restorePurchases();
-      history.push('/home')
-      notyf.success('Restore Successful!');
-    } catch (e) {
-      console.error('RestoreFailed', e);
-      notyf.error('Sorry your purchase has failed. Please contact support.');
-    } finally {
-      setLoading(false)
+    if (userId) {
+      try {
+        const restoredTransactions = await Glassfy.restorePurchases();
+        
+        // Extract the relevant data from the restored transactions object
+       
+
+        await axios.post('/api/proccess-purchase', {
+          receiptData: restoredTransactions,
+          subscriberId: restoredTransactions.subscriberId,
+          userId: userId
+        });
+        history.push('/home');
+        notyf.success('Restore Successful!');
+      } catch (e) {
+        console.error('Restore Failed', e);
+        notyf.error('Sorry your restore has failed. Please contact support.');
+      }
     }
   }
 
@@ -173,6 +198,13 @@ export default function SubscriptionProducts() {
             Plan renews automatically. You can manage and cancel your
             subscription in App Store.
           </Text>
+          <Text style={styles.link} onPress={() => Linking.openURL('https://www.antidote-ai.com/privacy-policy')}>
+            Privacy Policy
+          </Text>
+          <Text style={styles.link} onPress={() => Linking.openURL('https://www.apple.com/legal/internet-services/itunes/dev/stdeula/')}>
+            Terms of Use
+          </Text>
+
         </View>
       </View>
     </>
@@ -302,5 +334,12 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontWeight: 'bold',
     color: Colors.primary,
+  },
+  link: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: Colors.primary,
+    textAlign: 'center',
+    marginTop: 12,
   },
 });

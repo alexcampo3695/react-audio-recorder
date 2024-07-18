@@ -32,6 +32,7 @@ interface IPaymentMeta extends Document {
 }
 
 const PaymentMetaSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     subscriberId: String,
     productId: String,
     eventType: Number,

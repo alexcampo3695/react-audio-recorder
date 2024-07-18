@@ -1,11 +1,7 @@
 import { Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
-import Tasks from '../models/Tasks';
-import TasksModel from '../models/Tasks';
-import axios from 'axios';
-import { parse } from 'dotenv';
-const User = require('../models/Users');
 import PaymentMeta from '../models/PaymentMeta';
+const axios = require('axios');
+import { validateReceipt, ReceiptData, ValidationResponse } from '../utils/validatePurchase'; // Adjust the path as needed
 
 const GLASSFY_API_KEY = process.env.GLASSFY_API_KEY;
 
@@ -28,6 +24,7 @@ export async function glassfyWebHook(req: Request, res: Response) {
 
     try {
         const event = req.body;
+        const userId = req.body.userId;
         let payment;
 
         if (event.permissions) {
@@ -40,6 +37,7 @@ export async function glassfyWebHook(req: Request, res: Response) {
             }
 
             payment = new PaymentMeta({
+                userId: userId,
                 subscriberId: permissions.subscriberId,
                 productId,
                 permissionId: relevantPermission.permissionId,
@@ -50,6 +48,7 @@ export async function glassfyWebHook(req: Request, res: Response) {
         } else if (event.subscriberid && event.productid) {
             // Handle the second type of payload (event)
             payment = new PaymentMeta({
+                userId: userId,
                 subscriberId: event.subscriberid,
                 productId: event.productid,
                 eventType: event.type,
@@ -88,6 +87,43 @@ export async function glassfyWebHook(req: Request, res: Response) {
         res.status(500).json({ message: 'Failed to process Glassfy event', error });
     }
 }
+
+export async function processPurchase(req: Request, res: Response) {
+    try {
+        const { receiptData, subscriberId, userId } = req.body;
+  
+      const validationResponse: ValidationResponse = await validateReceipt(receiptData);
+  
+      if (validationResponse.status === 0) {
+        const relevantPermission = validationResponse.receipt.in_app.find((p: any) => 
+          p.product_id === validationResponse.receipt.bundle_id
+        );
+  
+        if (!relevantPermission) {
+          throw new Error('No relevant permission found');
+        }
+  
+        const payment = new PaymentMeta({
+          userId: userId,
+          subscriberId: subscriberId,
+          productId: validationResponse.receipt.bundle_id,
+          permissionId: relevantPermission.transaction_id,
+          isValid: true,
+          expireDate: new Date(relevantPermission.expires_date_ms),
+          receiptValidated: true,
+        });
+  
+        await payment.save();
+        res.status(200).json({ message: 'Receipt validated and saved successfully', payment });
+      } else {
+        res.status(400).json({ message: 'Invalid receipt' });
+      }
+    } catch (error) {
+      console.error('Failed to process purchase', error);
+      res.status(500).json({ message: 'Failed to process purchase', error });
+    }
+  }
+
 
 export async function getPaymentMetaBySuscriber(req: Request, res: Response) {
     const { subscriberId } = req.params;
