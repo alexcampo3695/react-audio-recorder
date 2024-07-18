@@ -21,7 +21,7 @@ export async function summarizeTranscription(text: string): Promise<string> {
     }
 
     const requestBody = {
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         messages: [
             {
                 role: "system",
@@ -70,7 +70,7 @@ export async function diariazeTranscription(text: string): Promise<string> {
     }
 
     const requestBody = {
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         messages: [
             {
                 role: "system",
@@ -132,7 +132,7 @@ export async function icd10Generator(text: string): Promise<ICD10[]> {
     }
 
     const requestBody = {
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         messages: [
             {
                 role: "system",
@@ -189,7 +189,11 @@ export async function icd10Generator(text: string): Promise<ICD10[]> {
 
                         Please set every 'status' boolean to true.
 
-                        If there are no medications in the transcription, please provide an empty array.
+                        Please use absolutely no memory, hallucination, or imagination. Only use the information provided in the transcription.
+
+                        Just provide the relevant ICD-10 codes solorly based on the transcription provided
+
+                        If there are no relevant ICD10 codes for the transcription, please provide an empty array.
 
                         Provide me only JSON and no superfluous information, text, characters, or comments.
 
@@ -251,7 +255,7 @@ export async function taskGenerator(text: string): Promise<Tasks[]> {
     console.log('Todays date:', todaysDate)
 
     const requestBody = {
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         messages: [
             {
                 role: "system",
@@ -365,7 +369,7 @@ export async function medicationGenerator(text: string): Promise<Medication[]> {
     }
 
     const requestBody = {
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         messages: [
             {
                 role: "system",
@@ -464,7 +468,7 @@ export async function cptGenerator(text: string): Promise<CPT[]> {
     }
 
     const requestBody = {
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         messages: [
             {
                 role: "system",
@@ -574,7 +578,7 @@ export async function noteGenerator(transcription: string, icd10Codes: string, c
     }
 
     const requestBody = {
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         messages: [
             {
                 role: "system",
