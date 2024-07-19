@@ -10,9 +10,11 @@ import '../styles/profile-settings.css'
 import feather from "feather-icons";
 import Modal from "./Modal";
 import { API_BASE_URL } from "../config";
-import ProductService from "./ProductService";
+import ProductService from "./PurchaseHistory";
 import { isPlatform } from "@ionic/react";
 import NoData from "./NoData";
+import ExistingPatientsTable from "./ExistingPatient";
+import PurchaseTable from "./PurchaseHistory";
 
 interface ProfileFormBodyProps {
     formData: any;
@@ -481,7 +483,7 @@ const ProfileSettings = () => {
                                 onClick={() => { setPage('subscription');  }}
                             >
                                 <i className="lnil lnil-credit-card"></i>
-                                <span>Purchases</span>
+                                <span>Purchases & Subscriptions</span>
                                 <span className="end">
                                     <i aria-hidden="true" className="fas fa-arrow-right"></i>
                                 </span>
@@ -523,10 +525,13 @@ const ProfileSettings = () => {
                                 onDeactivateAccount={handleDeactivateAccount}
                             />
                         ) : (
-                            // <ProductService />
-                            (isPlatform('ios') ? (<ProductService />) : (
-                                <NoData Title="Check Subscriptions Via Mobile App!" Subtitle="We currently do not support subscription access via our web application. Please use your native app for this functionality."/>
-                            ))
+                            <div style={{margin: '10px'}}>
+                                < PurchaseTable />
+                            </div>
+                            
+                            // (isPlatform('ios') ? (<ProductService />) : (
+                            //     <NoData Title="Check Subscriptions Via Mobile App!" Subtitle="We currently do not support subscription access via our web application. Please use your native app for this functionality."/>
+                            // ))
                         )}
                     </div>
                 </div>

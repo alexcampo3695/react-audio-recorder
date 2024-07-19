@@ -6,8 +6,8 @@ import {getPaymentMetaBySuscriber, glassfyWebHook } from '../controllers/payment
 const router = Router();
 
 // router.post('/', postPayment); // post a payment
-router.post('/webhook/glassfy', glassfyWebHook); // post a payment
+router.post('/webhook/glassfy/:userId', glassfyWebHook); // post a payment
 // router.post('/proccess-purchase', processPurchase); // post a payment
-router.get('/:subscriberId', getPaymentMetaBySuscriber)
+router.get('/:userId', getPaymentMetaBySuscriber)
 
 export default router;

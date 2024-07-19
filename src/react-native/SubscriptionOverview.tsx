@@ -8,8 +8,10 @@ import {
   View,
   TouchableOpacity,
   Text,
+  Linking,
 } from 'react-native';
 import { useHistory } from 'react-router-dom';
+import Colors from '../helpers/Colors';
 
 const SubscriptionOverview = ({ }) => {
   const history = useHistory();
@@ -122,6 +124,12 @@ const SubscriptionOverview = ({ }) => {
 
             <Text style={styles.paywallFooterText}>
               You can manage and cancel your subscription anytime in App Store.
+            </Text>
+            <Text style={styles.link} onPress={() => Linking.openURL('https://www.antidote-ai.com/privacy-policy')}>
+              Privacy Policy
+            </Text>
+            <Text style={styles.link} onPress={() => Linking.openURL('https://www.apple.com/legal/internet-services/itunes/dev/stdeula/')}>
+              Terms of Use
             </Text>
           </View>
         </View>
@@ -253,6 +261,13 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     fontWeight: '600',
     color: '#fff',
+  },
+  link: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: Colors.primary,
+    textAlign: 'center',
+    marginTop: 12,
   },
 });
 

@@ -7,40 +7,40 @@ import antidoteEmblem from "../styles/assets/Antidote_Emblem.svg";
 import { API_BASE_URL } from "../config";
 import { isPlatform } from "@ionic/react";
 import Modal from "./Modal";
-import ProductService from "./ProductService";
+import ProductService from "./PurchaseHistory";
 // import ProductServiceAlt from "./ProductServiceAlt";
 import SubscriptionOverview from "../react-native/SubscriptionOverview";
 // import { Permissions } from '@capacitor/core';
 import { useLocation, useHistory } from "react-router-dom";
 
 interface PaymentSchema {
-  subscriberId: String,
-  productId: String,
-  eventType: Number,
-  store: String,
-  originalTransactionId: String,
-  purchaseDateMs: Number,
-  price: Number,
-  currencyCode: String,
-  expireDate: Number,
-  isSubscriptionActive: Boolean,
-  environment: String,
-  eventId: String,
-  eventDate: Number,
-  source: String,
-  vendorId: String,
-  appId: String,
-  originalPurchaseDateMs: Number,
-  priceUsd: Number,
-  countryCode: String,
-  duration: Number,
-  customId: String,
-  device: String,
-  systemVersion: String,
-  permissionId: String,
-  isValid: Boolean,
-  receiptValidated: Boolean,
+  userId: string;
+  subscriberId: string;
+  productId: string;
+  original_transaction_id: string;
+  purchaseDate: Date;
+  price: number;
+  priceUsd: number;
+  currency_code: string;
+  country_code: string;
+  store: string;
+  environment: string;
+  isSubscriptionActive: boolean;
+  expireDate: Date;
+  eventType: number;
+  eventId: string;
+  eventDate: Date;
+  source: string;
+  vendorId: string;
+  appId: string;
+  customId?: string;
+  device?: string;
+  systemVersion?: string;
+  receiptValidated: boolean;
+  appleReceiptValidated: boolean;
+  glassfyValidated: boolean;
 }
+
 
 interface IonicAudioRecorderProps {
   onRecordingComplete?: (blob: Blob) => void;
@@ -62,6 +62,13 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
   const history = useHistory();
 
   const fetchUserPayment = async () => {
+
+    if (!user?.id) {
+      console.error('User ID is not available');
+      return;
+    }
+    console.log('Fetch user payment userId:', user?.id);
+    
     const url = `${API_BASE_URL}/api/payment/${user?.id}`;
     setIsLoading(true);
     try {
@@ -92,31 +99,36 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
     }
   }, [recordingState, onRecordingStateChange]);
 
-  console.log('setModalOpen', paymentModalOpen);
-
   const checkPaymentStatus = (paymentData: PaymentSchema[] | null | undefined) => {
-    if (!paymentData || paymentData.length === 0) {
+    if (!Array.isArray(paymentData) || paymentData.length === 0) {
       notyf.error('You do not have an active subscription');
       setPaymentModalOpen(true);
-      
       return false;
     }
 
-    const validSubscriptions = paymentData.find(payment => 
-      (payment.productId === "care_voice_subscription_monthly_99.99" || "care_voice_subscription_monthly_899.99") 
+    const userPayments = paymentData.filter(payment => payment.userId === user?.id);
+
+    if (userPayments.length === 0) {
+      notyf.error('No payment data found. Please subscribe on IOS App.');
+      setPaymentModalOpen(true);
+      return false;
+    }
+
+    const validSubscriptions = userPayments.some(payment => 
+      (payment.productId === "care_voice_subscription_monthly_99.99" || 
+      payment.productId === "care_voice_subscription_annual_899.99") 
       && payment.isSubscriptionActive === true
-    )
+    );
 
     if (!validSubscriptions) {
       notyf.error("No active subscription found. Please subscribe on IOS App.");
       setPaymentModalOpen(true);
-      
-      
       return false;
     }
 
     return true;
   }
+
 
   function base64ToBlob(base64: string, mime: string): Blob {
     const byteCharacters = atob(base64);
@@ -206,7 +218,6 @@ const IonicAudioRecorder: React.FC<IonicAudioRecorderProps> = ({
     } else {
       history.push('/subscriptions');
     }
-    
   }
 
   return (

@@ -1,15 +1,15 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 interface IPaymentMeta extends Document {
-    userId: mongoose.Schema.Types.ObjectId;
+    userId: string;
     subscriberId: string;
     productId: string;
-    originalTransactionId: string;
+    original_transaction_id: string;
     purchaseDate: Date;
     price: number;
     priceUsd: number;
-    currencyCode: string;
-    countryCode: string;
+    currency_code: string;
+    country_code: string;
     store: string;
     environment: string;
     isSubscriptionActive: boolean;
@@ -29,21 +29,21 @@ interface IPaymentMeta extends Document {
 }
 
 const PaymentMetaSchema = new Schema<IPaymentMeta>({
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: String, ref: 'User', required: false },
     subscriberId: { type: String, required: true },
     productId: { type: String, required: true },
-    originalTransactionId: { type: String, required: true },
+    original_transaction_id: { type: String, required: false },
     purchaseDate: { type: Date, required: true },
     price: { type: Number, required: true },
     priceUsd: { type: Number, required: true },
-    currencyCode: { type: String, required: true },
-    countryCode: { type: String, required: true },
-    store: { type: String, required: true },
-    environment: { type: String, required: true },
+    currency_code: { type: String, required: false },
+    country_code: { type: String, required: false },
+    store: { type: String, required: false },
+    environment: { type: String, required: false },
     isSubscriptionActive: { type: Boolean, default: false },
     expireDate: { type: Date },
     eventType: { type: Number, required: true },
-    eventId: { type: String, required: true },
+    eventId: { type: String, required: false },
     eventDate: { type: Date, required: true },
     source: { type: String },
     vendorId: { type: String },

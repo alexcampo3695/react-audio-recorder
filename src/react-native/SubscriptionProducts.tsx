@@ -64,6 +64,8 @@ export default function SubscriptionProducts() {
       try {
         const transaction = await Glassfy.purchaseSku({ sku: skuData });
         await Glassfy.connectCustomSubscriber({ subscriberId: userId || '' });
+        await axios.post(`${API_BASE_URL}/api/payment/webhook/glassfy/${user?.id}`, transaction);
+
         history.push('/home')
         notyf.success('Purchase Successful!');
       } catch (e) {
@@ -105,61 +107,60 @@ export default function SubscriptionProducts() {
       <View style={styles.form}>
         <View>
           {offerings.map((offering, offeringIndex) => (
-          offering.skus.map((sku, index) => {
-            const isActive = selected === index;
-            return (
-              <TouchableWithoutFeedback
-                key={`sku-${offeringIndex}-${index}`}
-                onPress={() => {
-                  setSelected(index);
-                  setSkuData(sku);
-                }}
-                // type="without-feedback"
-              >
-                <View
-                  style={[
-                    styles.radio,
-                    isActive
-                      ? { borderColor: Colors.primary, backgroundColor: Colors.primaryLighter }
-                      : {},
-                  ]}>
-                  {/* <span className="icon">
-                    <i 
-                      data-feather={isActive ? "check-circle" : "circle"}
-                      color={isActive ? '#F82E08' : '#363636'}
-                    >
-                    </i>
-                  </span> */}
-                  {/* <FeatherIcon
-                    color={isActive ? '#F82E08' : '#363636'}
-                    name={isActive ? 'check-circle' : 'circle'}
-                    size={24} /> */}
-
-                  <View style={styles.radioBody}>
-                    <View>
-                      <Text style={styles.radioLabel}>{sku.product.title}</Text>
-
-                      <Text style={styles.radioText}>
-                       {sku.productId === 'care_voice_subscription_monthly_99.99'
-                       ? 'Enjoy unlimited usage each month'
-                       : 'Enjoy unlimited usage each year'}
-                      </Text>
-                    </View>
-
-                    <Text
+            offering.skus.map((sku, index) => {
+              const isActive = selected === index;
+                return (
+                  <TouchableWithoutFeedback
+                    key={`sku-${offeringIndex}-${index}`}
+                    onPress={() => {
+                      setSelected(index);
+                      setSkuData(sku);
+                    }}
+                    // type="without-feedback"
+                  >
+                    <View
                       style={[
-                        styles.radioPrice,
-                        isActive && styles.radioPriceActive,
+                        styles.radio,
+                        isActive
+                          ? { borderColor: Colors.primary, backgroundColor: Colors.primaryLighter }
+                          : {},
                       ]}>
-                      {'$'}{sku.product.price}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            )
-            
-          })
-        ))}
+                      {/* <span className="icon">
+                        <i 
+                          data-feather={isActive ? "check-circle" : "circle"}
+                          color={isActive ? '#F82E08' : '#363636'}
+                        >
+                        </i>
+                      </span> */}
+                      {/* <FeatherIcon
+                        color={isActive ? '#F82E08' : '#363636'}
+                        name={isActive ? 'check-circle' : 'circle'}
+                        size={24} /> */}
+
+                      <View style={styles.radioBody}>
+                        <View>
+                          <Text style={styles.radioLabel}>{sku.product.title}</Text>
+
+                          <Text style={styles.radioText}>
+                          {sku.productId === 'care_voice_subscription_monthly_99.99'
+                          ? 'Enjoy unlimited usage each month'
+                          : 'Enjoy unlimited usage each year'}
+                          </Text>
+                        </View>
+
+                        <Text
+                          style={[
+                            styles.radioPrice,
+                            isActive && styles.radioPriceActive,
+                          ]}>
+                          {'$'}{sku.product.price}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableWithoutFeedback>
+                )
+            })
+          ))}
         </View>
 
         <View>
