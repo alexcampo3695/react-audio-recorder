@@ -15,6 +15,7 @@ const Home = ({}) => {
                 <AutoComplete
                     input=""
                     type="medications"
+                    patientId="6694929253fbbcba215d92fa"
                 />
             }
             title='Home'

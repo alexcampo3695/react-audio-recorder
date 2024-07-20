@@ -3,6 +3,7 @@ import "../styles/AutoComplete.scss";
 import { API_BASE_URL } from "../config";
 import { Icon } from "ionicons/dist/types/components/icon/icon";
 import colors from "../helpers/Colors";
+import axios from "axios";
 
 export interface AutoCompleteData {
   id: string;
@@ -73,11 +74,10 @@ const TileGrid: React.FC<{data: AutoCompleteData[], type: 'icd10s' | 'medication
       {data.length === 0 ? (
         <div className="page-placeholder custom-text-filter-placeholder">
           <div className="placeholder-content">
-            <h3>We couldn't find any matching results.</h3>
+            <h3>No {type} selected. Search and select items.</h3>
             <p className="is-larger">
-              Too bad. Looks like we couldn't find any matching results for
-              the search terms you've entered. Please try different search
-              terms or criteria.
+              We couldn't find any results. Please search
+              for {type} and select the relevant data.
             </p>
           </div>
         </div>
@@ -153,9 +153,10 @@ export const fetchAutoCompleteData = async (
 interface AutoCompleteProps {
   input: string;
   type: 'icd10s' | 'medications' | 'cpts';
+  patientId: string
 }
 
-const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type }) => {
+const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type, patientId }) => {
   const [inputValue, setInputValue] = useState(input);
   const [autoCompleteData, setAutoCompleteData] = useState<AutoCompleteData[]>([]);
   const [selectedItem, setSelectedItem] = useState<AutoCompleteData[]>([]);
@@ -199,7 +200,61 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type }) => {
     setSelectedItem(prevItems => prevItems.filter(item => item.id !== id))
   }
 
-  console.log('data:',autoCompleteData);
+  const handleSubmitResults = async (data: AutoCompleteData[], type: 'icd10s' | 'medications' | 'cpts', patientId: string) => {
+    let url = '';
+    switch (type) {
+      case 'icd10s':
+        url = `${API_BASE_URL}/api/icd10/save-icd10-codes`;
+        break;
+      case 'medications':
+        url = `${API_BASE_URL}/api/medications/save-meds`
+        break;
+      // case 'cpts':
+      //   url = `${API_BASE_URL}/api/cpt/getAllExistingCPTs`;
+      //   break;
+      default:
+        console.error('invalid type!', type);
+        break; 
+    }
+    try {
+      if (type === 'icd10s') {
+        const icd10Codes = data.map(item => ({
+          fileId: 'N/A',
+          code: item.primaryText,
+          description: item.secondaryText,
+          status: true
+        }));
+
+        const response = await axios.post(url, {
+          patientId: patientId,
+        icd10Codes: icd10Codes
+        })
+
+        console.log('ICD10 codes saved:', response.data);
+      } else if (type === 'medications') {
+        const medications = data.map(item => ({
+          fileId: 'N/A',
+          drugName: item.primaryText,
+          dosage: item.secondaryText,
+          methodOfIngestion: item.tertiaryText,
+          status: true
+        }));
+
+        const response = await axios.post(url, {
+          patientId: patientId,
+          medications: medications
+        })
+
+        console.log('Medications saved:', response.data);
+      } else {
+        console.error('Invalid type:', type);
+      }
+    } catch (error) {
+      console.error('Failed to submit results:', error);
+      }
+  }
+
+  console.log('selectedItem:',selectedItem);
 
   const inputHasText = inputValue.length > 0;
 
@@ -229,7 +284,11 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type }) => {
               setIsDropdownOpen(true);
             }}
           />
-          <button className="button h-button is-success is-elevated">
+          <button 
+            className="button h-button is-success is-elevated"
+            disabled={selectedItem.length === 0}
+            onClick={() => handleSubmitResults(selectedItem, type, patientId)}
+          >
             <span className="icon">
               <i aria-hidden="true" className="fas fa-check"></i>
             </span>

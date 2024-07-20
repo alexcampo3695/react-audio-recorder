@@ -56,6 +56,21 @@ export async function getMedicationsByPatient(req: Request, res: Response) {
     }
 }
 
+interface Medication {
+    fileId?: string;
+    drugCode?: string;
+    drugName: string;
+    dosage: string;
+    frequency?: string;
+    fillSupply?: string;
+    methodOfIngestion?: string;
+    status: boolean;
+    startDate?: Date;
+    endDate?: Date;
+    specialInstructions?: string;
+  }
+  
+
 export async function queryValidMedications(req: Request, res: Response) {
     const search = req.query.search as string | undefined;
 
@@ -79,5 +94,41 @@ export async function queryValidMedications(req: Request, res: Response) {
         res.json(allValidMedications);
     } catch (error) {
         res.status(500).json({ message: "Failed to retrieve valid medications", error });
+    }
+}
+
+export async function savePatientMedication(req:Request, res:Response) {
+    try {
+        const {medications, patientId} = req.body;
+
+        if (!medications || !patientId || !Array.isArray(medications)) {
+            return res.status(400).json({ message: "Invalid request" });
+        }
+
+        const savedMedications = await Promise.all(medications.map(async (meds: Medication) => {
+            const newMedications = new MedicationModel({
+                patientId: patientId,
+                fileId: meds.fileId || 'N/A',
+                drugCode: meds.drugCode || null,
+                drugName: meds.drugName,
+                dosage: meds.dosage,
+                frequency: meds.frequency || null,
+                fillSupply: meds.fillSupply || null,
+                methodOfIngestion: meds.methodOfIngestion || null,
+                status: meds.status,
+                startDate: meds.startDate || null,
+                endDate: meds.endDate || null,
+                specialInstructions: meds.specialInstructions || null,
+            })
+
+            return await newMedications.save();
+        }))
+
+        res.status(201).json({
+            message: 'Medications saved successfully',
+            data: savedMedications
+        }) 
+    } catch (e) {
+        res.status(500).json({ message: "Failed to save medications", error: e });
     }
 }

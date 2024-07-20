@@ -78,4 +78,31 @@ export async function queryValidIcd10Codes(req: Request, res: Response) {
     }
 }
 
+export async function savePatientIcd10Codes(req: Request, res: Response) {
+    try {
+        const { icd10Codes, patientId } = req.body;
 
+        if (!icd10Codes || !patientId || !Array.isArray(icd10Codes)) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const savedCodes = await Promise.all(icd10Codes.map(async (code) => {
+            const newIcd10 = new ICD10({
+                fileId: code.fileId || 'N/A',
+                code: code.code,
+                description: code.description,
+                status: code.status,
+                patientId: patientId,
+            })
+
+            return await newIcd10.save();
+        }))
+
+        res.status(201).json({
+            message: "ICD10 codes saved successfully",
+            savedCodes: savedCodes
+        });
+    } catch(e) {
+        res.status(500).json({ message: "Failed to save icd10 codes", error: e });
+    }
+}
