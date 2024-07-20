@@ -1,2 +1,1 @@
-mongoimport --uri=mongodb+srv://antidoteTranscribe:CAf4SS7bH48fbh0e@cluster0.f7fkxds.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0
- --collection=test --type=csv --headerline --file=icd10_test.csv
+mongoimport --uri='mongodb+srv://antidoteTranscribe:CAf4SS7bH48fbh0e@cluster0.f7fkxds.mongodb.net/test?retryWrites=true&w=majority&appName=Cluster0' --collection=validMedications --type=csv --headerline --file=Products_test.csv

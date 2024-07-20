@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "../styles/AutoComplete.scss";
 import { API_BASE_URL } from "../config";
+import { Icon } from "ionicons/dist/types/components/icon/icon";
+import colors from "../helpers/Colors";
 
 export interface AutoCompleteData {
   id: string;
   primaryText: string;
   secondaryText: string;
+  tertiaryText?: string;
 }
 
-const TileGridItem: React.FC<AutoCompleteData & {onRemove: () => void}> = ({primaryText, secondaryText, onRemove}) => {
+const TileGridItem: React.FC<AutoCompleteData & {onRemove: () => void} & {type: 'icd10s' | 'medications' | 'cpts'}> = ({primaryText, secondaryText, tertiaryText, type ,onRemove}) => {
   return (
     <div className="tile-grid-item">
       <div className="tile-grid-item-inner">
-          <div className="h-avatar is-medium">
-              <img className="avatar" src="assets/img/avatars/photos/29.jpg" data-demo-src="assets/img/avatars/photos/29.jpg" alt="" data-user-popover="25"></img>
-              <img className="badge" src="assets/img/icons/stacks/python.svg" data-demo-src="assets/img/icons/stacks/python.svg" alt=""></img>
-          </div>
+          <IconBox type={type}/>
           <div className="meta">
               <span className="dark-inverted">{primaryText}</span>
-              <span>{secondaryText}</span>
+              {tertiaryText ? (<span>{secondaryText}{' | '}{tertiaryText}</span>) : (<span>{secondaryText}</span>)}
           </div>
           <div className="dropdown is-spaced is-dots is-right dropdown-trigger">
             <div className="is-trigger" aria-haspopup="true" onClick={onRemove}>
@@ -30,7 +30,41 @@ const TileGridItem: React.FC<AutoCompleteData & {onRemove: () => void}> = ({prim
   )
 }
 
-const TileGrid: React.FC<{data: AutoCompleteData[], onRemoveItem: (id: string) => void}> = ({data, onRemoveItem}) => {
+interface IconBoxProps {
+  type: 'icd10s' | 'medications' | 'cpts';
+}
+
+
+const IconBox: React.FC<IconBoxProps> = ({type}) => {
+  const getIconContent = () => {
+    switch (type) {
+      case 'icd10s':
+        return (
+          <div className="h-icon is-small is-primary" style={{backgroundColor: colors.primary}}>
+              <i aria-hidden="true" className="fas fa-file-medical-alt" style={{color: 'white'}}></i>
+          </div>
+        )
+      case 'medications':
+        return (
+          <div className="h-icon is-small is-primary" style={{backgroundColor: colors.cyan}}>
+              <i aria-hidden="true" className="fas fa-pills" style={{color: 'white'}}></i>
+          </div>
+        )
+      case 'cpts':
+        return (
+          <div className="h-icon is-small is-primary" style={{backgroundColor: colors.green}}>
+              <i aria-hidden="true" className="fas fa-file-microscope" style={{color: 'white'}}></i>
+          </div>
+        )
+      default:
+        return null;
+    }
+  };
+
+  return getIconContent();
+}
+
+const TileGrid: React.FC<{data: AutoCompleteData[], type: 'icd10s' | 'medications' | 'cpts', onRemoveItem: (id: string) => void}> = ({data, type ,onRemoveItem}) => {
   return (
     <div 
       className="tile-grid tile-grid-v1"
@@ -39,8 +73,6 @@ const TileGrid: React.FC<{data: AutoCompleteData[], onRemoveItem: (id: string) =
       {data.length === 0 ? (
         <div className="page-placeholder custom-text-filter-placeholder">
           <div className="placeholder-content">
-            <img className="light-image" src="assets/img/illustrations/placeholders/search-6.svg" alt="" />
-            <img className="dark-image" src="assets/img/illustrations/placeholders/search-6-dark.svg" alt="" />
             <h3>We couldn't find any matching results.</h3>
             <p className="is-larger">
               Too bad. Looks like we couldn't find any matching results for
@@ -53,14 +85,13 @@ const TileGrid: React.FC<{data: AutoCompleteData[], onRemoveItem: (id: string) =
         <div className="columns is-multiline">
           {data.map((item, index) => (
             <div key={index} className="column is-4">
-              <TileGridItem {...item} onRemove={() => onRemoveItem(item.id)}/>
+              <TileGridItem {...item} type={type} onRemove={() => onRemoveItem(item.id)}/>
             </div>
           ))}
         </div>
       )}
     </div>
   )
-  
 };
 
 
@@ -74,9 +105,9 @@ export const fetchAutoCompleteData = async (
     case 'icd10s':
       url = `${API_BASE_URL}/api/icd10/getAllExistingIcd10s`;
       break;
-    // case 'medications':
-    //   url = ''
-    //   break;
+    case 'medications':
+      url = `${API_BASE_URL}/api/medications/find_meds`
+      break;
     case 'cpts':
       url = `${API_BASE_URL}/api/cpt/getAllExistingCPTs`;
       break;
@@ -97,10 +128,19 @@ export const fetchAutoCompleteData = async (
 
     const data: AutoCompleteData[] = await response.json();
     const mappedData = data.map((item: any) => {
-      return {
-        id: item._id,
-        primaryText: item.Code,
-        secondaryText: item.Description
+      if (type === 'medications') {
+        return {
+          id: item._id,
+          primaryText: item.DrugName,
+          secondaryText: item.Strength,
+          tertiaryText: item.Form
+        };
+      } else {
+        return {
+          id: item._id,
+          primaryText: item.Code,
+          secondaryText: item.Description
+        };
       }
     });
     return mappedData;
@@ -159,7 +199,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type }) => {
     setSelectedItem(prevItems => prevItems.filter(item => item.id !== id))
   }
 
-  console.log('selectedItem:',selectedItem);
+  console.log('data:',autoCompleteData);
 
   const inputHasText = inputValue.length > 0;
 
@@ -173,18 +213,29 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type }) => {
 
   return (
     <div className="control has-icon">
-      <div className="easy-autocomplete" style={{ width: '45%' }}>
-        <input
-          id="autocomplete-demo-subtext"
-          type="text"
-          className="input"
-          placeholder={getPlaceholderText(type)}
-          value={inputValue}
-          onChange={(e) => {
-            setInputValue(e.target.value)
-            setIsDropdownOpen(true);
-          }}
-        />
+      <div className="easy-autocomplete" style={{ width: '100%', marginRight: '20px' }}>
+        <div
+          style={{ display: 'flex', justifyContent: 'space-between'}}
+        >
+          <input
+            id="autocomplete-demo-subtext"
+            type="text"
+            className="input"
+            style={{ marginRight: '1.5rem', flexGrow: 1 }}
+            placeholder={getPlaceholderText(type)}
+            value={inputValue}
+            onChange={(e) => {
+              setInputValue(e.target.value)
+              setIsDropdownOpen(true);
+            }}
+          />
+          <button className="button h-button is-success is-elevated">
+            <span className="icon">
+              <i aria-hidden="true" className="fas fa-check"></i>
+            </span>
+            <span>Submit</span>
+          </button>
+        </div>
         {inputHasText && (
           <div className="easy-autocomplete-container-alex" id="eac-container-autocomplete-demo-subtext">
             <ul 
@@ -195,7 +246,11 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type }) => {
                   <div className="template-wrapper">
                     <div className="entry-text">
                       <span>{item.primaryText}</span>
-                      <span>{item.secondaryText}</span>
+                      {
+                        item.tertiaryText 
+                          ? (<span>{item.secondaryText} {' | '} {item.tertiaryText}</span>) 
+                          : (<span>{item.secondaryText}</span>)
+                      }
                     </div>
                   </div>
                 </li>
@@ -221,7 +276,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type }) => {
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </div>
-      <TileGrid data={selectedItem} onRemoveItem={handleRemoveItem}/>
+      <TileGrid data={selectedItem} type={type} onRemoveItem={handleRemoveItem}/>
     </div>
   );
 };
