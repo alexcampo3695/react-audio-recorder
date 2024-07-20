@@ -20,9 +20,9 @@ export const fetchAutoCompleteData = async (
     // case 'medications':
     //   url = ''
     //   break;
-    // case 'cpts':
-    //   url = ''
-    //   break;
+    case 'cpts':
+      url = `${API_BASE_URL}/api/cpt/getAllExistingCPTs`;
+      break;
     default:
       break; 
   }
@@ -31,7 +31,6 @@ export const fetchAutoCompleteData = async (
     url += `?search=${encodeURIComponent(search)}`;
   }
 
-  console.log('url', url);
 
   try {
     const response = await fetch(url);

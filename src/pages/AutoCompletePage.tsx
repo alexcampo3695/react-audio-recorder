@@ -14,7 +14,7 @@ const Home = ({}) => {
             children={
                 <AutoComplete
                     input=""
-                    type="icd10s"
+                    type="cpts"
                 />
             }
             title='Home'
