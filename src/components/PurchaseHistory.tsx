@@ -48,8 +48,6 @@ interface FlexItemProps {
 }
 
 const PurchaseHistoryItem: React.FC<FlexItemProps> = ({ UserId, ProductId, DatePurchased, Price, IsSubscriptionActive  }) => {
-    const history = useHistory();
-    const{ user } = useUser();
 
     const cleanProductName = (productName: string) => {
       switch (productName) {
@@ -71,7 +69,7 @@ const PurchaseHistoryItem: React.FC<FlexItemProps> = ({ UserId, ProductId, DateP
                 <span className="light-text" data-filter-match="">{formatDate(DatePurchased.toString())}</span>
             </div>
             <div className="flex-table-cell" data-th="Price">
-                <span className="light-text" data-filter-match="">{formatDate(Price.toString())}</span>
+                <span className="light-text" data-filter-match="">{'$'}{Price.toString()}</span>
             </div>
             <div className="flex-table-cell cell-end" data-th="Status">
               {IsSubscriptionActive === true 
@@ -119,6 +117,8 @@ const PurchaseTable: React.FC = () => {
       fetchPayments();
     }
   }, [user?.id]);
+
+  console.log('Payments:', payments);
 
   return (
     <div className="flex-list-wrapper flex-list-v1">

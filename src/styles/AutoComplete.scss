@@ -1,0 +1,46 @@
+@import './huro/scss/abstracts/_variables.scss';
+
+$font: 'Roboto', sans-serif;
+$font-alt: 'Montserrat', sans-serif;
+
+.easy-autocomplete-container-alex {
+    background-color: white;
+    border-radius: 4px !important;
+    box-shadow: -1px 3px 10px 0 rgba(0, 0, 0, 0.06) !important;
+    margin-top: 10px;
+
+    span {
+        font-family: $font;
+        display: block;
+
+        &:first-child {
+          font-family: $font-alt;
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: $dark-text;
+        }
+
+        &:nth-child(2) {
+          font-size: 0.9rem;
+          color: $light-text;
+        }
+    }
+}
+
+.template-wrapper {
+    margin-left: 10px;
+}
+
+li {
+    height: auto !important;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-left: none !important;
+    border-right: none !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: lighten(grey, 47.5%);
+    }
+  }

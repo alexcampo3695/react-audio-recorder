@@ -23,6 +23,7 @@ import PaymentPage from './pages/PaymentsPage';
 import SubscriptionsPage from './pages/SubscriptionOverviewPage';
 import SubscriptionProductsPage from './pages/SubscriptionProductsPage';
 import PageLoader from './pages/LoaderPage';
+import AutoCompletePage from './pages/AutoCompletePage';
 
 
 
@@ -87,6 +88,7 @@ const App: React.FC = () => {
           <Route path="/subscriptions" component={SubscriptionsPage} />
           <Route path="/subscription_products" component={SubscriptionProductsPage} />
           <Route path="/loader" component={PageLoader} />
+          <Route path="/autocomplete" component={AutoCompletePage} />
         </Switch>
       </Router>
     </div>

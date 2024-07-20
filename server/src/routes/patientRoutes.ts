@@ -19,4 +19,5 @@ router.post('/by_creatorId', (req, res, next) => {
 
 router.get('/:patientId', getPatientsById);
 
+
 export default router;

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import ICD10 from '../models/ICD10';
+import ICD10Codes from '../models/ICD10Codes';
 
 export async function getIcd10s(req: Request, res: Response) {
     try {
@@ -51,3 +52,30 @@ export async function getICD10sByPatient(req: Request, res: Response) {
         res.status(500).json({ message: "Failed to retrieve icd10s", error });
     }
 }
+
+export async function queryValidIcd10Codes(req: Request, res: Response) {
+    const search = req.query.search as string | undefined;
+
+    try {
+        let query = {};
+
+        if (search) {
+            const regex = new RegExp(search, 'i');
+
+            query = {
+                $or: [
+                    { Code: { $regex: regex } },
+                    { Description: { $regex: regex } }
+                ],
+            }
+        }
+
+        const allValidIcd10s = await ICD10Codes.find(query);
+        
+        res.json(allValidIcd10s);
+    } catch (error) {
+        res.status(500).json({ message: "Failed to retrieve icd10s", error });
+    }
+}
+
+
