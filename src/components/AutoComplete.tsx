@@ -54,7 +54,7 @@ const IconBox: React.FC<IconBoxProps> = ({type}) => {
       case 'cpts':
         return (
           <div className="h-icon is-small is-primary" style={{backgroundColor: colors.green}}>
-              <i aria-hidden="true" className="fas fa-file-microscope" style={{color: 'white'}}></i>
+              <i aria-hidden="true" className="fas fa-microscope" style={{color: 'white'}}></i>
           </div>
         )
       default:
@@ -263,7 +263,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type, patientId
       }
 
       onClose();
-      
+
     } catch (error) {
       console.error('Failed to submit results:', error);
       }
@@ -316,7 +316,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type, patientId
               style={{ display: changeDropDown() }}
             >
               {autoCompleteData.map((item, index) => (
-                <li key={index} onClick={() => handleSelectedItem(item)}>
+                <li key={index} onClick={() => handleSelectedItem(item)} className="auto-complete-list-item">
                   <div className="template-wrapper">
                     <div className="entry-text">
                       <span>{item.primaryText}</span>
