@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../styles/AutoComplete.scss";
 import { API_BASE_URL } from "../config";
 import { Icon } from "ionicons/dist/types/components/icon/icon";
 import colors from "../helpers/Colors";
 import axios from "axios";
+import { debounce } from 'lodash';
+
 
 export interface AutoCompleteData {
   id: string;
@@ -168,16 +170,21 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type, patientId
     setInputValue(input);
   }, [input]);
 
+  const debouncedFetchData = useCallback(
+    debounce((search: string) => {
+      fetchAutoCompleteData(type, search).then(data => setAutoCompleteData(data));
+    }, 500),
+    [type]
+  );
+
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchAutoCompleteData(type, inputValue);
-      setAutoCompleteData(data);
-    };
 
     if (inputValue) {
-      fetchData();
+      debouncedFetchData(inputValue);
+    } else {
+      setAutoCompleteData([]);
     }
-  }, [inputValue, type]);
+  }, [inputValue, debouncedFetchData]);
 
   const getPlaceholderText = (type: string) => {
     switch (type) {
