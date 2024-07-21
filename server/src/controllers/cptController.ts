@@ -65,5 +65,31 @@ export async function queryValidCPTCodes(req: Request, res: Response) {
         res.status(500).json({ message: "Failed to retrieve cpts", error });
     }
 }
+ export async function saveCPTCodes(req: Request, res: Response) {
+    try {
+        const { patientId, cptCodes } = req.body;
 
+        if (!patientId || !cptCodes || !Array.isArray(cptCodes)) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const savedCptCodes = await Promise.all(cptCodes.map(async (cptCode: any) => {
+            const newCptCodes = new CPT({
+                fileId: cptCode.fileId || 'N/A',
+                code: cptCode.code,
+                description: cptCode.description,
+                status: cptCode.status,
+                patientId: patientId,
+            })
+
+            return newCptCodes.save();
+        }))
+        res.status(201).json({
+            message: "CPT Codes saved successfully",
+            data: savedCptCodes,
+        });
+    } catch (e) {
+        res.status(500).json({ message: "Failed to save cpt codes", error: e });
+    }
+ }
 

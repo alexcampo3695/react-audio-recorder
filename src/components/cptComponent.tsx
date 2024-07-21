@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import NoData from "./NoData";
 import { API_BASE_URL } from "../config";
+import Modal from "./Modal";
+import AutoComplete from "./AutoComplete";
 
 
 interface CPT10RowData {
@@ -56,6 +58,7 @@ const CPTRow: React.FC<CPT10RowData> = ({ id, code, description, status, onStatu
 };
 interface CPTComponentProps {
   fileId: string;
+  patientId?:string;
 }
 
 interface CPTResponse {
@@ -67,11 +70,13 @@ interface CPTResponse {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  
 }
 
-const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
+const CPTComponent: React.FC<CPTComponentProps> = ({ fileId, patientId }) => {
   const [cpts, setCPTs] = useState<CPTResponse[] | null>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [customCPTs, setCustomCPTs] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchCPTCodes = async () => {
@@ -88,7 +93,7 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
     };
 
     fetchCPTCodes();
-  }, [fileId]);
+  }, [fileId, customCPTs]);
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
@@ -114,15 +119,18 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
     <div className="list-widget list-widget-v2 tabbed-widget">
       <div className="widget-head">
           <h3 className="dark-inverted">CPT Codes</h3>
-          <div className="tabbed-controls">
-              <a className="tabbed-control is-active">
-                  <span>All</span>
-              </a>
-              <a className="tabbed-control">
-                  <span>Mine</span>
-              </a>
-              <div className="tabbed-naver"></div>
-          </div>
+          <button 
+              className="button is-primary is-circle is-elevated"
+              onClick={() => setCustomCPTs(true)}
+          >
+              <span className="icon is-small">
+              <i 
+                  aria-hidden="true"
+                  style={{color: 'white'}}
+                  className="fas fa-plus">
+              </i>
+              </span>
+          </button>
       </div>
 
       <div className="inner-list-wrapper is-active">
@@ -147,6 +155,24 @@ const CPTComponent: React.FC<CPTComponentProps> = ({ fileId }) => {
 
           </div>
       </div>
+      {customCPTs && (
+          <Modal
+              ModalTitle="Add CPT Codes"
+              Type='custom'
+              hasButtons={false}
+              Children={
+                <AutoComplete 
+                  type='cpts' 
+                  patientId={patientId || ''} 
+                  input='' 
+                  fileId={fileId || ''}
+                  onClose={() => setCustomCPTs(false)}
+                />
+              }
+              IsLarge={true}
+              onClose={() => setCustomCPTs(false)}
+          />
+      )}
   </div>
   );
 };

@@ -25,6 +25,9 @@ interface MetaData {
     FirstName: string;
     LastName: string;
     DateOfBirth: string;
+    CreatedBy: string;
+    PatientId: string;
+
 }
 
 interface TranscriptionPayload {
@@ -95,6 +98,8 @@ const SummaryPage: React.FC = () => {
         }
     }, [fileId]);
 
+    console.log('data:', data);
+
     const sendPDFViaEmail = async () => {
         if (!user) {
             console.error('user not found!')
@@ -128,6 +133,8 @@ const SummaryPage: React.FC = () => {
             console.error('Error sending email', error)
         }
     };
+
+    const patientId = data?.patientData?.PatientId;
     
     return (
         <AppWrapper
@@ -184,12 +191,15 @@ const SummaryPage: React.FC = () => {
                                 />
                                 <Icd10Component
                                     fileId = {fileId ?? ''}
+                                    patientId={patientId || ''}
                                 />
                                 <MedicationComponent
                                     fileId = {fileId ?? ''}
+                                    patientId={patientId || ''}
                                 />
                                 <CPTComponent
                                     fileId={fileId ?? ''}
+                                    patientId={patientId || ''}
                                 />
                                 <TaskComponent
                                     fileId={fileId ?? ''}

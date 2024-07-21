@@ -154,9 +154,11 @@ interface AutoCompleteProps {
   input: string;
   type: 'icd10s' | 'medications' | 'cpts';
   patientId: string
+  fileId?: string
+  onClose: () => void;
 }
 
-const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type, patientId }) => {
+const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type, patientId, fileId, onClose }) => {
   const [inputValue, setInputValue] = useState(input);
   const [autoCompleteData, setAutoCompleteData] = useState<AutoCompleteData[]>([]);
   const [selectedItem, setSelectedItem] = useState<AutoCompleteData[]>([]);
@@ -209,9 +211,9 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type, patientId
       case 'medications':
         url = `${API_BASE_URL}/api/medications/save-meds`
         break;
-      // case 'cpts':
-      //   url = `${API_BASE_URL}/api/cpt/getAllExistingCPTs`;
-      //   break;
+      case 'cpts':
+        url = `${API_BASE_URL}/api/cpt/save-cpt-codes`;
+        break;
       default:
         console.error('invalid type!', type);
         break; 
@@ -219,7 +221,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type, patientId
     try {
       if (type === 'icd10s') {
         const icd10Codes = data.map(item => ({
-          fileId: 'N/A',
+          fileId: fileId || 'N/A',
           code: item.primaryText,
           description: item.secondaryText,
           status: true
@@ -233,7 +235,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type, patientId
         console.log('ICD10 codes saved:', response.data);
       } else if (type === 'medications') {
         const medications = data.map(item => ({
-          fileId: 'N/A',
+          fileId: fileId || 'N/A',
           drugName: item.primaryText,
           dosage: item.secondaryText,
           methodOfIngestion: item.tertiaryText,
@@ -247,8 +249,21 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({ input = "", type, patientId
 
         console.log('Medications saved:', response.data);
       } else {
-        console.error('Invalid type:', type);
+        const cptCodes = data.map(item => ({
+          fileId: fileId || 'N/A',
+          code: item.primaryText,
+          description: item.secondaryText,
+          status: true
+        }))
+
+        const response = await axios.post(url, {
+          patientId: patientId,
+          cptCodes: cptCodes
+        })
       }
+
+      onClose();
+      
     } catch (error) {
       console.error('Failed to submit results:', error);
       }

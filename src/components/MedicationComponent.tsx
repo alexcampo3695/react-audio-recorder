@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import NoData from "./NoData";
 import { API_BASE_URL } from "../config";
+import AutoComplete from "./AutoComplete";
+import Modal from "./Modal";
 
 
 interface Icd10RowData {
@@ -78,6 +80,7 @@ interface MedicationResponse {
 const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId, patientId }) => {
   const [medications, setMedications] = useState<MedicationResponse[] | null>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [customMedications, setCustomMedications] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchMedications = async () => {
@@ -105,7 +108,7 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId, patie
     };
 
     fetchMedications();
-  }, [fileId]);
+  }, [fileId, customMedications]);
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
@@ -133,15 +136,18 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId, patie
     <div className="list-widget list-widget-v2 tabbed-widget">
       <div className="widget-head">
           <h3 className="dark-inverted">Medications</h3>
-          <div className="tabbed-controls">
-              <a className="tabbed-control is-active">
-                  <span>All</span>
-              </a>
-              <a className="tabbed-control">
-                  <span>Mine</span>
-              </a>
-              <div className="tabbed-naver"></div>
-          </div>
+          <button 
+              className="button is-primary is-circle is-elevated"
+              onClick={() => setCustomMedications(true)}
+          >
+              <span className="icon is-small">
+                <i 
+                    aria-hidden="true"
+                    style={{color: 'white'}}
+                    className="fas fa-plus">
+                </i>
+              </span>
+          </button>
       </div>
 
       <div className="inner-list-wrapper is-active">
@@ -165,6 +171,24 @@ const MedicationComponent: React.FC<MedicationComponentProps> = ({ fileId, patie
               )}
           </div>
       </div>
+      {customMedications && (
+          <Modal
+              ModalTitle="Add Medications"
+              Type='custom'
+              hasButtons={false}
+              Children={
+                <AutoComplete 
+                  type='medications' 
+                  patientId={patientId || ''} 
+                  input='' 
+                  fileId={fileId || ''}
+                  onClose={() => setCustomMedications(false)}
+                />
+              }
+              IsLarge={true}
+              onClose={() => setCustomMedications(false)}
+          />
+      )}
   </div>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import NoData from "./NoData";
 import { API_BASE_URL } from "../config";
+import Modal from "./Modal";
+import AutoComplete from "./AutoComplete";
 
 
 interface Icd10RowData {
@@ -72,6 +74,7 @@ interface Icd10Response {
 const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId, patientId }) => {
   const [icd10s, setIcd10s] = useState<Icd10Response[] | null>(null);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [customIcd, setCustomIcd] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchIcd10Codes = async () => {
@@ -91,7 +94,9 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId, patientId }) =>
     };
 
     fetchIcd10Codes();
-  }, [fileId]);
+  }, [fileId, customIcd]);
+
+  console.log('icd10s:', icd10s);
 
   const handleStatusChange = async (id: string, newStatus: boolean) => {
     try {
@@ -117,15 +122,18 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId, patientId }) =>
     <div className="list-widget list-widget-v2 tabbed-widget">
       <div className="widget-head">
           <h3 className="dark-inverted">ICD10 Codes</h3>
-          <div className="tabbed-controls">
-              <a className="tabbed-control is-active">
-                  <span>All</span>
-              </a>
-              <a className="tabbed-control">
-                  <span>Mine</span>
-              </a>
-              <div className="tabbed-naver"></div>
-          </div>
+          <button 
+              className="button is-primary is-circle is-elevated"
+              onClick={() => setCustomIcd(true)}
+          >
+              <span className="icon is-small">
+              <i 
+                  aria-hidden="true"
+                  style={{color: 'white'}}
+                  className="fas fa-plus">
+              </i>
+              </span>
+          </button>
       </div>
 
       <div className="inner-list-wrapper is-active">
@@ -150,6 +158,24 @@ const Icd10Component: React.FC<Icd10ComponentProps> = ({ fileId, patientId }) =>
 
           </div>
       </div>
+      {customIcd && (
+          <Modal
+              ModalTitle="Add ICD10 Codes"
+              Type='custom'
+              hasButtons={false}
+              Children={
+                <AutoComplete 
+                  type='icd10s' 
+                  patientId={patientId || ''} 
+                  input='' 
+                  fileId={fileId || ''}
+                  onClose={() => setCustomIcd(false)}
+                />
+              }
+              IsLarge={true}
+              onClose={() => setCustomIcd(false)}
+          />
+      )}
   </div>
   );
 };
